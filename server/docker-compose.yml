@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   nest-backend:
     container_name: nest-app
@@ -20,6 +22,8 @@ services:
   postgres:
     container_name: postgres-db
     image: postgres:12
+    expose:
+      - "5435"
     ports:
       - 5435:5435
     environment:
@@ -29,6 +33,7 @@ services:
     networks:
       - backend_network
     restart: unless-stopped
+    command: -p 5435
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
