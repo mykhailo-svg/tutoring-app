@@ -9,7 +9,10 @@ async function bootstrap() {
     .setTitle('Feedback app')
     .setDescription('')
     .setVersion('1.0')
-    .addServer('http://localhost:3000/', 'Local environment')
+    .addServer(
+      'http://localhost:' + parseInt(`${process.env.PORT}`) + '/',
+      'Local environment',
+    )
     .addServer('https://staging.yourapi.com/', 'Staging')
     .addServer('https://production.yourapi.com/', 'Production')
     .addTag('Your API Tag')
@@ -17,8 +20,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
-  
-  await app.listen(5000);
 
+  await app.listen(parseInt(`${process.env.PORT}`));
 }
 bootstrap();
