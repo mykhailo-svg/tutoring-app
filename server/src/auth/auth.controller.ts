@@ -11,6 +11,7 @@ import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { TokenService } from 'src/token/token.service';
 import { AuthService } from './auth.service';
+import { getConfig } from 'src/config/config';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -25,6 +26,7 @@ export class AuthController {
   async register(@Body() dto: CreateUserDto) {
     const user = await this.authService.checkIfUserExists(dto);
 
-    return user;
+    const tokens = this.tokenService.generateAuthTokens(user);
+    return { user, tokens };
   }
 }

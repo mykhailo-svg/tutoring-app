@@ -5,10 +5,10 @@ export function getConfig() {
 
   return {
     app: {
-      port: configService.get<number>('PORT'),
+      port: parseInt(configService.get('PORT')),
     },
     db: {
-      port: configService.get<number>('POSTGRES_PORT'),
+      port: parseInt(configService.get('POSTGRES_PORT')),
       type: configService.get<string>('POSTGRES_TYPE'),
       host: configService.get<string>('POSTGRES_HOST'),
       dbName: configService.get<string>('POSTGRES_DB'),
@@ -16,11 +16,11 @@ export function getConfig() {
     },
     jwt: {
       secretKey: configService.get<string>('JWT_SECRET_KEY'),
-      accessExpirationMinutes: configService.get<string>(
-        'JWT_ACCESS_EXPIRATION_MINUTES',
+      accessExpirationMinutes: parseInt(
+        configService.get<string>('JWT_ACCESS_EXPIRATION_MINUTES'),
       ),
-      refreshExpirationDays: configService.get<string>(
-        'JWT_REFRESH_EXPIRATION_DAYS',
+      refreshExpirationDays: parseInt(
+        configService.get('JWT_REFRESH_EXPIRATION_DAYS'),
       ),
     },
   };

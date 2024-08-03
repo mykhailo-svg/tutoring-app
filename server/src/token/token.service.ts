@@ -1,22 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { TokenType } from './entities/token.entity';
 import { User } from 'src/user/entities/user.entity';
-import jwt from 'jsonwebtoken';
+import { getConfig } from 'src/config/config';
+import * as jwt from 'jsonwebtoken';
+import { Token, TokenType } from './entities/token.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 type GenerateTokenArgs = {
   expires: string;
-  type: TokenType;
   user: User;
+};
+
+type SaveTokenArgs = {
+  token: string;
+  type: TokenType;
+  expires: string;
 };
 
 @Injectable()
 export class TokenService {
-  async generateToken({ type, expires, user }: GenerateTokenArgs) {
+  constructor(
+    @InjectRepository(Token)
+    private tokensRepository: Repository<Token>,
+  ) {}
 
+  generateToken({ expires, user }: GenerateTokenArgs) {
+    const config = getConfig();
 
-    const token = jwt.sign(user,"sds",)
+    const token = jwt.sign(user, config.jwt.secretKey, { expiresIn: expires });
 
+    return token;
   }
 
-  async generateAuthTokens() {}
+  generateAuthTokens(user: User) {
+    const refreshToken = this.generateToken({ expires: '300', user });
+    const accessToken = this.generateToken({ expires: '300', user });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async saveToken({}: SaveTokenArgs) {}
 }

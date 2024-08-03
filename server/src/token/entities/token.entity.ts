@@ -1,5 +1,11 @@
 import { User } from 'src/user/entities/user.entity';
-import { Column, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum TokenType {
   RESET_PASSWORD = 'resetPassword',
@@ -7,6 +13,7 @@ export enum TokenType {
   EMAIL_VERIFICATION = 'emailVerification',
 }
 
+@Entity()
 export class Token {
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,5 +30,5 @@ export class Token {
   @OneToOne(() => User)
   @JoinColumn()
   @Column()
-  user: User;
+  user: string;
 }
