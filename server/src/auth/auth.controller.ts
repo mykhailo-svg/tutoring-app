@@ -9,30 +9,22 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { TokenService } from 'src/token/token.service';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(
-    private readonly authService: UserService,
-    private userService: UserService,
+    private authService: AuthService,
+    private tokenService: TokenService,
   ) {}
 
   @Post('register')
   @UsePipes(new ValidationPipe())
   async register(@Body() dto: CreateUserDto) {
-    console.log(dto);
+    const user = await this.authService.checkIfUserExists(dto);
 
-    const existingUser = await this.userService.findExistingUser({
-      email: dto.email,
-    });
-
-    if (existingUser) {
-      throw new ConflictException('User already exists!');
-    }
-
-    const createdUser = await this.userService.createUser(dto);
-
-    return createdUser;
+    return user;
   }
 }
