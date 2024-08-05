@@ -15,6 +15,7 @@ type SaveTokenArgs = {
   token: string;
   type: TokenType;
   expires: string;
+  userId: number;
 };
 
 @Injectable()
@@ -32,9 +33,29 @@ export class TokenService {
     return token;
   }
 
-  generateAuthTokens(user: User) {
-    const refreshToken = this.generateToken({ expires: '300', user });
-    const accessToken = this.generateToken({ expires: '300', user });
+  async generateAuthTokens(user: User) {
+    const config = getConfig();
+
+    const refreshTokenExpires = `${config.jwt.refreshExpirationDays}d`;
+    const accessTokenExpires = `${config.jwt.accessExpirationMinutes}m`;
+
+    const refreshToken = this.generateToken({
+      expires: refreshTokenExpires,
+      user,
+    });
+    const accessToken = this.generateToken({
+      expires: accessTokenExpires,
+      user,
+    });
+
+    const savedToken = await this.saveToken({
+      expires: refreshTokenExpires,
+      token: refreshToken,
+      type: TokenType.REFRESH,
+      userId: user.id,
+    });
+
+    console.log(savedToken);
 
     return {
       accessToken,
@@ -42,5 +63,14 @@ export class TokenService {
     };
   }
 
-  async saveToken({}: SaveTokenArgs) {}
+  async saveToken({ expires, token, type, userId }: SaveTokenArgs) {
+    const newToken: Omit<Token, 'id'> = {
+      type,
+      value: token,
+      user: userId,
+      expires,
+    };
+
+    return this.tokensRepository.save(newToken);
+  }
 }

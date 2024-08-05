@@ -30,5 +30,5 @@ export class Token {
   @OneToOne(() => User)
   @JoinColumn()
   @Column()
-  user: string;
+  user: number;
 }

@@ -26,7 +26,7 @@ export class AuthController {
   async register(@Body() dto: CreateUserDto) {
     const user = await this.authService.checkIfUserExists(dto);
 
-    const tokens = this.tokenService.generateAuthTokens(user);
+    const tokens = await this.tokenService.generateAuthTokens(user);
     return { user, tokens };
   }
 }
