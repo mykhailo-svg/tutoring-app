@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "../styles/_normalize.scss";
 import "../styles/_variables.scss";
-import styles from "./layout.module.scss";
 import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({
@@ -23,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className={styles.overflow}>hello</div>
+        <div>{children}</div>
       </body>
     </html>
   );
