@@ -18,6 +18,8 @@ async function bootstrap() {
     .addTag('Your API Tag')
     .build();
 
+  app.enableCors();
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 
