@@ -1,14 +1,13 @@
 "use client";
-
+import { getApiEndpointUrl } from "@/api";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 
 async function getData() {
   const options = {
     method: "GET",
   };
 
-  const response = fetch("http://localhost:5000/api", options)
+  const response = fetch(getApiEndpointUrl("/"), options)
     .then((response) => response.json())
     .catch((err) => console.error(err));
 
