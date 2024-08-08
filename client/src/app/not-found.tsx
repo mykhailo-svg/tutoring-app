@@ -1,5 +1,3 @@
-const NotFound = () => {
-  return <div>404</div>;
-};
+import { NotFoundPage } from "@/pages/notFound";
 
-export default NotFound;
+export default NotFoundPage;
