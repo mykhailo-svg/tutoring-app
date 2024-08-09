@@ -1,3 +1,3 @@
-import { NotFoundPage } from "@/pages/notFound/NotFoundPage";
+import { NotFoundPage } from "@/routes/notFound/NotFoundPage";
 
 export default NotFoundPage;

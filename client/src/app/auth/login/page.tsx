@@ -1,3 +1,3 @@
-import { LoginPage } from '@/pages/login/LoginPage';
+import { LoginPage } from '@/routes/login';
 
 export default LoginPage;
