@@ -1,3 +1,3 @@
-import { HomePage } from '@/routes/home/HomePage';
+import { HomePage } from '@/routes/home';
 
 export default HomePage;

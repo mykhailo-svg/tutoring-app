@@ -1,3 +1,3 @@
-import { RegisterPage } from "@/routes/register/RegisterPage";
+import { RegisterPage } from "@/routes/register";
 
 export default RegisterPage;
