@@ -2,24 +2,50 @@
 import { AuthRow } from '@/components/AuthRow';
 import * as Form from '@radix-ui/react-form';
 import { useUserRegister } from './hooks/useUserRegister';
-import styles from "./RegisterPage.module.scss"
-
+import styles from './RegisterPage.module.scss';
+import { RegisterPageFields } from './types';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useCallback } from 'react';
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
-  const { registerUser } = useUserRegister();
+  const { registerRequest } = useUserRegister();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<RegisterPageFields>();
+
+  const onSubmit: SubmitHandler<RegisterPageFields> = useCallback(
+    (data) => {
+      registerRequest(data);
+    },
+    [handleSubmit]
+  );
+  console.log(errors);
 
   return (
     <AuthRow
       firstColumnContent={
         <div className={styles.formColumn}>
-          <Form.Root className={styles.form}>
-            <Form.Field name='name'>
-              <Form.Label className='FormLabel'>Email</Form.Label>
-              <Form.Control asChild>
-                <input className='Input' type='email' required />
-              </Form.Control>
-            </Form.Field>
+          <Form.Root onSubmit={handleSubmit(onSubmit)}>
+            <input
+              {...register('email', {
+                pattern: {
+                  message: 'Provide valid email!',
+                  value:
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                },
+              })}
+            />
+
+            <input {...register('name', { max: 40, min: 4 })} />
+
+            <input {...register('password')} />
+
+            <input type='submit' />
           </Form.Root>
         </div>
       }

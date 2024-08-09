@@ -1,24 +1,18 @@
-import { APIEndpoints, getApiEndpointUrl } from "@/api";
+import { APIEndpoints, getApiEndpointUrl } from '@/api';
 
-type RegisterUserRequestArgs = {};
+type RegisterUserRequestArgs = {
+  email: string;
+  password: string;
+  name: string;
+};
 
-export const registerUserRequest = async ({}: RegisterUserRequestArgs) => {
-  const payload = {
-    email: "emaiaasdasrsdfssadsddasscdweadal@gmail.com",
-    name: "name",
-    password: "passwo_rD1a",
-  };
-
+export const registerUserRequest = async (payload: RegisterUserRequestArgs) => {
   const newUser = await fetch(getApiEndpointUrl(APIEndpoints.auth.register), {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      email: "emaiasdfssafsadsddassscdweadal@gmail.com",
-      name: "name sda",
-      password: "passwo_rD1a",
-    }),
+    body: JSON.stringify(payload),
   });
 
   //   return await newUser.json();
