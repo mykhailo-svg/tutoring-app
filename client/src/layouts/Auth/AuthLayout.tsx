@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import styles from "./AuthLayout.module.scss";
+import { ReactNode } from 'react';
+import styles from './AuthLayout.module.scss';
 
 type AuthLayoutProps = {
   children: ReactNode;
@@ -8,7 +8,9 @@ type AuthLayoutProps = {
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
     <div className={styles.root}>
-      <div className={styles.container}>{children}</div>
+      <div className={styles.container}>
+        <div className={styles.row}>{children}</div>
+      </div>
     </div>
   );
 };

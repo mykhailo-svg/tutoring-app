@@ -4,14 +4,41 @@
 
 .questionColumn {
   background: linear-gradient(to top right, #9181ff, #5038ed);
-
+  flex-direction: column;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.haveAccountQuestion {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--white-color);
+}
+
 .formColumn {
   padding: 20px;
-  background: red;
+}
+
+.formColumn input {
+  background: pink;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 31px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 30px;
 }

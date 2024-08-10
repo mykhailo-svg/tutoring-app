@@ -1,11 +1,13 @@
 'use client';
-import { AuthRow } from '@/components/AuthRow';
 import * as Form from '@radix-ui/react-form';
 import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCallback } from 'react';
+import { Button } from '@radix-ui/themes';
+import Link from 'next/link';
+import { appRoutes } from '@/shared/constants/routes';
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
@@ -24,15 +26,19 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     },
     [handleSubmit]
   );
-  console.log(errors);
 
   return (
-    <AuthRow
-      firstColumnContent={
-        <div className={styles.formColumn}>
-          <Form.Root onSubmit={handleSubmit(onSubmit)}>
+    <>
+      <div className={styles.formColumn}>
+        <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+          <h1 className={styles.title}>Register</h1>
+          <div className={styles.fields}>
             <input
               {...register('email', {
+                required: {
+                  value: true,
+                  message: 'Email is required',
+                },
                 pattern: {
                   message: 'Provide valid email!',
                   value:
@@ -41,15 +47,35 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
               })}
             />
 
-            <input {...register('name', { max: 40, min: 4 })} />
+            <input
+              {...register('name', {
+                max: 40,
+                min: 4,
+                required: {
+                  value: true,
+                  message: 'Name is required',
+                },
+              })}
+            />
 
-            <input {...register('password')} />
+            <input
+              {...register('password', {
+                required: {
+                  value: true,
+                  message: 'Password is required',
+                },
+              })}
+            />
 
-            <input type='submit' />
-          </Form.Root>
-        </div>
-      }
-      secondColumnContent={<div className={styles.questionColumn}> sign</div>}
-    />
+            <Form.Submit>Submit</Form.Submit>
+          </div>
+        </Form.Root>
+      </div>
+
+      <div className={styles.questionColumn}>
+        <div className={styles.haveAccountQuestion}>Already have an account?</div>
+        <Link href={appRoutes.auth.login}>Hello</Link>
+      </div>
+    </>
   );
 };
