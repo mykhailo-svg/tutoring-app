@@ -74,7 +74,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
       <div className={styles.questionColumn}>
         <div className={styles.haveAccountQuestion}>Already have an account?</div>
-        <Link href={appRoutes.auth.login}>Hello</Link>
+        <a href={appRoutes.auth.login}>Hello</a>
       </div>
     </>
   );
