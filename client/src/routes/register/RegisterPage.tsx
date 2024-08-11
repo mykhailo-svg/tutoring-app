@@ -5,8 +5,6 @@ import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCallback } from 'react';
-import { Button } from '@radix-ui/themes';
-import Link from 'next/link';
 import { appRoutes } from '@/shared/constants/routes';
 import { ButtonCommon } from '@/shared/ui/buttons';
 type RegisterPageProps = {};
@@ -17,7 +15,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<RegisterPageFields>();
 

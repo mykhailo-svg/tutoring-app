@@ -1,0 +1,7 @@
+.root {
+  border-radius: var(--border-radius);
+  padding: 20px;
+  &:hover {
+    opacity: 0.8;
+  }
+}

@@ -1,27 +1,29 @@
 import classNames from 'classnames';
 import { ComponentPropsWithoutRef, useMemo } from 'react';
+import styles from './ButtonCommon.module.scss';
 
-type ButtonTagType = 'button' | 'a';
+type HTMLTagType = 'button' | 'a';
 
-type ButtonProps<T extends ButtonTagType> = T extends 'a'
+type HTMLElementProps<T extends HTMLTagType> = T extends 'a'
   ? ComponentPropsWithoutRef<'a'>
   : ComponentPropsWithoutRef<'button'>;
 
-type ButtonCommonProps<T extends ButtonTagType> = {
+type ButtonCommonProps<T extends HTMLTagType> = {
   as: T;
   text: string;
-} & ButtonProps<T>;
+  loading?: boolean;
+} & HTMLElementProps<T>;
 
-export function ButtonCommon<T extends ButtonTagType>({
+export function ButtonCommon<T extends HTMLTagType>({
   className,
   text,
   as,
   ...rest
 }: ButtonCommonProps<T>) {
-  const Tag = useMemo(() => as as ButtonTagType, [as]);
+  const Tag = useMemo(() => as as HTMLTagType, [as]);
 
   return (
-    <Tag className={classNames(className)} {...(rest as any)}>
+    <Tag className={classNames(styles.root, className)} {...(rest as any)}>
       {text}
     </Tag>
   );

@@ -10,12 +10,14 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
+  padding: 20px;
 }
 
 .haveAccountQuestion {
   font-size: 26px;
   font-weight: 700;
   color: var(--white-color);
+  line-height: 1em;
 }
 
 .formColumn {
@@ -45,29 +47,16 @@
 }
 
 .signInButton {
-  padding: 20px;
   font-size: 22px;
   font-weight: 600;
   background: var(--white-color);
-  border-radius: var(--border-radius);
-
   color: var(--primary-color);
-
-  &:hover {
-    opacity: 0.8;
-  }
 }
 
 .submit {
-  padding: 20px;
   font-size: 22px;
   font-weight: 600;
   color: var(--white-color);
-  border-radius: var(--border-radius);
 
   background: var(--primary-color);
-
-  &:hover {
-    opacity: 0.8;
-  }
 }
