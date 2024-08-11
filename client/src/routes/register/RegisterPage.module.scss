@@ -45,7 +45,7 @@
 }
 
 .signInButton {
-  padding: 20px 20px;
+  padding: 20px;
   font-size: 22px;
   font-weight: 600;
   background: var(--white-color);
@@ -58,6 +58,16 @@
   }
 }
 
-.submit{
+.submit {
+  padding: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--white-color);
+  border-radius: var(--border-radius);
 
+  background: var(--primary-color);
+
+  &:hover {
+    opacity: 0.8;
+  }
 }

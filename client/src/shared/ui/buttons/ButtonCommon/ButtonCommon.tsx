@@ -1,32 +1,28 @@
 import classNames from 'classnames';
-import { ComponentPropsWithoutRef } from 'react';
+import { ComponentPropsWithoutRef, useMemo } from 'react';
 
-type ButtonProps<T extends boolean> = T extends true
+type ButtonTagType = 'button' | 'a';
+
+type ButtonProps<T extends ButtonTagType> = T extends 'a'
   ? ComponentPropsWithoutRef<'a'>
   : ComponentPropsWithoutRef<'button'>;
 
-type ButtonCommonProps<T extends boolean> = {
-  isLink: T;
+type ButtonCommonProps<T extends ButtonTagType> = {
+  as: T;
   text: string;
 } & ButtonProps<T>;
 
-export function ButtonCommon<T extends boolean>({
-  isLink,
+export function ButtonCommon<T extends ButtonTagType>({
   className,
   text,
+  as,
   ...rest
 }: ButtonCommonProps<T>) {
-  if (isLink) {
-    return (
-      <a className={classNames(className)} {...(rest as ComponentPropsWithoutRef<'a'>)}>
-        {text}
-      </a>
-    );
-  } else {
-    return (
-      <button className={classNames(className)} {...(rest as ComponentPropsWithoutRef<'button'>)}>
-        {text}
-      </button>
-    );
-  }
+  const Tag = useMemo(() => as as ButtonTagType, [as]);
+
+  return (
+    <Tag className={classNames(className)} {...(rest as any)}>
+      {text}
+    </Tag>
+  );
 }

@@ -68,7 +68,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
               })}
             />
 
-            <Form.Submit className={styles.submit}>Submit</Form.Submit>
+            <ButtonCommon className={styles.submit} as='button' text='Submit' type='submit' />
           </div>
         </Form.Root>
       </div>
@@ -78,8 +78,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
         <ButtonCommon
           className={styles.signInButton}
+          as='a'
           href={appRoutes.auth.login}
-          isLink={true}
           text='Sign in'
         />
       </div>
