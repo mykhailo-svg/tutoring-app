@@ -8,6 +8,7 @@ import { useCallback } from 'react';
 import { Button } from '@radix-ui/themes';
 import Link from 'next/link';
 import { appRoutes } from '@/shared/constants/routes';
+import { ButtonCommon } from '@/shared/ui/buttons';
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
@@ -67,14 +68,21 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
               })}
             />
 
-            <Form.Submit>Submit</Form.Submit>
+            <Form.Submit className={styles.submit}>Submit</Form.Submit>
           </div>
         </Form.Root>
       </div>
 
       <div className={styles.questionColumn}>
         <div className={styles.haveAccountQuestion}>Already have an account?</div>
-        <a href={appRoutes.auth.login}>Hello</a>
+
+        <ButtonCommon
+          className={styles.signInButton}
+          href={appRoutes.auth.login}
+          isLink={true}
+          text='Sign in'
+        />
+        
       </div>
     </>
   );
