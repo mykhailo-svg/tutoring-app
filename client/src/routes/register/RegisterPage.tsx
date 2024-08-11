@@ -82,7 +82,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
           isLink={true}
           text='Sign in'
         />
-        
       </div>
     </>
   );

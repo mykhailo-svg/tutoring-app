@@ -1,23 +1,21 @@
 import classNames from 'classnames';
 import { ComponentPropsWithoutRef } from 'react';
 
-type ButtonCommonProps = {
-  isLink: boolean;
-  text: string;
-};
-
 type ButtonProps<T extends boolean> = T extends true
   ? ComponentPropsWithoutRef<'a'>
   : ComponentPropsWithoutRef<'button'>;
 
-type CombinedButtonProps<T extends boolean> = ButtonCommonProps & ButtonProps<T>;
+type ButtonCommonProps<T extends boolean> = {
+  isLink: T;
+  text: string;
+} & ButtonProps<T>;
 
 export function ButtonCommon<T extends boolean>({
   isLink,
   className,
   text,
   ...rest
-}: CombinedButtonProps<T>) {
+}: ButtonCommonProps<T>) {
   if (isLink) {
     return (
       <a className={classNames(className)} {...(rest as ComponentPropsWithoutRef<'a'>)}>
