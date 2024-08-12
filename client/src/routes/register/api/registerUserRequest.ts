@@ -1,4 +1,5 @@
 import { APIEndpoints, getApiEndpointUrl } from '@/api';
+import axios from 'axios';
 
 type RegisterUserRequestArgs = {
   email: string;
@@ -7,13 +8,7 @@ type RegisterUserRequestArgs = {
 };
 
 export const registerUserRequest = async (payload: RegisterUserRequestArgs) => {
-  const newUser = await fetch(getApiEndpointUrl(APIEndpoints.auth.register), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
+  axios.get('http://localhost:5000/api', { withCredentials: true });
 
   //   return await newUser.json();
 };
