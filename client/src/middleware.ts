@@ -3,6 +3,7 @@ import { MiddlewareConfig, NextMiddleware, NextResponse } from 'next/server';
 export const middleware: NextMiddleware = (request) => {
   if (request.nextUrl.pathname.startsWith('/auth/login')) {
     const response = NextResponse.next();
+    console.log(request.cookies.getAll());
 
     console.log('login');
 

@@ -19,7 +19,12 @@ async function bootstrap() {
     .addTag('Your API Tag')
     .build();
 
-  app.use(cors({ credentials: true }));
+  app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
+  // app.enableCors({
+  //   origin: ['http://localhost:3000'],
+  //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  //   credentials: true,
+  // });
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
