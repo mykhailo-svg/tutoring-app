@@ -1,15 +1,13 @@
 import {
   Body,
-  ConflictException,
   Controller,
-  Get,
+  HttpStatus,
   Post,
   Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { UserService } from 'src/user/user.service';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { TokenService } from 'src/token/token.service';
 import { AuthService } from './auth.service';
@@ -24,8 +22,45 @@ export class AuthController {
     private tokenService: TokenService,
   ) {}
 
-
   @Post('register')
+  @ApiResponse({
+    schema: {
+      default: {
+        tokens: {
+          accessToken: 'token',
+          refreshToken: 'token',
+        },
+        user: {
+          id: 1,
+          password: 'hashed password',
+          email: 'email',
+          name: 'name',
+          isEmailVerified: false,
+        },
+      },
+    },
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    schema: {
+      default: {
+        message: 'User already exists!',
+        error: 'Conflict',
+        statusCode: HttpStatus.CONFLICT,
+      },
+    },
+    status: HttpStatus.CONFLICT,
+  })
+  @ApiResponse({
+    schema: {
+      default: {
+        message: 'Bad request!',
+        error: 'Bad request',
+        statusCode: HttpStatus.BAD_REQUEST,
+      },
+    },
+    status: HttpStatus.BAD_REQUEST,
+  })
   @UsePipes(new ValidationPipe())
   async register(
     @Res({ passthrough: true }) res: Response,
@@ -35,12 +70,24 @@ export class AuthController {
 
     const tokens = await this.tokenService.generateAuthTokens(user);
 
-    res.setHeader(
-      'Set-Cookie',
-      'Authy=hello-nestsssssssssssssssss; Path=/; SameSite=None; Secure',
-    );
+    const config = getConfig();
 
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    const refreshTokenCookieExpires =
+      86400000 * config.jwt.refreshExpirationDays;
+
+    const accessTokenCookieExpires = 60000 * config.jwt.accessExpirationMinutes;
+
+    res.cookie('RefreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      path: '/',
+      maxAge: refreshTokenCookieExpires,
+    });
+    res.cookie('AccessToken', tokens.accessToken, {
+      httpOnly: true,
+      path: '/',
+      maxAge: accessTokenCookieExpires,
+    });
+
     return { user, tokens };
   }
 }
