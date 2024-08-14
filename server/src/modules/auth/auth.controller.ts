@@ -8,8 +8,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { TokenService } from 'src/token/token.service';
+import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
+import { TokenService } from 'src/modules/token/token.service';
 import { AuthService } from './auth.service';
 import { getConfig } from 'src/config/config';
 import { Response } from 'express';
