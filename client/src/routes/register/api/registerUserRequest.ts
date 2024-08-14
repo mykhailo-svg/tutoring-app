@@ -1,5 +1,5 @@
-import { APIEndpoints, getApiEndpointUrl } from '@/api';
-import axios from 'axios';
+import { APIEndpoints, axiosClient } from '@/api';
+import { User } from '@/global_types';
 
 type RegisterUserRequestArgs = {
   email: string;
@@ -7,11 +7,22 @@ type RegisterUserRequestArgs = {
   name: string;
 };
 
-export const registerUserRequest = async (payload: RegisterUserRequestArgs) => {
-  await axios.get('http://localhost:5000/api', { withCredentials: true });
+type RegisterUserResponse = {
+  user: User;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  };
+};
 
-  await axios.post(getApiEndpointUrl(APIEndpoints.auth.register), payload, {
-    withCredentials: true,
-  });
-  //   return await newUser.json();
+export const registerUserRequest = async (payload: RegisterUserRequestArgs) => {
+  const newUser = await axiosClient.post<any, RegisterUserResponse>(
+    APIEndpoints.auth.register,
+    payload,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return newUser;
 };
