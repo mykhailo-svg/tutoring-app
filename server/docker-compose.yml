@@ -23,7 +23,7 @@ services:
     container_name: postgres-db
     image: postgres:12
     expose:
-      - "5435"
+      - '5435'
     ports:
       - 5435:5435
     environment:
@@ -36,6 +36,22 @@ services:
     command: -p 5435
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  postgres-testing:
+    container_name: postgres-db-testing
+    image: postgres:12
+    expose:
+      - '5437'
+    ports:
+      - 5437:5437
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    networks:
+      - backend_network
+    restart: unless-stopped
+    command: -p 5437
 
   pgadmin:
     container_name: pgadmin
@@ -50,6 +66,7 @@ services:
       - '5050:80'
     depends_on:
       - postgres
+      - postgres-testing
 
 networks:
   backend_network:
