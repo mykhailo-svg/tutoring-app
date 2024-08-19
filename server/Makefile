@@ -10,4 +10,4 @@ down: ## Stop all containers
 build: ## Build image	
 	docker compose build
 test: ## Run tests inside the app container
-	docker compose exec -T nest-backend yarn test
+	docker compose exec -T nest-backend yarn test:e2e --detectOpenHandles

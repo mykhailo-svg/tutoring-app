@@ -21,6 +21,7 @@ export class UserService {
 
     return this.usersRepository.save(userData);
   }
+  
 
   async findExistingUser({ email }: { email: string }) {
     return this.usersRepository.findOneBy({ email });
