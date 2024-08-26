@@ -1,13 +1,6 @@
-import { Test } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AuthModule } from '../../../src/modules/auth/auth.module';
-import { UserModule } from '../../../src/modules/user/user.module';
-import { User } from '../../../src/modules/user/entities/user.entity';
-import { Token } from '../../../src/modules/token/entities/token.entity';
-import { AppModule } from '../../../src/modules/app/app.module';
-import { createConnection, getConnection, Repository } from 'typeorm';
+import { TestUtils } from '../../utils/TestUtils';
 
 const successfulUserPayload = {
   email: 'wyzdrykms@gmail.com',
@@ -16,36 +9,15 @@ const successfulUserPayload = {
 };
 
 describe('AppController', () => {
+  const testUtils = new TestUtils();
   let app: INestApplication;
 
-  let tokens = { accessToken: '', refreshToken: '' };
-  let userRepo: Repository<User>;
-  let tokenRepo: Repository<Token>;
-
   beforeAll(async () => {
-    const moduleFixture = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forRoot({
-          //@ts-ignore
-          type: process.env.POSTGRES_TESTING_TYPE,
-          host: process.env.POSTGRES_TESTING_HOST,
-          port: Number(process.env.POSTGRES_TESTING_PORT),
-          username: process.env.POSTGRES_TESTING_USER,
-          password: process.env.POSTGRES_TESTING_PASSWORD,
-          database: process.env.POSTGRES_TESTING_DB,
-          entities: [User, Token],
-          synchronize: true,
-        }),
-        AppModule,
-        UserModule,
-        AuthModule,
-      ],
-    }).compile();
-    // tokenRepo = await moduleFixture.get(Token);
-    // userRepo = await moduleFixture.get(User);
-    app = moduleFixture.createNestApplication();
+    await testUtils.setup();
 
-    await app.init();
+    app = testUtils.testModule;
+
+    await testUtils.resetDB();
   });
 
   describe('Register', () => {
@@ -59,11 +31,16 @@ describe('AppController', () => {
       expect(Boolean(response.body.tokens.refreshToken)).toBe(true);
     });
 
-    it('Should conflict (409)', async () =>
-      request(app.getHttpServer())
+    it('Should conflict (409)', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/register')
+        .send(successfulUserPayload);
+
+      return request(app.getHttpServer())
         .post('/auth/register')
         .send(successfulUserPayload)
-        .expect(409));
+        .expect(409);
+    });
 
     it('Should return bad password (400)', async () =>
       request(app.getHttpServer())
@@ -84,33 +61,11 @@ describe('AppController', () => {
         .expect(400));
   });
 
-  afterAll(async () => {
-    // const userRep = await modf;
-
-    // await tokenRepo.query('DELETE FROM "token"');
-    // await userRepo.query('DELETE FROM "user"');
-    const dbConnection = await createConnection({
-      //@ts-ignore
-      type: 'postgres',
-      host: 'postgres-testing',
-      port: 5437,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
-      entities: [User, Token],
-      synchronize: true,
-    });
-    if (!dbConnection.isConnected) await dbConnection.connect();
-
-    const entities = dbConnection.entityMetadatas;
-    const tableNames = entities
-      .map((entity) => `"${entity.tableName}"`)
-      .join(', ');
-
-    await dbConnection.query(`TRUNCATE ${tableNames} CASCADE;`);
-    console.log('[TEST DATABASE]: Clean');
+  afterEach(async () => {
+    await testUtils.resetDB();
   });
+
   afterAll(async () => {
-    await app.close();
+    await testUtils.shutDown();
   });
 });
