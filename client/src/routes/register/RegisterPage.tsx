@@ -4,14 +4,15 @@ import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { ButtonCommon } from '@/shared/ui/buttons';
 import { CommonTextField } from '@/shared/ui/buttons/inputs';
+import * as Toast from '@radix-ui/react-toast';
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
-  const { registerRequest } = useUserRegister();
+  const { registerRequest, error: registrationError } = useUserRegister();
 
   const {
     register,
@@ -19,40 +20,15 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     formState: { errors },
   } = useForm<RegisterPageFields>();
 
-  const errorMessages = useMemo(() => {
-    const displayedErrors: Record<keyof typeof errors, string> = {
-      email: '',
-      password: '',
-      name: '',
-      root: '',
-    };
-    console.log('errors');
-
-    for (let field in displayedErrors) {
-      const fieldKey = field as keyof typeof errors;
-
-      const error = errors[fieldKey];
-
-      if (error && error.message) {
-        displayedErrors[fieldKey] = error?.message ?? '';
-      } else {
-        displayedErrors[fieldKey] = '';
-      }
-    }
-
-    return displayedErrors;
-  }, [errors]);
-
   const onSubmit: SubmitHandler<RegisterPageFields> = useCallback(
     (data) => {
       registerRequest(data);
     },
     [handleSubmit]
   );
-  console.log(errors);
 
   return (
-    <>
+    <Toast.Provider>
       <div className={styles.formColumn}>
         <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <h1 className={styles.title}>Register</h1>
@@ -69,9 +45,10 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   },
                 }),
               }}
+              type='text'
               error={errors.name ? errors.name.message : ''}
               label='Name'
-              placeholder=''
+              placeholder='Name Surname'
             />
             <CommonTextField
               semanticId='email'
@@ -81,6 +58,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                     value: true,
                     message: 'Email is required',
                   },
+
                   pattern: {
                     message: 'Provide valid email!',
                     value:
@@ -90,10 +68,12 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
               }}
               error={errors.email ? errors.email.message : ''}
               label='Email'
-              placeholder=''
+              type='email'
+              placeholder='example@mail.com'
             />
 
             <CommonTextField
+              type='password'
               semanticId='password'
               register={{
                 ...register('password', {
@@ -101,12 +81,35 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                     value: true,
                     message: 'Password is required',
                   },
-            
+                  // validate: (value) => {
+                  //   const validLength = value.length >= 8;
+                  //   const containsNumber = value.match(/\d+/g) != null;
+                  //   const containsUppercaseLetter = value.match(/\p{Lu}/u) != null;
+                  //   const containsSpecialSymbols = value.match(/[!-\/:-@[-`{-~]/) != null;
+
+                  //   console.log(`
+
+                  //     length:${validLength}
+                  //     number:${containsNumber}
+                  //     uppercase:${containsUppercaseLetter}
+                  //     symbol:${containsSpecialSymbols}
+                  //     `);
+
+                  //   if (
+                  //     validLength &&
+                  //     containsNumber &&
+                  //     containsUppercaseLetter &&
+                  //     containsSpecialSymbols
+                  //   ) {
+                  //     return '';
+                  //   }
+                  //   return 'Please set valid password';
+                  // },
                 }),
               }}
               error={errors.password ? errors.password.message : ''}
               label='Password'
-              placeholder=''
+              placeholder='Create password'
             />
 
             <ButtonCommon className={styles.submit} as='button' text='Submit' type='submit' />
@@ -124,6 +127,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
           text='Sign in'
         />
       </div>
-    </>
+    </Toast.Provider>
   );
 };

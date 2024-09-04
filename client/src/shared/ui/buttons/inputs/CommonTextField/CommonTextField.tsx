@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, HTMLInputTypeAttribute, useState } from 'react';
 import styles from './CommonTextField.module.scss';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { useToggle } from '@/shared/hooks/useToggle';
@@ -8,6 +8,7 @@ type CommonTextFieldProps = {
   semanticId: string;
   placeholder: string;
   register: UseFormRegisterReturn;
+  type?: 'text' | 'password' | 'email';
   error?: string;
 };
 
@@ -17,6 +18,7 @@ export const CommonTextField: React.FC<CommonTextFieldProps> = ({
   placeholder,
   register,
   error,
+  type = 'text',
 }) => {
   return (
     <div className={styles.root}>
@@ -28,7 +30,7 @@ export const CommonTextField: React.FC<CommonTextFieldProps> = ({
         placeholder={placeholder}
         id={semanticId}
         className={styles.input}
-        type='text'
+        type={type}
         {...register}
       />
 
