@@ -5,7 +5,11 @@ import { StatusCodes } from 'http-status-codes';
 import { useMemo } from 'react';
 
 export const useUserRegister = () => {
-  const { mutate: registerRequest, error } = useMutation<
+  const {
+    mutate: registerRequest,
+    isError,
+    error,
+  } = useMutation<
     Awaited<ReturnType<typeof registerUserRequest>>,
     AxiosError,
     Parameters<typeof registerUserRequest>[0]
@@ -24,5 +28,5 @@ export const useUserRegister = () => {
     return {};
   }, [error]);
 
-  return { registerRequest, error: { ...error, translatedErrorCode } };
+  return { registerRequest, isError, error: { ...error, translatedErrorCode } };
 };

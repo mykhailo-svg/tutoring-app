@@ -4,18 +4,24 @@ import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { ButtonCommon } from '@/shared/ui/buttons';
 import { CommonTextField } from '@/shared/ui/buttons/inputs';
 import * as Toast from '@radix-ui/react-toast';
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useToggle } from '@/shared/hooks/useToggle';
+import { CommonToast } from '@/shared/ui/toasts';
+import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
 
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
-  const { registerRequest, error: registrationError } = useUserRegister();
+  const {
+    registerRequest,
+    isError: hasRegistrationError,
+    error: registrationError,
+  } = useUserRegister();
 
   const {
     register,
@@ -32,110 +38,125 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   const isPasswordVisibleState = useToggle(false);
 
+  const isToastActiveState = useToggle(false);
+
+  useEffect(() => {
+    isToastActiveState.setValue(hasRegistrationError);
+  }, [hasRegistrationError, isToastActiveState.setValue]);
+
   return (
     <Toast.Provider>
-      <div className={styles.formColumn}>
-        <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-          <h1 className={styles.title}>Register</h1>
-          <div className={styles.fields}>
-            <CommonTextField
-              semanticId='name'
-              register={{
-                ...register('name', {
-                  maxLength: { value: 40, message: 'Max name length is 40 symbols' },
-                  minLength: { value: 4, message: 'Min name length is 4 symbols' },
-                  required: {
-                    value: true,
-                    message: 'Name is required',
-                  },
-                }),
-              }}
-              type='text'
-              error={errors.name ? errors.name.message : ''}
-              label='Name'
-              placeholder='Name Surname'
-            />
-            <CommonTextField
-              semanticId='email'
-              register={{
-                ...register('email', {
-                  required: {
-                    value: true,
-                    message: 'Email is required',
-                  },
+      <CommonToast
+        tone={COMMON_TOAST_TONE.ERROR}
+        handleOpenChange={isToastActiveState.setValue}
+        active={isToastActiveState.isActive}
+      />
+      <Toast.Viewport className={styles.toastViewport} />
 
-                  pattern: {
-                    message: 'Provide valid email!',
-                    value:
-                      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  },
-                }),
-              }}
-              error={errors.email ? errors.email.message : ''}
-              label='Email'
-              type='email'
-              placeholder='example@mail.com'
-            />
+      <div className={styles.row}>
+        <div className={styles.formColumn}>
+          <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+            <h1 className={styles.title}>Register</h1>
+            <div className={styles.fields}>
+              <CommonTextField
+                semanticId='name'
+                register={{
+                  ...register('name', {
+                    maxLength: { value: 40, message: 'Max name length is 40 symbols' },
+                    minLength: { value: 4, message: 'Min name length is 4 symbols' },
+                    required: {
+                      value: true,
+                      message: 'Name is required',
+                    },
+                  }),
+                }}
+                type='text'
+                error={errors.name ? errors.name.message : ''}
+                label='Name'
+                placeholder='Name Surname'
+              />
+              <CommonTextField
+                semanticId='email'
+                register={{
+                  ...register('email', {
+                    required: {
+                      value: true,
+                      message: 'Email is required',
+                    },
 
-            <CommonTextField
-              type={isPasswordVisibleState.isActive ? 'text' : 'password'}
-              semanticId='password'
-              suffix={
-                <div className={styles.passwordToggler} onClick={isPasswordVisibleState.toggle}>
-                  {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
-                </div>
-              }
-              register={{
-                ...register('password', {
-                  required: {
-                    value: true,
-                    message: 'Password is required',
-                  },
-                  // validate: (value) => {
-                  //   const validLength = value.length >= 8;
-                  //   const containsNumber = value.match(/\d+/g) != null;
-                  //   const containsUppercaseLetter = value.match(/\p{Lu}/u) != null;
-                  //   const containsSpecialSymbols = value.match(/[!-\/:-@[-`{-~]/) != null;
+                    pattern: {
+                      message: 'Provide valid email!',
+                      value:
+                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    },
+                  }),
+                }}
+                error={errors.email ? errors.email.message : ''}
+                label='Email'
+                type='email'
+                placeholder='example@mail.com'
+              />
 
-                  //   console.log(`
+              <CommonTextField
+                type={isPasswordVisibleState.isActive ? 'text' : 'password'}
+                semanticId='password'
+                suffix={
+                  <div className={styles.passwordToggler} onClick={isPasswordVisibleState.toggle}>
+                    {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
+                  </div>
+                }
+                register={{
+                  ...register('password', {
+                    required: {
+                      value: true,
+                      message: 'Password is required',
+                    },
+                    // validate: (value) => {
+                    //   const validLength = value.length >= 8;
+                    //   const containsNumber = value.match(/\d+/g) != null;
+                    //   const containsUppercaseLetter = value.match(/\p{Lu}/u) != null;
+                    //   const containsSpecialSymbols = value.match(/[!-\/:-@[-`{-~]/) != null;
 
-                  //     length:${validLength}
-                  //     number:${containsNumber}
-                  //     uppercase:${containsUppercaseLetter}
-                  //     symbol:${containsSpecialSymbols}
-                  //     `);
+                    //   console.log(`
 
-                  //   if (
-                  //     validLength &&
-                  //     containsNumber &&
-                  //     containsUppercaseLetter &&
-                  //     containsSpecialSymbols
-                  //   ) {
-                  //     return '';
-                  //   }
-                  //   return 'Please set valid password';
-                  // },
-                }),
-              }}
-              error={errors.password ? errors.password.message : ''}
-              label='Password'
-              placeholder='Create password'
-            />
+                    //     length:${validLength}
+                    //     number:${containsNumber}
+                    //     uppercase:${containsUppercaseLetter}
+                    //     symbol:${containsSpecialSymbols}
+                    //     `);
 
-            <ButtonCommon className={styles.submit} as='button' text='Submit' type='submit' />
-          </div>
-        </Form.Root>
-      </div>
+                    //   if (
+                    //     validLength &&
+                    //     containsNumber &&
+                    //     containsUppercaseLetter &&
+                    //     containsSpecialSymbols
+                    //   ) {
+                    //     return '';
+                    //   }
+                    //   return 'Please set valid password';
+                    // },
+                  }),
+                }}
+                error={errors.password ? errors.password.message : ''}
+                label='Password'
+                placeholder='Create password'
+              />
 
-      <div className={styles.questionColumn}>
-        <div className={styles.haveAccountQuestion}>Already have an account?</div>
+              <ButtonCommon className={styles.submit} as='button' text='Submit' type='submit' />
+            </div>
+          </Form.Root>
+        </div>
 
-        <ButtonCommon
-          className={styles.signInButton}
-          as='a'
-          href={appRoutes.auth.login}
-          text='Sign in'
-        />
+        <div className={styles.questionColumn}>
+          <div className={styles.haveAccountQuestion}>Already have an account?</div>
+
+          <ButtonCommon
+            className={styles.signInButton}
+            as='a'
+            href={appRoutes.auth.login}
+            text='Sign in'
+          />
+        </div>
       </div>
     </Toast.Provider>
   );

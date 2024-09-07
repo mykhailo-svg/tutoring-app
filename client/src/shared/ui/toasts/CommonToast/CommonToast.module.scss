@@ -1,0 +1,101 @@
+.root {
+    cursor: grabbing;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+  padding: 10px 25px;
+  display: grid;
+  grid-template-areas: 'title action' 'description action';
+  grid-template-columns: auto max-content;
+  column-gap: 15px;
+  align-items: center;
+  &[data-state='open'] {
+    animation: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  &[data-state='closed'] {
+    animation: hide 100ms ease-in;
+  }
+  &[data-swipe='move'] {
+    transform: translateX(var(--radix-toast-swipe-move-x));
+  }
+  &[data-swipe='cancel'] {
+    transform: translateX(0);
+    transition: transform 200ms ease-out;
+  }
+  &[data-swipe='end'] {
+    animation: swipeOut 100ms ease-out;
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prefix {
+}
+
+.content {
+  flex: 1 1 auto;
+}
+
+.close {
+    svg{height: 20px;width: 20px;}
+  cursor: pointer;
+
+}
+
+.title{
+    font-weight: 700;
+}
+
+// Variants
+
+
+.info {
+  background: var(--info-color);
+  .title,
+  svg {
+    color: var(--info-color-active);
+  }
+}
+.success {
+}
+.error {
+  background: var(--error-color);
+
+  .title,
+  svg {
+    color: var(--white-color);
+  }
+}
+
+// Animation
+
+@keyframes hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(calc(100% + var(--viewport-padding)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes swipeOut {
+  from {
+    transform: translateX(var(--radix-toast-swipe-end-x));
+  }
+  to {
+    transform: translateX(calc(100% + var(--viewport-padding)));
+  }
+}

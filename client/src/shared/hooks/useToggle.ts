@@ -11,5 +11,11 @@ export const useToggle = (defaultValue: boolean = false) => {
 
   const setNotActive = useCallback(() => setIsActive(false), [setIsActive]);
 
-  return { toggle, setActive, setNotActive, isActive };
+  const setValue = useCallback(
+    (value: boolean) => {
+      setIsActive(value);
+    },
+    [setIsActive]
+  );
+  return { toggle, setActive, setNotActive, setValue, isActive };
 };

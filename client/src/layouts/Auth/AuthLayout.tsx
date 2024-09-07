@@ -8,9 +8,7 @@ type AuthLayoutProps = {
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
     <div className={styles.root}>
-      <div className={styles.container}>
-        <div className={styles.row}>{children}</div>
-      </div>
+      <div className={styles.container}>{children}</div>
     </div>
   );
 };
