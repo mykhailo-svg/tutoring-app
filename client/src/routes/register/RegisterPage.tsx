@@ -4,11 +4,14 @@ import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { ButtonCommon } from '@/shared/ui/buttons';
 import { CommonTextField } from '@/shared/ui/buttons/inputs';
 import * as Toast from '@radix-ui/react-toast';
+import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
+import { useToggle } from '@/shared/hooks/useToggle';
+
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
@@ -26,6 +29,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     },
     [handleSubmit]
   );
+
+  const isPasswordVisibleState = useToggle(false);
 
   return (
     <Toast.Provider>
@@ -73,8 +78,13 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
             />
 
             <CommonTextField
-              type='password'
+              type={isPasswordVisibleState.isActive ? 'text' : 'password'}
               semanticId='password'
+              suffix={
+                <div className={styles.passwordToggler} onClick={isPasswordVisibleState.toggle}>
+                  {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
+                </div>
+              }
               register={{
                 ...register('password', {
                   required: {
