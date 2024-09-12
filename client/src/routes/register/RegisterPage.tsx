@@ -13,6 +13,7 @@ import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { CommonToast } from '@/shared/ui/toasts';
 import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
+import { SIGN_UP_FIELDS_CONFIG } from './constants';
 
 type RegisterPageProps = {};
 
@@ -38,7 +39,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   const isPasswordVisibleState = useToggle(false);
 
-  const isToastActiveState = useToggle(false);
+  const isToastActiveState = useToggle(true);
 
   useEffect(() => {
     isToastActiveState.setValue(hasRegistrationError);
@@ -60,16 +61,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
             <div className={styles.fields}>
               <CommonTextField
                 semanticId='name'
-                register={{
-                  ...register('name', {
-                    maxLength: { value: 40, message: 'Max name length is 40 symbols' },
-                    minLength: { value: 4, message: 'Min name length is 4 symbols' },
-                    required: {
-                      value: true,
-                      message: 'Name is required',
-                    },
-                  }),
-                }}
+                register={register('name', SIGN_UP_FIELDS_CONFIG.name)}
                 type='text'
                 error={errors.name ? errors.name.message : ''}
                 label='Name'
@@ -77,20 +69,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
               />
               <CommonTextField
                 semanticId='email'
-                register={{
-                  ...register('email', {
-                    required: {
-                      value: true,
-                      message: 'Email is required',
-                    },
-
-                    pattern: {
-                      message: 'Provide valid email!',
-                      value:
-                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                    },
-                  }),
-                }}
+                register={register('email', SIGN_UP_FIELDS_CONFIG.email)}
                 error={errors.email ? errors.email.message : ''}
                 label='Email'
                 type='email'
@@ -105,38 +84,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                     {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
                   </div>
                 }
-                register={{
-                  ...register('password', {
-                    required: {
-                      value: true,
-                      message: 'Password is required',
-                    },
-                    // validate: (value) => {
-                    //   const validLength = value.length >= 8;
-                    //   const containsNumber = value.match(/\d+/g) != null;
-                    //   const containsUppercaseLetter = value.match(/\p{Lu}/u) != null;
-                    //   const containsSpecialSymbols = value.match(/[!-\/:-@[-`{-~]/) != null;
-
-                    //   console.log(`
-
-                    //     length:${validLength}
-                    //     number:${containsNumber}
-                    //     uppercase:${containsUppercaseLetter}
-                    //     symbol:${containsSpecialSymbols}
-                    //     `);
-
-                    //   if (
-                    //     validLength &&
-                    //     containsNumber &&
-                    //     containsUppercaseLetter &&
-                    //     containsSpecialSymbols
-                    //   ) {
-                    //     return '';
-                    //   }
-                    //   return 'Please set valid password';
-                    // },
-                  }),
-                }}
+                register={register('password', SIGN_UP_FIELDS_CONFIG.password)}
                 error={errors.password ? errors.password.message : ''}
                 label='Password'
                 placeholder='Create password'
