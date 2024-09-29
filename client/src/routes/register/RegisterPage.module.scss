@@ -1,10 +1,14 @@
+.root {
+  position: relative;
+  height: 100%;
+}
+
 .form {
-  max-height: 100%;
   padding: 0px 10px;
   display: flex;
   flex-direction: column;
+  padding: 10px;
   gap: 31px;
-
   justify-content: center;
 }
 
@@ -28,6 +32,7 @@
 
 .formColumn {
   padding: 20px;
+  height: 100%;
   overflow: auto;
 }
 
@@ -51,11 +56,13 @@
 }
 
 .submit {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--white-color);
-
-  background: var(--primary-color);
+  button {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white-color);
+    width: 100%;
+    background: var(--primary-color);
+  }
 }
 
 .passwordToggler {
@@ -87,11 +94,16 @@
 }
 
 .row {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   display: flex;
   height: 100%;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .row > div {
   flex: 1 50%;
+  min-width: 260px;
 }

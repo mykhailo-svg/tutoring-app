@@ -40,7 +40,16 @@ export const CommonTextField: React.FC<CommonTextFieldProps> = ({
         className={classNames(styles.inputContainer, { [styles.hasError]: error })}
       >
         {prefix ? <div>{prefix}</div> : null}
-        <input autoFocus placeholder={placeholder} id={semanticId} type={type} {...register} />
+        <div className={styles.inputOverflow}>
+          <input
+            className={styles.input}
+            autoFocus
+            placeholder={placeholder}
+            id={semanticId}
+            type={type}
+            {...register}
+          />
+        </div>
         {suffix ? (
           <div
             onClick={(e) => {

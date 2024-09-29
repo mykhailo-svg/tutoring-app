@@ -54,56 +54,59 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
       />
       <Toast.Viewport className={styles.toastViewport} />
 
-      <div className={styles.row}>
-        <div className={styles.formColumn}>
-          <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-            <h1 className={styles.title}>Register</h1>
-            <div className={styles.fields}>
-              <CommonTextField
-                semanticId='name'
-                register={register('name', SIGN_UP_FIELDS_CONFIG.name)}
-                type='text'
-                error={errors.name ? errors.name.message : ''}
-                label='Name'
-                placeholder='Name Surname'
-              />
-              <CommonTextField
-                semanticId='email'
-                register={register('email', SIGN_UP_FIELDS_CONFIG.email)}
-                error={errors.email ? errors.email.message : ''}
-                label='Email'
-                type='email'
-                placeholder='example@mail.com'
-              />
+      <div className={styles.root}>
+        <div className={styles.row}>
+          <div className={styles.formColumn}>
+            <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+              <h1 className={styles.title}>Register</h1>
+              <div className={styles.fields}>
+                <CommonTextField
+                  semanticId='name'
+                  register={register('name', SIGN_UP_FIELDS_CONFIG.name)}
+                  type='text'
+                  error={errors.name ? errors.name.message : ''}
+                  label='Name'
+                  placeholder='Name Surname'
+                />
+                <CommonTextField
+                  semanticId='email'
+                  register={register('email', SIGN_UP_FIELDS_CONFIG.email)}
+                  error={errors.email ? errors.email.message : ''}
+                  label='Email'
+                  type='email'
+                  placeholder='example@mail.com'
+                />
 
-              <CommonTextField
-                type={isPasswordVisibleState.isActive ? 'text' : 'password'}
-                semanticId='password'
-                suffix={
-                  <div className={styles.passwordToggler} onClick={isPasswordVisibleState.toggle}>
-                    {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
-                  </div>
-                }
-                register={register('password', SIGN_UP_FIELDS_CONFIG.password)}
-                error={errors.password ? errors.password.message : ''}
-                label='Password'
-                placeholder='Create password'
-              />
+                <CommonTextField
+                  type={isPasswordVisibleState.isActive ? 'text' : 'password'}
+                  semanticId='password'
+                  suffix={
+                    <div className={styles.passwordToggler} onClick={isPasswordVisibleState.toggle}>
+                      {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
+                    </div>
+                  }
+                  register={register('password', SIGN_UP_FIELDS_CONFIG.password)}
+                  error={errors.password ? errors.password.message : ''}
+                  label='Password'
+                  placeholder='Create password'
+                />
+                <div className={styles.submit}>
+                  <ButtonCommon as='button' text='Submit' type='submit' />
+                </div>
+              </div>
+            </Form.Root>
+          </div>
 
-              <ButtonCommon className={styles.submit} as='button' text='Submit' type='submit' />
-            </div>
-          </Form.Root>
-        </div>
+          <div className={styles.questionColumn}>
+            <div className={styles.haveAccountQuestion}>Already have an account?</div>
 
-        <div className={styles.questionColumn}>
-          <div className={styles.haveAccountQuestion}>Already have an account?</div>
-
-          <ButtonCommon
-            className={styles.signInButton}
-            as='a'
-            href={appRoutes.auth.login}
-            text='Sign in'
-          />
+            <ButtonCommon
+              className={styles.signInButton}
+              as='a'
+              href={appRoutes.auth.login}
+              text='Sign in'
+            />
+          </div>
         </div>
       </div>
     </Toast.Provider>
