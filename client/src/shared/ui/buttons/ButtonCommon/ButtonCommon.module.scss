@@ -5,3 +5,13 @@
     opacity: 0.8;
   }
 }
+
+.primary {
+  background: var(--primary-color);
+  color: var(--white-color);
+}
+
+.secondary {
+  background: var(--white-color);
+  color: var(--primary-color);
+}

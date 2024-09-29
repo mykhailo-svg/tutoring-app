@@ -91,7 +91,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   placeholder='Create password'
                 />
                 <div className={styles.submit}>
-                  <ButtonCommon as='button' text='Submit' type='submit' />
+                  <ButtonCommon variant='primary' as='button' text='Submit' type='submit' />
                 </div>
               </div>
             </Form.Root>
@@ -101,6 +101,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
             <div className={styles.haveAccountQuestion}>Already have an account?</div>
 
             <ButtonCommon
+              variant='secondary'
               className={styles.signInButton}
               as='a'
               href={appRoutes.auth.login}
