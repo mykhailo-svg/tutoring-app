@@ -1,0 +1,20 @@
+@keyframes p-motion-keyframes-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.root svg {
+  animation: 0.5s linear infinite p-motion-keyframes-spin;
+  fill: var(--p-color-bg-fill-brand);
+}
+
+.small svg {
+  height: 20px;
+  width: 20px;
+}
+
+.large svg {
+  height: 44px;
+  width: 44px;
+}

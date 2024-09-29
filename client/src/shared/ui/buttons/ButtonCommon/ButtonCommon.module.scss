@@ -1,17 +1,28 @@
 .root {
   border-radius: var(--border-radius);
   padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   &:hover {
     opacity: 0.8;
   }
 }
 
+.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .primary {
   background: var(--primary-color);
   color: var(--white-color);
+  fill: var(--white-color);
 }
 
 .secondary {
   background: var(--white-color);
   color: var(--primary-color);
+  fill: var(--primary-color);
 }

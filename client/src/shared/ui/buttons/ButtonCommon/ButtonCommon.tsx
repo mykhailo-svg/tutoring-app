@@ -3,6 +3,7 @@ import { ComponentPropsWithoutRef, useMemo } from 'react';
 import styles from './ButtonCommon.module.scss';
 import { CommonButtonVariant } from './types';
 import { COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS } from './constants';
+import { Spinner } from '../../loaders';
 
 type HTMLTagType = 'button' | 'a';
 
@@ -15,11 +16,14 @@ type ButtonCommonProps<T extends HTMLTagType> = {
   text: string;
   loading?: boolean;
   variant?: CommonButtonVariant;
+  disabled?: boolean;
 } & HTMLElementProps<T>;
 
 export function ButtonCommon<T extends HTMLTagType>({
   className,
   text,
+  loading = false,
+  disabled = false,
   variant = 'primary',
   as,
   ...rest
@@ -31,11 +35,13 @@ export function ButtonCommon<T extends HTMLTagType>({
       className={classNames(
         styles.root,
         className,
-        COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS[variant]
+        COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS[variant],
+        { [styles.disabled]: disabled || loading }
       )}
       {...(rest as any)}
     >
       {text}
+      {loading ? <Spinner /> : null}
     </Tag>
   );
 }

@@ -9,6 +9,7 @@ export const useUserRegister = () => {
     mutate: registerRequest,
     isError,
     error,
+    isPending,
   } = useMutation<
     Awaited<ReturnType<typeof registerUserRequest>>,
     AxiosError,
@@ -28,5 +29,10 @@ export const useUserRegister = () => {
     return {};
   }, [error]);
 
-  return { registerRequest, isError, error: { ...error, translatedErrorCode } };
+  return {
+    registerRequest,
+    isError,
+    error: { ...error, translatedErrorCode },
+    isLoading: isPending,
+  };
 };
