@@ -15,6 +15,7 @@
   outline-style: solid;
   outline-color: transparent;
 
+  align-items: center;
   &:not(.hasError):has(input:focus) {
     outline-color: var(--primary-color);
   }

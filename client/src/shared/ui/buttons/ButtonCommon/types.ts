@@ -1,1 +1,1 @@
-export type CommonButtonVariant = 'primary' | 'secondary';
+export type CommonButtonVariant = 'primary' | 'secondary' | 'plain';

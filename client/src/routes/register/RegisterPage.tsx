@@ -7,7 +7,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCallback, useEffect } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { ButtonCommon } from '@/shared/ui/buttons';
-import { CommonTextField } from '@/shared/ui/buttons/inputs';
+import { CommonTextField } from '@/shared/ui/inputs';
 import * as Toast from '@radix-ui/react-toast';
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useToggle } from '@/shared/hooks/useToggle';
@@ -92,6 +92,15 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   placeholder='Create password'
                 />
                 <div className={styles.submit}>
+                  <div className={styles.inlineQuestion}>
+                    Already have an account?
+                    <ButtonCommon
+                      variant='plain'
+                      as='a'
+                      href={appRoutes.auth.login}
+                      text='Sign in!'
+                    />
+                  </div>
                   <ButtonCommon
                     loading={pendingRegistration}
                     variant='primary'
@@ -105,15 +114,16 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
           </div>
 
           <div className={styles.questionColumn}>
-            <div className={styles.haveAccountQuestion}>Already have an account?</div>
-
-            <ButtonCommon
-              variant='secondary'
-              className={styles.signInButton}
-              as='a'
-              href={appRoutes.auth.login}
-              text='Sign in'
-            />
+            <div className={styles.haveAccountQuestion}>
+              Already have an account?{'  '}
+              <ButtonCommon
+                variant='secondary'
+                className={styles.signInButton}
+                as='a'
+                href={appRoutes.auth.login}
+                text='Sign in'
+              />
+            </div>
           </div>
         </div>
       </div>
