@@ -5,6 +5,8 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  font-weight: 600;
+  font-size: 26px;
   &:hover {
     opacity: 0.8;
   }
@@ -31,4 +33,5 @@
   display: inline;
   padding: 0px;
   color: var(--primary-color);
+  font-size: inherit;
 }

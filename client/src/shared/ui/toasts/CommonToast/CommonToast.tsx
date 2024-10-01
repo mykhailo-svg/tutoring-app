@@ -4,20 +4,20 @@ import classNames from 'classnames';
 import { COMMON_TOAST_TONE } from './types';
 import { COMMON_TOAST_TONE_CLASS_DEFINITIONS } from './constants';
 import { ReactNode } from 'react';
-import { Cross2Icon as CloseIcon } from '@radix-ui/react-icons';
+import { Cross2Icon as CloseIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
 type CommonToastProps = {
   active: boolean;
   tone?: COMMON_TOAST_TONE;
-  prefix?: ReactNode;
+  message: string;
   handleOpenChange: (value: boolean) => void;
 };
 
 export const CommonToast: React.FC<CommonToastProps> = ({
   active,
   tone = COMMON_TOAST_TONE.INFO,
-  prefix,
   handleOpenChange,
+  message,
 }) => {
   return (
     <Toast.Root
@@ -26,10 +26,12 @@ export const CommonToast: React.FC<CommonToastProps> = ({
       open={active}
     >
       <div className={styles.inner}>
-        {prefix ? <div className={styles.prefix}>{prefix}</div> : null}
+        <div className={styles.prefix}>
+          <CrossCircledIcon />
+        </div>
 
         <div className={styles.content}>
-          <Toast.Title className={styles.title}>Scheduled: Catch up</Toast.Title>
+          <Toast.Title className={styles.title}>{message}</Toast.Title>
           <Toast.Description asChild>descr</Toast.Description>
         </div>
 

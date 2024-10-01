@@ -4,25 +4,29 @@ import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
-import { ButtonCommon } from '@/shared/ui/buttons';
-import { CommonTextField } from '@/shared/ui/inputs';
+import { Button } from '@/shared/ui/buttons';
+import { TextField } from '@/shared/ui/inputs';
 import * as Toast from '@radix-ui/react-toast';
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { CommonToast } from '@/shared/ui/toasts';
 import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
 import { SIGN_UP_FIELDS_CONFIG } from './constants';
+import { useRouter } from 'next/navigation';
 
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
+  const router = useRouter();
+
   const {
     registerRequest,
     isError: hasRegistrationError,
     error: registrationError,
     isLoading: pendingRegistration,
+    data: registrationResponse,
   } = useUserRegister();
 
   const {
@@ -37,6 +41,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     },
     [handleSubmit]
   );
+  useEffect(() => {
+    if (registrationResponse) {
+      router.push('/');
+    }
+  }, [registrationResponse]);
 
   const isPasswordVisibleState = useToggle(false);
 
@@ -46,12 +55,21 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     isToastActiveState.setValue(hasRegistrationError);
   }, [hasRegistrationError, isToastActiveState.setValue]);
 
+  const toastErrorMessage = useMemo(() => {
+    return hasRegistrationError
+      ? registrationError.translatedErrorCode.userAlreadyExists
+        ? 'User with such email already exists!'
+        : 'Unknown error.Please try again'
+      : '';
+  }, [registrationError, hasRegistrationError]);
+
   return (
     <Toast.Provider>
       <CommonToast
+        message={toastErrorMessage}
         tone={COMMON_TOAST_TONE.ERROR}
         handleOpenChange={isToastActiveState.setValue}
-        active={isToastActiveState.isActive}
+        active={isToastActiveState.isActive && toastErrorMessage.length > 0}
       />
       <Toast.Viewport className={styles.toastViewport} />
 
@@ -61,7 +79,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
             <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
               <h1 className={styles.title}>Register</h1>
               <div className={styles.fields}>
-                <CommonTextField
+                <TextField
                   semanticId='name'
                   register={register('name', SIGN_UP_FIELDS_CONFIG.name)}
                   type='text'
@@ -69,7 +87,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   label='Name'
                   placeholder='Name Surname'
                 />
-                <CommonTextField
+                <TextField
                   semanticId='email'
                   register={register('email', SIGN_UP_FIELDS_CONFIG.email)}
                   error={errors.email ? errors.email.message : ''}
@@ -78,7 +96,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   placeholder='example@mail.com'
                 />
 
-                <CommonTextField
+                <TextField
                   type={isPasswordVisibleState.isActive ? 'text' : 'password'}
                   semanticId='password'
                   suffix={
@@ -94,14 +112,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                 <div className={styles.submit}>
                   <div className={styles.inlineQuestion}>
                     Already have an account?
-                    <ButtonCommon
-                      variant='plain'
-                      as='a'
-                      href={appRoutes.auth.login}
-                      text='Sign in!'
-                    />
+                    <Button variant='plain' as='a' href={appRoutes.auth.login} text='Sign in!' />
                   </div>
-                  <ButtonCommon
+                  <Button
                     loading={pendingRegistration}
                     variant='primary'
                     as='button'
@@ -116,7 +129,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
           <div className={styles.questionColumn}>
             <div className={styles.haveAccountQuestion}>
               Already have an account?{'  '}
-              <ButtonCommon
+              <Button
                 variant='secondary'
                 className={styles.signInButton}
                 as='a'

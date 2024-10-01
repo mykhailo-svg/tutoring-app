@@ -1,20 +1,20 @@
 import { ReactNode, useRef } from 'react';
-import styles from './CommonTextField.module.scss';
+import styles from './TextField.module.scss';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import classNames from 'classnames';
 
-type CommonTextFieldProps = {
+type TextFieldProps = {
   label: string;
-  semanticId: string;
-  placeholder: string;
-  register: UseFormRegisterReturn;
+  semanticId?: string;
+  placeholder?: string;
+  register?: UseFormRegisterReturn;
   type?: 'text' | 'password' | 'email';
   error?: string;
   prefix?: ReactNode;
   suffix?: ReactNode;
 };
 
-export const CommonTextField: React.FC<CommonTextFieldProps> = ({
+export const TextField: React.FC<TextFieldProps> = ({
   label,
   semanticId,
   placeholder,

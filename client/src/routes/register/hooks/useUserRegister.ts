@@ -10,6 +10,7 @@ export const useUserRegister = () => {
     isError,
     error,
     isPending,
+    data,
   } = useMutation<
     Awaited<ReturnType<typeof registerUserRequest>>,
     AxiosError,
@@ -20,7 +21,7 @@ export const useUserRegister = () => {
 
   const translatedErrorCode = useMemo(() => {
     if (error) {
-      const errorCode = error.code as any as StatusCodes;
+      const errorCode = error.response?.status;
 
       return {
         userAlreadyExists: errorCode === StatusCodes.CONFLICT,
@@ -32,6 +33,7 @@ export const useUserRegister = () => {
   return {
     registerRequest,
     isError,
+    data,
     error: { ...error, translatedErrorCode },
     isLoading: isPending,
   };
