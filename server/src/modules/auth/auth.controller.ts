@@ -13,6 +13,7 @@ import { TokenService } from '../token/token.service';
 import { AuthService } from './auth.service';
 import { getConfig } from '../../config/config';
 import { Response } from 'express';
+import { LoginDto } from './dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -89,6 +90,14 @@ export class AuthController {
     });
 
     return { user, tokens };
-
+  }
+  
+  @UsePipes(new ValidationPipe())
+  @Post('login')
+  async login(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: LoginDto,
+  ) {
+    return dto;
   }
 }

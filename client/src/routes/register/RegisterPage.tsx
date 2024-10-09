@@ -39,7 +39,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     (data) => {
       registerRequest(data);
     },
-    [handleSubmit]
+    [registerRequest]
   );
   useEffect(() => {
     if (registrationResponse) {
