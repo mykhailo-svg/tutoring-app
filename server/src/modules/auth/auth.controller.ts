@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
@@ -12,7 +14,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { TokenService } from '../token/token.service';
 import { AuthService } from './auth.service';
 import { getConfig } from '../../config/config';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { LoginDto } from './dto';
 
 @Controller('auth')
@@ -83,6 +85,7 @@ export class AuthController {
       path: '/',
       maxAge: refreshTokenCookieExpires,
     });
+
     res.cookie('AccessToken', tokens.accessToken, {
       httpOnly: true,
       path: '/',
@@ -118,15 +121,23 @@ export class AuthController {
     const accessTokenCookieExpires = 60000 * config.jwt.accessExpirationMinutes;
 
     res.cookie('RefreshToken', tokens.refreshToken, {
-      httpOnly: true,
-      path: '/',
-      maxAge: refreshTokenCookieExpires,
+      httpOnly: true, // Secure and inaccessible via JavaScript
+      secure: false, // Use `true` if in production (HTTPS)
+      sameSite: 'none',
     });
     res.cookie('AccessToken', tokens.accessToken, {
-      httpOnly: true,
-      path: '/',
-      maxAge: accessTokenCookieExpires,
+      domain: 'http://localhost:5000',
+      httpOnly: true, // Secure and inaccessible via JavaScript
+      secure: false, // Use `true` if in production (HTTPS)
+      sameSite: 'none',
     });
+
+    return {};
+  }
+
+  @Get('/get')
+  async revealUser(@Req() req: Request) {
+    console.log(req.cookies);
 
     return {};
   }
