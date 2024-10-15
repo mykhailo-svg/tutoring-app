@@ -91,13 +91,43 @@ export class AuthController {
 
     return { user, tokens };
   }
-  
+
   @UsePipes(new ValidationPipe())
   @Post('login')
   async login(
     @Res({ passthrough: true }) res: Response,
     @Body() dto: LoginDto,
   ) {
-    return dto;
+    const {
+      user: { email, password, isEmailVerified, name, id },
+    } = await this.authService.login(dto);
+
+    const tokens = await this.tokenService.generateAuthTokens({
+      email,
+      password,
+      isEmailVerified,
+      name,
+      id,
+    });
+
+    const config = getConfig();
+
+    const refreshTokenCookieExpires =
+      86400000 * config.jwt.refreshExpirationDays;
+
+    const accessTokenCookieExpires = 60000 * config.jwt.accessExpirationMinutes;
+
+    res.cookie('RefreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      path: '/',
+      maxAge: refreshTokenCookieExpires,
+    });
+    res.cookie('AccessToken', tokens.accessToken, {
+      httpOnly: true,
+      path: '/',
+      maxAge: accessTokenCookieExpires,
+    });
+
+    return {};
   }
 }

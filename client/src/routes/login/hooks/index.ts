@@ -17,5 +17,5 @@ export const useLogin = () => {
     mutationFn: loginUser,
   });
 
-  return { loginRequest };
+  return { loginRequest, isLoading: isPending, data };
 };

@@ -9,16 +9,20 @@ import { RegisterPageFields } from '../register/types';
 import { LoginPageFields } from './types';
 import { SIGN_UP_FIELDS_CONFIG } from '../register/constants';
 import { useLogin } from './hooks';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export const LoginPage = () => {
   const {
     register,
     handleSubmit,
+
     formState: { errors },
   } = useForm<LoginPageFields>();
 
-  const { loginRequest } = useLogin();
+  const router = useRouter();
+
+  const { loginRequest, isLoading, data: loginResponse } = useLogin();
 
   const onSubmit: SubmitHandler<LoginPageFields> = useCallback(
     (data) => {
@@ -26,6 +30,12 @@ export const LoginPage = () => {
     },
     [loginRequest]
   );
+
+  useEffect(() => {
+    if (loginResponse?.data) {
+      router.push('/');
+    }
+  }, [loginResponse]);
 
   return (
     <div className={styles.row}>
@@ -39,13 +49,25 @@ export const LoginPage = () => {
 
         <Form.Root onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <TextField
-            register={register('email')}
+            register={register('email', {
+              required: {
+                message: 'Email is required!',
+                value: true,
+              },
+            })}
+            error={errors.email?.message}
             semanticId='email'
             label='Email'
             placeholder='example@mail.com'
           />
           <TextField
-            register={register('password')}
+            register={register('password', {
+              required: {
+                message: 'Password is required!',
+                value: true,
+              },
+            })}
+            error={errors.password?.message}
             semanticId='password'
             label='Password'
             placeholder='Your password'
@@ -56,7 +78,7 @@ export const LoginPage = () => {
               Don't have an account?
               <Button as='a' href={appRoutes.auth.register} variant='plain' text='Create it!' />
             </div>
-            <Button text='Submit' variant='primary' as='button' type='submit' />
+            <Button loading={isLoading} text='Submit' variant='primary' as='button' type='submit' />
           </div>
         </Form.Root>
       </div>

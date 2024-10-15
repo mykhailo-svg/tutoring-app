@@ -4,6 +4,7 @@ import styles from './Button.module.scss';
 import { CommonButtonVariant } from './types';
 import { COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS } from './constants';
 import { Spinner } from '../../loaders';
+import Link from 'next/link';
 
 type HTMLTagType = 'button' | 'a';
 
@@ -28,7 +29,7 @@ export function Button<T extends HTMLTagType>({
   as,
   ...rest
 }: ButtonProps<T>) {
-  const Tag = useMemo(() => as as HTMLTagType, [as]);
+  const Tag = useMemo(() => (as === 'a' ? Link : (as as HTMLTagType)), [as]);
 
   return (
     <Tag

@@ -34,6 +34,8 @@ export class TokenService {
   }
 
   async generateAuthTokens(user: User) {
+    console.log(user);
+
     const config = getConfig();
 
     const refreshTokenExpires = `${config.jwt.refreshExpirationDays}d`;
@@ -64,6 +66,11 @@ export class TokenService {
   }
 
   async saveToken({ expires, token, type, userId }: SaveTokenArgs) {
+    await this.tokensRepository.delete({
+      type,
+      user: userId,
+    });
+
     const newToken: Omit<Token, 'id'> = {
       type,
       value: token,
