@@ -6,6 +6,7 @@ export type User = {
   isEmailVerified: boolean;
 };
 
+// AUTH
 export enum TokenType {
   RESET_PASSWORD = 'resetPassword',
   REFRESH = 'refresh',
@@ -19,3 +20,10 @@ export type Token = {
   value: string;
   type: TokenType;
 };
+
+// COOKIES
+
+export enum COOKIES_NAME {
+  ACCESS_TOKEN = 'AccessToken',
+  REFRESH_TOKEN = 'RefreshToken',
+}

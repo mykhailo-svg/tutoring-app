@@ -1,15 +1,17 @@
 import { MiddlewareConfig, NextMiddleware, NextResponse } from 'next/server';
+import { createAuthHeaders } from './shared/helpers';
 
 export const middleware: NextMiddleware = (request) => {
   if (request.nextUrl.pathname.startsWith('/auth/login')) {
     const response = NextResponse.next();
-    console.log(request.cookies.getAll());
 
-    console.log('login');
+    const authHeaders = createAuthHeaders(request);
 
-    // SET MIDDLEWARE NO-CACHE HEADER
-    response.headers.set('x-middleware-cache', 'no-cache');
-    response.headers.set('Cache-Control', 'no-store');
+    fetch('http://localhost:5000/api/auth/get', {
+      method: 'GET',
+      credentials: 'include',
+      headers: authHeaders,
+    });
 
     return response;
   }
