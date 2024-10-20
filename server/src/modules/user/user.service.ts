@@ -21,9 +21,12 @@ export class UserService {
 
     return this.usersRepository.save(userData);
   }
-  
 
   async findExistingUser({ email }: { email: string }) {
     return this.usersRepository.findOneBy({ email });
+  }
+
+  async getById({ id }: { id: number }) {
+    return this.usersRepository.findOneBy({ id });
   }
 }

@@ -7,8 +7,7 @@ import { getConfig } from '../../config/config';
 import { Response } from 'express';
 import { LoginDto } from './dto';
 import { RegisterEndpointDescriptor } from './swagger';
-import { Auth, Validation } from '../../decorators';
-import { AuthProtectedRequest } from 'src/globalTypes';
+import { Validation } from '../../decorators';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -85,14 +84,6 @@ export class AuthController {
       path: '/',
       maxAge: accessTokenCookieExpires,
     });
-
-    return {};
-  }
-
-  @Get('/')
-  @Auth()
-  async revealUser(@Req() req: AuthProtectedRequest) {
-    console.log(req.user);
 
     return {};
   }

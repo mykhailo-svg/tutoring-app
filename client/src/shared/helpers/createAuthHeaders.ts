@@ -1,15 +1,15 @@
 import { COOKIES_NAME } from '@/global_types';
-import { NextRequest } from 'next/server';
+import { cookies } from 'next/headers';
 
-export const createAuthHeaders = (request: NextRequest) => {
+export const createAuthHeaders = () => {
   let accessToken: null | string = null;
 
-  const accessTokenCookie = request.cookies.get(COOKIES_NAME.ACCESS_TOKEN);
+  const accessTokenCookie = cookies().get(COOKIES_NAME.ACCESS_TOKEN);
   if (accessTokenCookie) {
     accessToken = accessTokenCookie.value;
   }
 
-  const headers = { Cookie: `${COOKIES_NAME.ACCESS_TOKEN}="${accessToken}"` };
+  const headers = { Authorization: `Bearer ${accessToken}` };
 
   return headers;
 };

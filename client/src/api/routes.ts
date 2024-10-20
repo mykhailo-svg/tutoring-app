@@ -3,6 +3,9 @@ export const APIEndpoints = {
     register: '/auth/register',
     login: '/auth/login',
   },
+  user: {
+    revealCurrent: '/user',
+  },
 };
 
 export const getApiEndpointUrl = (endpoint: string) => {
