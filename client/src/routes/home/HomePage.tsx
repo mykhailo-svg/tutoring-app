@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 export const HomePage = () => {
   useEffect(() => {
-    axiosClient.get('http://localhost:5000/api/auth/get');
+    axiosClient.get('http://localhost:5000/api/auth');
   }, []);
 
   return <div></div>;

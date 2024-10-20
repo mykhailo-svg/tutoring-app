@@ -4,10 +4,11 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { TokenService } from '../token/token.service';
 import { AuthService } from './auth.service';
 import { getConfig } from '../../config/config';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { LoginDto } from './dto';
 import { RegisterEndpointDescriptor } from './swagger';
-import { Validation } from '../../shared/decorators';
+import { Auth, Validation } from '../../decorators';
+import { AuthProtectedRequest } from 'src/globalTypes';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -36,12 +37,12 @@ export class AuthController {
     const accessTokenCookieExpires = 60000 * config.jwt.accessExpirationMinutes;
 
     res.cookie('RefreshToken', tokens.refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       path: '/',
       maxAge: refreshTokenCookieExpires,
     });
     res.cookie('AccessToken', tokens.accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       path: '/',
       maxAge: accessTokenCookieExpires,
     });
@@ -75,12 +76,12 @@ export class AuthController {
     const accessTokenCookieExpires = 60000 * config.jwt.accessExpirationMinutes;
 
     res.cookie('RefreshToken', tokens.refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       path: '/',
       maxAge: refreshTokenCookieExpires,
     });
     res.cookie('AccessToken', tokens.accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       path: '/',
       maxAge: accessTokenCookieExpires,
     });
@@ -88,9 +89,10 @@ export class AuthController {
     return {};
   }
 
-  @Get('/get')
-  async revealUser(@Req() req: Request) {
-    console.log(req.cookies);
+  @Get('/')
+  @Auth()
+  async revealUser(@Req() req: AuthProtectedRequest) {
+    console.log(req.user);
 
     return {};
   }

@@ -1,5 +1,14 @@
+import { COOKIES_NAME } from '@/global_types';
 import axios from 'axios';
 import { cookies } from 'next/headers';
+
+function getCookie(name: string) {
+  const value = `; ${typeof document !== 'undefined' ? document.cookie : ''}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts && parts.length === 2) {
+    return parts.pop().split(';').shift();
+  }
+}
 
 export const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -7,6 +16,7 @@ export const axiosClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Credentials': true,
+    Authorization: `Bearer ${getCookie(COOKIES_NAME.ACCESS_TOKEN)}`,
   },
 });
 
