@@ -2,11 +2,29 @@ import { ReactQueryProvider } from '@/providers';
 import { ReactNode } from 'react';
 import favicon from '../../../public/favicon.ico';
 import styles from './RootLayout.module.scss';
+import { AuthProvider } from '@/providers/AuthProvider';
+import { createAuthHeaders } from '@/shared/helpers';
+import { getApiEndpointUrl, APIEndpoints } from '@/api';
+import { User } from '@/global_types';
 
 type RootLayoutProps = {
   children: ReactNode;
 };
-export const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+const getUser = async () => {
+  try {
+    const user = await fetch(getApiEndpointUrl(APIEndpoints.user.revealCurrent), {
+      headers: createAuthHeaders(),
+    });
+    const data = await user.json();
+
+    return data as User | null;
+  } catch (error) {}
+
+  return null;
+};
+
+export const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
+  const user = await getUser();
   return (
     <html lang='en'>
       <head>
@@ -14,7 +32,9 @@ export const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       </head>
       <body>
         <ReactQueryProvider>
-          <main className={styles.container}>{children}</main>
+          <AuthProvider initialData={{ user }}>
+            <main className={styles.container}>{children}</main>
+          </AuthProvider>
         </ReactQueryProvider>
       </body>
     </html>

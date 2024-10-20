@@ -1,6 +1,6 @@
 export type User = {
   id: number;
-  password: string | undefined;
+  password?: string | undefined;
   email: string;
   name: string;
   isEmailVerified: boolean;

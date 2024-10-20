@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { User } from '@/global_types';
 import { createContext } from 'react';

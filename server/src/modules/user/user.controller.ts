@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/decorators';
@@ -12,8 +12,12 @@ export class UserController {
   @Get()
   @Auth()
   async revealUser(@Req() req: AuthProtectedRequest) {
-    const existingUser = this.userService.getById({ id: req.user.id });
+    const existingUser = await this.userService.getById({ id: req.user.id });
 
-    return existingUser;
+    if (!existingUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.userService.removeSensitiveData(existingUser);
   }
 }

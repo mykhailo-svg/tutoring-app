@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { SafeUser } from 'src/globalTypes';
 const bcrypt = require('bcryptjs');
 
 @Injectable()
@@ -28,5 +29,13 @@ export class UserService {
 
   async getById({ id }: { id: number }) {
     return this.usersRepository.findOneBy({ id });
+  }
+
+  removeSensitiveData(user: User): SafeUser {
+    const safeUser: User = user;
+
+    delete safeUser.password;
+
+    return safeUser;
   }
 }
