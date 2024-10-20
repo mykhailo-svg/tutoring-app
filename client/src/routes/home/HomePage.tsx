@@ -7,5 +7,5 @@ export const HomePage = () => {
     axiosClient.get('http://localhost:5000/api/auth');
   }, []);
 
-  return <div></div>;
+  return <div>p</div>;
 };
