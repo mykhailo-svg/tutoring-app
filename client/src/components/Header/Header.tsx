@@ -5,8 +5,21 @@ type HeaderProps = {};
 
 export const Header: React.FC<HeaderProps> = () => {
   const {
-    authData: { user },
+    data: { user },
+    setAuthState,
   } = useAuth();
 
-  return <header>{JSON.stringify(user ?? {})}</header>;
+  return (
+    <header>
+      <button
+        onClick={() => {
+          setAuthState(() => ({ user: null }));
+        }}
+      >
+        logout
+      </button>
+      {user?.name}
+      {JSON.stringify(user ?? {})}
+    </header>
+  );
 };

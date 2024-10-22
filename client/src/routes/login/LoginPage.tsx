@@ -11,8 +11,11 @@ import { SIGN_UP_FIELDS_CONFIG } from '../register/constants';
 import { useLogin } from './hooks';
 import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/AuthProvider';
 
 export const LoginPage = () => {
+  const { setAuthState } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -33,6 +36,9 @@ export const LoginPage = () => {
 
   useEffect(() => {
     if (loginResponse?.data) {
+      setAuthState(() => ({ user: loginResponse.data }));
+      console.log(loginResponse.data);
+
       router.push('/');
     }
   }, [loginResponse]);

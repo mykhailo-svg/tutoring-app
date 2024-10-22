@@ -6,6 +6,7 @@ import { AuthProvider } from '@/providers/AuthProvider';
 import { createAuthHeaders } from '@/shared/helpers';
 import { getApiEndpointUrl, APIEndpoints } from '@/api';
 import { User } from '@/global_types';
+import { headers } from 'next/headers';
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -25,6 +26,7 @@ const getUser = async () => {
 
 export const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
   const user = await getUser();
+
   return (
     <html lang='en'>
       <head>

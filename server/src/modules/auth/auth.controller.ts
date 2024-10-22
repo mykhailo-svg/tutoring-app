@@ -55,9 +55,9 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() dto: LoginDto,
   ) {
-    const {
-      user: { email, password, isEmailVerified, name, id },
-    } = await this.authService.login(dto);
+    const { user } = await this.authService.login(dto);
+
+    const { name, password, email, isEmailVerified, id } = user;
 
     const tokens = await this.tokenService.generateAuthTokens({
       email,
@@ -85,6 +85,6 @@ export class AuthController {
       maxAge: accessTokenCookieExpires,
     });
 
-    return {};
+    return user;
   }
 }

@@ -2,9 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 
 export const useAuth = () => {
-  const authData = useContext(AuthContext);
+  const auth = useContext(AuthContext);
 
-  return {
-    authData,
-  };
+  return auth;
 };

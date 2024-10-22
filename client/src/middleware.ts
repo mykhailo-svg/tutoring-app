@@ -5,7 +5,7 @@ export const middleware: NextMiddleware = (request) => {
   if (request.nextUrl.pathname.startsWith('/auth/login')) {
     const response = NextResponse.next();
 
-    const authHeaders = createAuthHeaders(request);
+    const authHeaders = createAuthHeaders();
 
     fetch('http://localhost:5000/api/auth/get', {
       method: 'GET',
