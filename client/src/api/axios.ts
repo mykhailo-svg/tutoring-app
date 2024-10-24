@@ -1,6 +1,6 @@
 import { COOKIES_NAME } from '@/global_types';
 import axios from 'axios';
-import { cookies } from 'next/headers';
+
 
 function getCookie(name: string) {
   const value = `; ${typeof document !== 'undefined' ? document.cookie : ''}`;

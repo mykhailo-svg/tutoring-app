@@ -25,10 +25,11 @@ export class TokenService {
     private tokensRepository: Repository<Token>,
   ) {}
 
-  generateToken({ expires, user }: GenerateTokenArgs) {
+  generateToken({ expires, user: { id, email } }: GenerateTokenArgs) {
     const config = getConfig();
+    console.log(expires);
 
-    const token = jwt.sign(user, config.jwt.secretKey, {
+    const token = jwt.sign({ id, email }, config.jwt.secretKey, {
       expiresIn: expires,
       algorithm: 'HS256',
     });

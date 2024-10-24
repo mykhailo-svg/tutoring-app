@@ -47,7 +47,7 @@ export const LoginPage = () => {
     <div className={styles.row}>
       <div className={styles.questionColumn}>
         <h2>Want to create an account?</h2>
-        <Button as='a' variant='secondary' text='Sign up' href={appRoutes.auth.register} />
+        <Button as='a' variant='secondary' text='Sign up' href='/' />
       </div>
 
       <div className={styles.formColumn}>
@@ -82,7 +82,7 @@ export const LoginPage = () => {
           <div className={styles.submit}>
             <div className={styles.plainQuestion}>
               Don't have an account?
-              <Button as='a' href={appRoutes.auth.register} variant='plain' text='Create it!' />
+              <Button as='a' href='/' variant='plain' text='Create it!' />
             </div>
             <Button loading={isLoading} text='Submit' variant='primary' as='button' type='submit' />
           </div>

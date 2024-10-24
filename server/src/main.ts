@@ -20,8 +20,14 @@ async function bootstrap() {
     .build();
 
   // Cors
-  app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
-    app.use(cookieParser())
+  app.use(
+    cors({
+      credentials: true,
+      origin: ['http://localhost:3000'],
+      exposedHeaders: ['*'],
+    }),
+  );
+  app.use(cookieParser());
   // Swagger
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);

@@ -14,7 +14,7 @@ type RootLayoutProps = {
 const getUser = async () => {
   try {
     const user = await fetch(getApiEndpointUrl(APIEndpoints.user.revealCurrent), {
-      headers: createAuthHeaders(),
+      headers: await createAuthHeaders(),
     });
     const data = await user.json();
 
