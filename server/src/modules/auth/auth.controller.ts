@@ -13,7 +13,7 @@ import { TokenService } from '../token/token.service';
 import { AuthService } from './auth.service';
 import { getConfig } from '../../config/config';
 import { Request, Response } from 'express';
-import { LoginDto, RefreshTokenDto } from './dto';
+import { LoginDto, LogoutDto, RefreshTokenDto } from './dto';
 import { RegisterEndpointDescriptor } from './swagger';
 import { Validation } from '../../decorators';
 import * as jwt from 'jsonwebtoken';
@@ -142,5 +142,11 @@ export class AuthController {
 
       throw new UnauthorizedException('Not valid refresh token');
     }
+  }
+
+  @Post('logout')
+  @Validation()
+  async logout(@Body() dto: LogoutDto) {
+    await this.authService.logout(dto.refreshToken);
   }
 }

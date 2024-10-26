@@ -9,10 +9,14 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
 import { LoginDto } from './dto';
 import * as bcrypt from 'bcryptjs';
+import { TokenService } from '../token/token.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private tokenService: TokenService,
+  ) {}
 
   async checkIfUserExists(dto: CreateUserDto) {
     const existingUser = await this.userService.findExistingUser({
@@ -44,5 +48,9 @@ export class AuthService {
     }
 
     return { user };
+  }
+
+  async logout(refreshToken: string) {
+    await this.tokenService.removeRefreshToken(refreshToken);
   }
 }

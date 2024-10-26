@@ -7,13 +7,16 @@ export const Header: React.FC<HeaderProps> = () => {
   const {
     data: { user },
     setAuthState,
+    logout,
   } = useAuth();
 
   return (
     <header>
       <button
         onClick={() => {
-          setAuthState(() => ({ user: null }));
+          // setAuthState(() => ({ user: null }));
+
+          logout();
         }}
       >
         logout

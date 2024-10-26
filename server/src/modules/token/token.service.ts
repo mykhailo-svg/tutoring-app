@@ -84,4 +84,11 @@ export class TokenService {
 
     return this.tokensRepository.save(newToken);
   }
+
+  async removeRefreshToken(refreshToken: string) {
+    await this.tokensRepository.delete({
+      value: refreshToken,
+      type: TokenType.REFRESH,
+    });
+  }
 }

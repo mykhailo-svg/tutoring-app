@@ -14,6 +14,18 @@ export const middleware: NextMiddleware = async (request) => {
   const cookiesClient = await cookies();
 
   const refreshToken = cookiesClient.get(COOKIES_NAME.REFRESH_TOKEN)?.value;
+  const accessToken = cookiesClient.get(COOKIES_NAME.ACCESS_TOKEN)?.value;
+
+  const currentUrl = new URL(request.url);
+
+  const loginPageUrl = `${currentUrl.host}/${appRoutes.auth.login}`;
+
+  if (!accessToken && !refreshToken) {
+    return NextResponse.redirect(loginPageUrl);
+  }
+  
+console.log("middleware");
+
 
   let isUnAuthorized = true;
 
@@ -61,5 +73,5 @@ export const middleware: NextMiddleware = async (request) => {
 };
 
 export const config = {
-  matcher: [appRoutes.home],
+  matcher: ['/'],
 };
