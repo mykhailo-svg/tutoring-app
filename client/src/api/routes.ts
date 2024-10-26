@@ -3,6 +3,7 @@ export const APIEndpoints = {
     register: '/auth/register',
     login: '/auth/login',
     refresh: '/auth/refresh',
+    logout: '/auth/logout',
   },
   user: {
     revealCurrent: '/user',

@@ -2,35 +2,34 @@ import { NextMiddleware, NextResponse } from 'next/server';
 import { createAuthHeaders } from './shared/helpers';
 import { APIEndpoints, getApiEndpointUrl } from './api';
 import { cookies } from 'next/headers';
-import { COOKIES_NAME, User } from './global_types';
+import { COOKIES_NAME } from './global_types';
 import { HttpStatusCode } from 'axios';
 import { appRoutes } from './shared/constants/routes';
 
 export const middleware: NextMiddleware = async (request) => {
   const response = NextResponse.next();
 
-  const authHeaders = await createAuthHeaders();
-
   const cookiesClient = await cookies();
+
+  const isOnAuthPage =
+    request.nextUrl.pathname === appRoutes.auth.login ||
+    request.nextUrl.pathname === appRoutes.auth.register;
 
   const refreshToken = cookiesClient.get(COOKIES_NAME.REFRESH_TOKEN)?.value;
   const accessToken = cookiesClient.get(COOKIES_NAME.ACCESS_TOKEN)?.value;
 
-  const currentUrl = new URL(request.url);
+  const loginPageUrl = new URL(appRoutes.auth.login, request.url);
 
-  const loginPageUrl = `${currentUrl.host}/${appRoutes.auth.login}`;
-
-  if (!accessToken && !refreshToken) {
+  if (!isOnAuthPage && !accessToken && !refreshToken) {
     return NextResponse.redirect(loginPageUrl);
   }
-  
-console.log("middleware");
-
 
   let isUnAuthorized = true;
 
   // Trying to get current user
   try {
+    const authHeaders = await createAuthHeaders();
+
     const userResponse = await fetch(getApiEndpointUrl(APIEndpoints.user.revealCurrent), {
       method: 'GET',
       credentials: 'include',
@@ -51,7 +50,7 @@ console.log("middleware");
         method: 'POST',
         credentials: 'include',
         headers: {
-          'Content-Type': 'application/json', // Inform the backend that you're sending JSON
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(refreshPayload),
       });
@@ -65,13 +64,15 @@ console.log("middleware");
         response.cookies.set(COOKIES_NAME.REFRESH_TOKEN, refreshedData.refreshToken);
       }
     } catch (error) {
-      return NextResponse.redirect(appRoutes.auth.login);
+      return NextResponse.redirect(loginPageUrl);
     }
+  } else if (isOnAuthPage) {
+    return NextResponse.redirect(new URL(appRoutes.home, request.url));
   }
 
   return response;
 };
 
 export const config = {
-  matcher: ['/'],
+  matcher: ['/', '/auth/login', '/auth/register'],
 };

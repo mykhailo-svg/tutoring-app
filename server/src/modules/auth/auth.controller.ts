@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
+  Put,
   Req,
   Res,
   UnauthorizedException,
@@ -144,9 +146,11 @@ export class AuthController {
     }
   }
 
-  @Post('logout')
+  @Put('logout')
   @Validation()
   async logout(@Body() dto: LogoutDto) {
+    console.log(dto.refreshToken);
+
     await this.authService.logout(dto.refreshToken);
   }
 }
