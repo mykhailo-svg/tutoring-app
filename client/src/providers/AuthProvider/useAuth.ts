@@ -1,5 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { AuthContext } from './AuthContext';
+import jsCookies from 'js-cookie';
 
 export const useAuth = () => {
   const auth = useContext(AuthContext);
