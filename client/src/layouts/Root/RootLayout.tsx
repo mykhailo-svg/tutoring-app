@@ -29,9 +29,6 @@ export const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
 
   return (
     <html lang='en'>
-      <head>
-        <link rel='icon' href={favicon.src} sizes='any' />
-      </head>
       <body>
         <ReactQueryProvider>
           <AuthProvider initialData={{ user }}>

@@ -5,10 +5,11 @@ import { cookies } from 'next/headers';
 import { COOKIES_NAME } from './global_types';
 import { HttpStatusCode } from 'axios';
 import { appRoutes } from './shared/constants/routes';
+import { revalidatePath } from 'next/cache';
 
 export const middleware: NextMiddleware = async (request) => {
   const response = NextResponse.next();
-
+  response.headers.set('Cache-Control', 'no-store, must-revalidate');
   const cookiesClient = await cookies();
 
   const isOnAuthPage =

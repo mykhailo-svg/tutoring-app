@@ -9,8 +9,8 @@ import { RegisterPageFields } from '../register/types';
 import { LoginPageFields } from './types';
 import { SIGN_UP_FIELDS_CONFIG } from '../register/constants';
 import { useLogin } from './hooks';
-import { useCallback, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useLayoutEffect } from 'react';
+import { redirect, useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 
 export const LoginPage = () => {
@@ -42,6 +42,16 @@ export const LoginPage = () => {
       router.push('/');
     }
   }, [loginResponse]);
+
+  const {
+    data: { user },
+  } = useAuth();
+
+  useLayoutEffect(() => {
+    if (user) {
+      redirect('/');
+    }
+  }, []);
 
   return (
     <div className={styles.row}>

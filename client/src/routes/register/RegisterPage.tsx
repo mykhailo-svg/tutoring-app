@@ -4,7 +4,7 @@ import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/buttons';
 import { TextField } from '@/shared/ui/inputs';
@@ -14,12 +14,17 @@ import { useToggle } from '@/shared/hooks/useToggle';
 import { CommonToast } from '@/shared/ui/toasts';
 import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
 import { SIGN_UP_FIELDS_CONFIG } from './constants';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/AuthProvider';
 
 type RegisterPageProps = {};
 
 export const RegisterPage: React.FC<RegisterPageProps> = () => {
   const router = useRouter();
+
+  const {
+    data: { user },
+  } = useAuth();
 
   const {
     registerRequest,
@@ -41,6 +46,15 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     },
     [registerRequest]
   );
+
+  useLayoutEffect(() => {
+    // if (user) {
+    //   console.log(user);
+
+    //   redirect('/');
+    // }
+  }, []);
+
   useEffect(() => {
     if (registrationResponse) {
       router.push('/');

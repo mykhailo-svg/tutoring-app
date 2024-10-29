@@ -1,5 +1,7 @@
 'use client';
 import { useAuth } from '@/providers/AuthProvider';
+import { redirect } from 'next/navigation';
+import { useLayoutEffect } from 'react';
 
 type HeaderProps = {};
 
@@ -9,6 +11,12 @@ export const Header: React.FC<HeaderProps> = () => {
     setAuthState,
     logout,
   } = useAuth();
+
+  // useLayoutEffect(() => {
+  //   if (!user) {
+  //     redirect('/auth/login');
+  //   }
+  // }, []);
 
   return (
     <header>
