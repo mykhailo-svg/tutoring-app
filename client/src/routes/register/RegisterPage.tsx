@@ -4,7 +4,7 @@ import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/buttons';
 import { TextField } from '@/shared/ui/inputs';
@@ -47,17 +47,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     [registerRequest]
   );
 
-  useLayoutEffect(() => {
-    // if (user) {
-    //   console.log(user);
-
-    //   redirect('/');
-    // }
-  }, []);
-
   useEffect(() => {
     if (registrationResponse) {
-      router.push('/');
+      redirect('/');
     }
   }, [registrationResponse]);
 

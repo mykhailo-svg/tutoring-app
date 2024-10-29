@@ -3,7 +3,7 @@ import { useCallback, useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import jsCookies from 'js-cookie';
 import { COOKIES_NAME } from '@/global_types';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { appRoutes } from '@/shared/constants/routes';
 import { APIEndpoints, axiosClient } from '@/api';
 import cookies from 'js-cookie';
@@ -26,7 +26,7 @@ export const useAuth = () => {
     jsCookies.remove(COOKIES_NAME.ACCESS_TOKEN);
     jsCookies.remove(COOKIES_NAME.REFRESH_TOKEN);
 
-    router.push(appRoutes.auth.login);
+    redirect(appRoutes.auth.login);
   }, [auth.setAuthState]);
 
   return { ...auth, logout };

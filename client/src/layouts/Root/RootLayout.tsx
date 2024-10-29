@@ -15,10 +15,11 @@ const getUser = async () => {
   try {
     const user = await fetch(getApiEndpointUrl(APIEndpoints.user.revealCurrent), {
       headers: await createAuthHeaders(),
+      cache: 'no-cache',
     });
     const data = await user.json();
 
-    return data as User | null;
+    return user.ok ? data : (null as User | null);
   } catch (error) {}
 
   return null;

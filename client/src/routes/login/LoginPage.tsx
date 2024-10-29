@@ -5,12 +5,10 @@ import { Button } from '@/shared/ui/buttons';
 import { appRoutes } from '@/shared/constants/routes';
 import { TextField } from '@/shared/ui/inputs';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { RegisterPageFields } from '../register/types';
 import { LoginPageFields } from './types';
-import { SIGN_UP_FIELDS_CONFIG } from '../register/constants';
 import { useLogin } from './hooks';
-import { useCallback, useEffect, useLayoutEffect } from 'react';
-import { redirect, useRouter } from 'next/navigation';
+import { useCallback, useEffect } from 'react';
+import { redirect } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 
 export const LoginPage = () => {
@@ -22,8 +20,6 @@ export const LoginPage = () => {
 
     formState: { errors },
   } = useForm<LoginPageFields>();
-
-  const router = useRouter();
 
   const { loginRequest, isLoading, data: loginResponse } = useLogin();
 
@@ -37,21 +33,10 @@ export const LoginPage = () => {
   useEffect(() => {
     if (loginResponse?.data) {
       setAuthState(() => ({ user: loginResponse.data }));
-      console.log(loginResponse.data);
 
-      router.push('/');
-    }
-  }, [loginResponse]);
-
-  const {
-    data: { user },
-  } = useAuth();
-
-  useLayoutEffect(() => {
-    if (user) {
       redirect('/');
     }
-  }, []);
+  }, [loginResponse]);
 
   return (
     <div className={styles.row}>
