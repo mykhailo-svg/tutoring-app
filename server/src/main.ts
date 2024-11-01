@@ -3,10 +3,13 @@ import { AppModule } from './modules/app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
+import { getConfig } from './config';
 
 async function bootstrap() {
+  const config = getConfig();
+
   const app = await NestFactory.create(AppModule, { cors: false });
-  app.setGlobalPrefix('/api');
+  app.setGlobalPrefix(config.app.globalPrefix);
 
   const options = new DocumentBuilder()
     .setTitle('Feedback app')
@@ -23,11 +26,14 @@ async function bootstrap() {
   app.use(
     cors({
       credentials: true,
-      origin: ['http://localhost:3000'],
+      origin: [config.client.host],
       exposedHeaders: ['*'],
     }),
   );
+
+  // Cookies
   app.use(cookieParser());
+
   // Swagger
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);

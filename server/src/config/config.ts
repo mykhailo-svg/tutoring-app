@@ -6,6 +6,10 @@ export function getConfig() {
   return {
     app: {
       port: parseInt(configService.get('PORT')),
+      globalPrefix: '/api',
+    },
+    client: {
+      host: configService.get<string>('CLIENT_HOST'),
     },
     db: {
       port: parseInt(configService.get('POSTGRES_PORT')),

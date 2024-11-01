@@ -97,7 +97,7 @@ export class AuthController {
       maxAge: accessTokenCookieExpires,
     });
 
-    return user;
+    return { user };
   }
 
   @Post('refresh')
