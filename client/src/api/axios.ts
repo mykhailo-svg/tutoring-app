@@ -1,7 +1,6 @@
 import { COOKIES_NAME } from '@/global_types';
 import axios from 'axios';
 
-
 function getCookie(name: string) {
   const value = `; ${typeof document !== 'undefined' ? document.cookie : ''}`;
   const parts = value.split(`; ${name}=`);
@@ -23,8 +22,6 @@ export const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
-    console.log(document.cookie);
-
     return config;
   },
 

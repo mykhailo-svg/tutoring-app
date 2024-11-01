@@ -16,7 +16,7 @@ type RegisterUserResponse = {
 };
 
 export const registerUserRequest = async (payload: RegisterUserRequestArgs) => {
-  const newUser = await axiosClient.post<any, RegisterUserResponse>(
+  const newUser = await axiosClient.post<RegisterUserResponse>(
     APIEndpoints.auth.register,
     payload,
     {

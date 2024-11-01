@@ -4,7 +4,7 @@ import { useUserRegister } from './hooks/useUserRegister';
 import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/buttons';
 import { TextField } from '@/shared/ui/inputs';
@@ -14,7 +14,7 @@ import { useToggle } from '@/shared/hooks/useToggle';
 import { CommonToast } from '@/shared/ui/toasts';
 import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
 import { SIGN_UP_FIELDS_CONFIG } from './constants';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 
 type RegisterPageProps = {};
@@ -24,6 +24,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   const {
     data: { user },
+    setAuthState,
   } = useAuth();
 
   const {
@@ -47,9 +48,16 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     [registerRequest]
   );
 
+  useLayoutEffect(() => {
+    if (user) {
+      router.push(appRoutes.home);
+    }
+  }, [user]);
+
   useEffect(() => {
-    if (registrationResponse) {
-      redirect('/');
+    if (registrationResponse && registrationResponse.data.user) {
+      setAuthState(() => ({ user: registrationResponse.data.user }));
+      router.push(appRoutes.home);
     }
   }, [registrationResponse]);
 
@@ -84,6 +92,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
           <div className={styles.formColumn}>
             <Form.Root className={styles.form} onSubmit={handleSubmit(onSubmit)}>
               <h1 className={styles.title}>Register</h1>
+
               <div className={styles.fields}>
                 <TextField
                   semanticId='name'
@@ -93,6 +102,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   label='Name'
                   placeholder='Name Surname'
                 />
+
                 <TextField
                   semanticId='email'
                   register={register('email', SIGN_UP_FIELDS_CONFIG.email)}
@@ -115,11 +125,13 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   label='Password'
                   placeholder='Create password'
                 />
+
                 <div className={styles.submit}>
                   <div className={styles.inlineQuestion}>
                     Already have an account?
                     <Button variant='plain' as='a' href={appRoutes.auth.login} text='Sign in!' />
                   </div>
+
                   <Button
                     loading={pendingRegistration}
                     variant='primary'
@@ -134,7 +146,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
           <div className={styles.questionColumn}>
             <div className={styles.haveAccountQuestion}>
-              Already have an account?{'  '}
+              Already have an account?
               <Button
                 variant='secondary'
                 className={styles.signInButton}

@@ -32,16 +32,28 @@ export const SIGN_UP_FIELDS_CONFIG: Record<keyof RegisterPageFields, RegisterHan
       message: 'Password is required',
     },
     validate: (value) => {
-      const validLength = value.length >= 8;
-      const containsNumber = value.match(/\d+/g) != null;
-      //@ts-ignore
-      const containsUppercaseLetter = value.match(/\p{Lu}/u) != null;
-      const containsSpecialSymbols = value.match(/[!-\/:-@[-`{-~]/) != null;
+      const validators: Record<string, () => boolean | string> = {
+        validLength: () => (value.length >= 8 ? true : 'Password must contain 8 symbols'),
+        containsNumber: () => (value.match(/\d+/g) != null ? true : 'Password must contain number'),
+        hasUppercase: () =>
+          value.match(/\p{Lu}/u) != null ? true : 'Password must contain uppercase letter',
+        hasLowercase: () =>
+          value.match(/[a-z]/) != null ? true : 'Password must contain lowercase letter',
+        hasSpecialSymbols: () =>
+          value.match(/[!-\/:-@[-`{-~]/) != null ? true : 'Must contain special symbol (!,_,-)',
+      };
 
-      if (validLength && containsNumber && containsUppercaseLetter && containsSpecialSymbols) {
-        return true;
+      for (const validatorKey in validators) {
+        const validator = validators[validatorKey];
+
+        const validatorResponse = validator();
+
+        if (typeof validatorResponse === 'string') {
+          return validatorResponse;
+        }
       }
-      return 'Please set valid password';
+
+      return true;
     },
   },
 };
