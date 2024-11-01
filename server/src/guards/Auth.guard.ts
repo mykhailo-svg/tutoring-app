@@ -4,10 +4,9 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { AuthProtectedRequest, AuthUser } from 'src/globalTypes';
+import { getConfig } from '@src/config/config';
+import { AuthProtectedRequest, AuthUser } from '@src/globalTypes';
 import * as jwt from 'jsonwebtoken';
-import { getConfig } from 'src/config/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

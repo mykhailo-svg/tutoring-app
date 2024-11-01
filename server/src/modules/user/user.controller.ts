@@ -1,8 +1,8 @@
 import { Controller, Get, NotFoundException, Param, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
-import { Auth } from 'src/decorators';
-import { AuthProtectedRequest } from 'src/globalTypes';
+import { Auth } from '@src/decorators';
+import { AuthProtectedRequest } from '@src/globalTypes';
 
 @ApiTags('User')
 @Controller('user')
