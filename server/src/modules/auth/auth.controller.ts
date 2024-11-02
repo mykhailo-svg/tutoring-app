@@ -17,12 +17,14 @@ import { Validation } from '../../decorators';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@entities';
 import { TokenService } from '../token/token.service';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
+    private userService: UserService,
     private tokenService: TokenService,
   ) {}
 
@@ -35,17 +37,13 @@ export class AuthController {
   ) {
     const user = await this.authService.checkIfUserExists(dto);
 
-    const { accessTokenCookie, refreshTokenCookie, saveCookieToResponse } =
+    const { saveCookieToResponse } =
       await this.authService.issueUserAuthTokensCookies(user);
 
     saveCookieToResponse(res);
 
     return {
-      user,
-      tokens: {
-        refreshToken: refreshTokenCookie.value,
-        accessToken: accessTokenCookie.value,
-      },
+      user: this.userService.removeSensitiveData(user),
     };
   }
 

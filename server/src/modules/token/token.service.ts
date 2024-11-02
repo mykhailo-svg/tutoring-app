@@ -26,7 +26,6 @@ export class TokenService {
 
   generateToken({ expires, user: { id, email } }: GenerateTokenArgs) {
     const config = getConfig();
-    console.log(expires);
 
     const token = jwt.sign({ id, email }, config.jwt.secretKey, {
       expiresIn: expires,
@@ -37,8 +36,6 @@ export class TokenService {
   }
 
   async generateAuthTokens(user: User) {
-    console.log(user);
-
     const config = getConfig();
 
     const refreshTokenExpires = `${config.jwt.refreshExpirationDays}d`;
@@ -53,14 +50,12 @@ export class TokenService {
       user,
     });
 
-    const savedToken = await this.saveToken({
+    await this.saveToken({
       expires: refreshTokenExpires,
       token: refreshToken,
       type: TokenType.REFRESH,
       userId: user.id,
     });
-
-    console.log(savedToken);
 
     return {
       accessToken,

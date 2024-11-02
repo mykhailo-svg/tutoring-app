@@ -8,7 +8,11 @@ const successfulUserPayload = {
   password: 'passwo_rD1a',
 };
 
-describe('AppController', () => {
+const ENDPOINTS = {
+  register: '/auth/register',
+};
+
+describe('Auth E2E Tests', () => {
   const testUtils = new TestUtils();
   let app: INestApplication;
 
@@ -23,28 +27,28 @@ describe('AppController', () => {
   describe('Register', () => {
     it('Should success (201)', async () => {
       const response = await request(app.getHttpServer())
-        .post('/auth/register')
+        .post(ENDPOINTS.register)
         .send(successfulUserPayload)
         .expect(201);
 
-      expect(Boolean(response.body.tokens.accessToken)).toBe(true);
-      expect(Boolean(response.body.tokens.refreshToken)).toBe(true);
+      expect(Object.keys(response.body)).toStrictEqual(['user'].sort());
+      expect(response.body.user).not.toHaveProperty('password');
     });
 
     it('Should conflict (409)', async () => {
       await request(app.getHttpServer())
-        .post('/auth/register')
+        .post(ENDPOINTS.register)
         .send(successfulUserPayload);
 
       return request(app.getHttpServer())
-        .post('/auth/register')
+        .post(ENDPOINTS.register)
         .send(successfulUserPayload)
         .expect(409);
     });
 
     it('Should return bad password (400)', async () =>
       request(app.getHttpServer())
-        .post('/auth/register')
+        .post(ENDPOINTS.register)
         .send({
           ...successfulUserPayload,
           password: 'asdawrwr1',
@@ -53,7 +57,7 @@ describe('AppController', () => {
 
     it('Should return bad name (400)', async () =>
       request(app.getHttpServer())
-        .post('/auth/register')
+        .post(ENDPOINTS.register)
         .send({
           ...successfulUserPayload,
           name: 'qew',
