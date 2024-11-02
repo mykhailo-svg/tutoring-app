@@ -12,4 +12,4 @@ COPY . .
 
 COPY ./dist ./dist
 
-CMD [ "yarn" ,"start:prod"]
+CMD [ "yarn" ,"start:dev"]

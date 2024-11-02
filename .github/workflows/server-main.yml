@@ -69,7 +69,14 @@ jobs:
 
       - name: running containers
         working-directory: ./server
-        run: docker compose up
+        run: | 
+         docker compose up &
+         NEST_PID=$!
 
       - name: running e2e testing
         run: docker compose exec -T nest-backend yarn test:e2e --detectOpenHandles
+        
+      - name: Stop NestJS
+        run: |
+          kill $NEST_PID
+          wait $NEST_PID
