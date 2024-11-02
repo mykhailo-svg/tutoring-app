@@ -18,3 +18,12 @@ jobs:
 
       - name: install yarn
         run: npm install --global yarn
+
+      - name: install modules
+        working-directory: ./server
+        run: yarn install --frozen-lockfile
+
+      - name: linting ESLint
+        working-directory: ./server
+        run: yarn lint
+        if: always()
