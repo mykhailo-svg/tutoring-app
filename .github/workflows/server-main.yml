@@ -53,6 +53,10 @@ jobs:
           echo POSTGRES_TESTING_SCHEMA=${{ secrets.SERVER_POSTGRES_TESTING_SCHEMA }} >> .env
 
 
+          echo JWT_SECRET_KEY=${{ secrets.SERVER_JWT_SECRET_KEY }} >> .env
+          echo JWT_ACCESS_EXPIRATION_MINUTES=${{ secrets.SERVER_JWT_ACCESS_EXPIRATION_MINUTES }} >> .env
+          echo JWT_REFRESH_EXPIRATION_DAYS=${{ secrets.SERVER_JWT_REFRESH_EXPIRATION_DAYS }} >> .env
+
           cat .env
 
       - name: building
@@ -66,3 +70,6 @@ jobs:
       - name: running containers
         working-directory: ./server
         run: docker compose up
+
+      - name: running e2e testing
+        run: docker compose exec -T nest-backend yarn test:e2e --detectOpenHandles
