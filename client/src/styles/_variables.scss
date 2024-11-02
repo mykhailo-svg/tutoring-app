@@ -1,2 +1,13 @@
 :root {
+  --border-radius: 12px;
+
+  // Color system
+  --primary-color: #5038ed;
+  --white-color: #fff;
+
+  --error-color: #EB5757;
+  --error-color-soft: #fef1f2;
+
+  --info-color: rgba(145, 208, 255, 1);
+  --info-color-active: rgb(0, 107, 153);
 }

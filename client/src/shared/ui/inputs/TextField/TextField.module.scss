@@ -1,0 +1,53 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputContainer {
+  background: #f4f0fe;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: text;
+  display: flex;
+  outline-width: 2px;
+  outline-style: solid;
+  outline-color: transparent;
+
+  align-items: center;
+  &:not(.hasError):has(input:focus) {
+    outline-color: var(--primary-color);
+  }
+  &.hasError {
+    background: var(--error-color-soft);
+    outline-color: var(--error-color);
+  }
+}
+
+.inputOverflow {
+  position: relative;
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 1em;
+}
+
+.input {
+  font-size: inherit;
+  flex: 1 1 auto;
+  background: transparent;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.label {
+  width: fit-content;
+}
+
+.error {
+  min-height: 1em;
+  font-size: 12px;
+  color: rgb(150, 5, 5);
+}
