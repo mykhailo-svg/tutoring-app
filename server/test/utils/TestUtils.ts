@@ -19,8 +19,7 @@ export class TestUtils {
     const moduleFixture = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot({
-          //@ts-ignore
-          type: process.env.POSTGRES_TESTING_TYPE,
+          type: process.env.POSTGRES_TESTING_TYPE as 'postgres',
           host: process.env.POSTGRES_TESTING_HOST,
           port: Number(process.env.POSTGRES_TESTING_PORT),
           username: process.env.POSTGRES_TESTING_USER,
