@@ -35,3 +35,7 @@ jobs:
       - name: building docker image
         working-directory: ./server
         run: docker compose build
+
+      - name: running containers
+        working-directory: ./server
+        run: docker compose up
