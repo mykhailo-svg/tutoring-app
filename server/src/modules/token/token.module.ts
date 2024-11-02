@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { TokenController } from './token.controller';
-import { Token } from './entities/token.entity';
+import { Token } from '@entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

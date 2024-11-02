@@ -1,25 +1,22 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
   Post,
   Put,
-  Req,
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { TokenService } from '../token/token.service';
 import { AuthService } from './auth.service';
 import { getConfig } from '../../config/config';
-import { Request, Response } from 'express';
-import { LoginDto, LogoutDto, RefreshTokenDto } from './dto';
+import { Response } from 'express';
+import { LoginDto, LogoutDto } from './dto';
 import { RegisterEndpointDescriptor } from './swagger';
 import { Validation } from '../../decorators';
 import * as jwt from 'jsonwebtoken';
-import { User } from '../user/entities/user.entity';
+import { User } from '@entities';
+import { TokenService } from '../token/token.service';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -38,27 +35,18 @@ export class AuthController {
   ) {
     const user = await this.authService.checkIfUserExists(dto);
 
-    const tokens = await this.tokenService.generateAuthTokens(user);
+    const { accessTokenCookie, refreshTokenCookie, saveCookieToResponse } =
+      await this.authService.issueUserAuthTokensCookies(user);
 
-    const config = getConfig();
+    saveCookieToResponse(res);
 
-    const refreshTokenCookieExpires =
-      86400000 * config.jwt.refreshExpirationDays;
-
-    const accessTokenCookieExpires = 60000 * config.jwt.accessExpirationMinutes;
-
-    res.cookie('RefreshToken', tokens.refreshToken, {
-      httpOnly: false,
-      path: '/',
-      maxAge: refreshTokenCookieExpires,
-    });
-    res.cookie('AccessToken', tokens.accessToken, {
-      httpOnly: false,
-      path: '/',
-      maxAge: accessTokenCookieExpires,
-    });
-
-    return { user, tokens };
+    return {
+      user,
+      tokens: {
+        refreshToken: refreshTokenCookie.value,
+        accessToken: accessTokenCookie.value,
+      },
+    };
   }
 
   @Validation()
@@ -69,33 +57,10 @@ export class AuthController {
   ) {
     const { user } = await this.authService.login(dto);
 
-    const { name, password, email, isEmailVerified, id } = user;
+    const { saveCookieToResponse } =
+      await this.authService.issueUserAuthTokensCookies(user);
 
-    const tokens = await this.tokenService.generateAuthTokens({
-      email,
-      password,
-      isEmailVerified,
-      name,
-      id,
-    });
-
-    const config = getConfig();
-
-    const refreshTokenCookieExpires =
-      86400000 * config.jwt.refreshExpirationDays;
-
-    const accessTokenCookieExpires = 60000 * config.jwt.accessExpirationMinutes;
-
-    res.cookie('RefreshToken', tokens.refreshToken, {
-      httpOnly: false,
-      path: '/',
-      maxAge: refreshTokenCookieExpires,
-    });
-    res.cookie('AccessToken', tokens.accessToken, {
-      httpOnly: false,
-      path: '/',
-      maxAge: accessTokenCookieExpires,
-    });
+    saveCookieToResponse(res);
 
     return { user };
   }
@@ -107,41 +72,33 @@ export class AuthController {
 
     let user: null | User = null;
 
-    console.log(dto);
+    const dbRefreshToken = await this.tokenService.getRefreshToken(
+      dto.refreshToken,
+    );
+
+    if (!dbRefreshToken) {
+      throw new UnauthorizedException('Not valid refresh token');
+    }
 
     try {
-      user = jwt.verify(dto.refreshToken, config.jwt.secretKey, {
+      user = jwt.verify(dbRefreshToken.value, config.jwt.secretKey, {
         algorithms: ['HS256'],
       }) as User;
     } catch (error) {}
 
     if (user) {
-      const tokens = await this.tokenService.generateAuthTokens({
-        ...user,
-      });
+      const { saveCookieToResponse, refreshTokenCookie, accessTokenCookie } =
+        await this.authService.issueUserAuthTokensCookies(user);
 
-      const refreshTokenCookieExpires =
-        86400000 * config.jwt.refreshExpirationDays;
+      saveCookieToResponse(res);
 
-      const accessTokenCookieExpires =
-        60000 * config.jwt.accessExpirationMinutes;
-
-      res.cookie('RefreshToken', tokens.refreshToken, {
-        httpOnly: false,
-        path: '/',
-        maxAge: refreshTokenCookieExpires,
-      });
-      res.cookie('AccessToken', tokens.accessToken, {
-        httpOnly: false,
-        path: '/',
-        maxAge: accessTokenCookieExpires,
-      });
       return {
-        ...tokens,
+        ...{
+          refreshToken: refreshTokenCookie.value,
+          accessToken: accessTokenCookie.value,
+        },
       };
     } else {
-      console.log('error');
-
       throw new UnauthorizedException('Not valid refresh token');
     }
   }
@@ -149,8 +106,6 @@ export class AuthController {
   @Put('logout')
   @Validation()
   async logout(@Body() dto: LogoutDto) {
-    console.log(dto.refreshToken);
-
     await this.authService.logout(dto.refreshToken);
   }
 }

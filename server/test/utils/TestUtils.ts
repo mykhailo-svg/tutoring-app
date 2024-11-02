@@ -3,8 +3,8 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppModule } from '../../src/modules/app/app.module';
 import { AuthModule } from '../../src/modules/auth/auth.module';
-import { Token } from '../../src/modules/token/entities/token.entity';
-import { User } from '../../src/modules/user/entities/user.entity';
+import { Token } from '../../src/entities/token.entity';
+import { User } from '../../src/entities/user.entity';
 import { UserModule } from '../../src/modules/user/user.module';
 import { Repository } from 'typeorm';
 

@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../user/entities/user.entity';
 import { getConfig } from '../../config/config';
 import * as jwt from 'jsonwebtoken';
-import { Token, TokenType } from './entities/token.entity';
+import { Token, User, TokenType } from '@entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -83,6 +82,12 @@ export class TokenService {
     };
 
     return this.tokensRepository.save(newToken);
+  }
+
+  async getRefreshToken(refreshToken: string) {
+    return await this.tokensRepository.findOne({
+      where: { value: refreshToken, type: TokenType.REFRESH },
+    });
   }
 
   async removeRefreshToken(refreshToken: string) {

@@ -34,7 +34,7 @@ export const LoginPage = () => {
     if (loginResponse?.data) {
       setAuthState(() => ({ user: loginResponse.data }));
 
-      redirect('/');
+      redirect(appRoutes.home);
     }
   }, [loginResponse]);
 
