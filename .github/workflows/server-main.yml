@@ -27,3 +27,7 @@ jobs:
         working-directory: ./server
         run: yarn lint
         if: always()
+
+      - name: building docker image
+        working-directory: ./server
+        run: docker compose build
