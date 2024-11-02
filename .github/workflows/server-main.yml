@@ -28,6 +28,10 @@ jobs:
         run: yarn lint
         if: always()
 
+      - name: building
+        working-directory: ./server
+        run: yarn build
+
       - name: building docker image
         working-directory: ./server
         run: docker compose build
