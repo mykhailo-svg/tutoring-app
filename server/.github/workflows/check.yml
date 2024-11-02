@@ -1,0 +1,17 @@
+name: Check
+
+on: push
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check 1
+        run: |
+          echo "Running Check 1 step..."
+          # Add more commands here if needed
+          # Example of console log output
+          echo "Check 1 completed."
