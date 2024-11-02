@@ -28,6 +28,33 @@ jobs:
         run: yarn lint
         if: always()
 
+      - name: creating .env file
+        working-directory: ./server
+        run: |
+          touch .env
+          echo PORT=${{ secrets.SERVER_PORT }} >> .env
+
+          echo CLIENT_HOST=${{ secrets.SERVER_CLIENT_HOST }} >> .env
+
+          echo POSTGRES_PORT=${{ secrets.SERVER_POSTGRES_PORT }} >> .env
+          echo POSTGRES_TYPE=${{ secrets.SERVER_POSTGRES_TYPE }} >> .env
+          echo POSTGRES_USER=${{ secrets.SERVER_POSTGRES_USER }} >> .env
+          echo POSTGRES_HOST=${{ secrets.SERVER_POSTGRES_HOST }} >> .env
+          echo POSTGRES_DB=${{ secrets.SERVER_POSTGRES_DB }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.SERVER_POSTGRES_PASSWORD }} >> .env
+          echo POSTGRES_SCHEMA=${{ secrets.SERVER_POSTGRES_SCHEMA }} >> .env
+
+          echo POSTGRES_TESTING_PORT=${{ secrets.SERVER_POSTGRES_TESTING_PORT }} >> .env
+          echo POSTGRES_TESTING_TYPE=${{ secrets.SERVER_POSTGRES_TESTING_TYPE }} >> .env
+          echo POSTGRES_TESTING_USER=${{ secrets.SERVER_POSTGRES_TESTING_USER }} >> .env
+          echo POSTGRES_TESTING_HOST=${{ secrets.SERVER_POSTGRES_TESTING_HOST }} >> .env
+          echo POSTGRES_TESTING_DB=${{ secrets.SERVER_POSTGRES_DB }} >> .env
+          echo POSTGRES_TESTING_PASSWORD=${{ secrets.SERVER_POSTGRES_TESTING_PASSWORD }} >> .env
+          echo POSTGRES_TESTING_SCHEMA=${{ secrets.SERVER_POSTGRES_TESTING_SCHEMA }} >> .env
+
+
+          cat .env
+
       - name: building
         working-directory: ./server
         run: yarn build
