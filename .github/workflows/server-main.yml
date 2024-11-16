@@ -75,6 +75,7 @@ jobs:
           sleep 40
 
       - name: running e2e testing
+        working-directory: ./server
         run: make test-e2e
 
       - name: Stop NestJS
