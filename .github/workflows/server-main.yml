@@ -77,8 +77,3 @@ jobs:
       - name: running e2e testing
         working-directory: ./server
         run: make test-e2e
-
-      - name: Stop NestJS
-        run: |
-          kill $NEST_PID
-          wait $NEST_PID
