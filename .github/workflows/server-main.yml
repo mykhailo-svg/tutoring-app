@@ -69,9 +69,7 @@ jobs:
 
       - name: running containers
         working-directory: ./server
-        run: |
-          make up &
-          NEST_PID=$! &
+        run: make up
 
       - name: running e2e testing
         working-directory: ./server
