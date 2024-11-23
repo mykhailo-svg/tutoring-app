@@ -27,7 +27,7 @@ export const useAuth = () => {
     jsCookies.remove(COOKIES_NAME.REFRESH_TOKEN);
 
     redirect(appRoutes.auth.login);
-  }, [auth.setAuthState]);
+  }, [auth]);
 
   return { ...auth, logout };
 };
