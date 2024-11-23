@@ -1,0 +1,83 @@
+name: Server linting, testing, building
+run-name: ${{ github.actor }} is running server ci/cd 🚀
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Starting Node.JS ${{matrix.node-version}}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{matrix.node-version}}
+
+      - name: install yarn
+        run: npm install --global yarn
+
+      - name: install modules
+        working-directory: ./server
+        run: yarn install --frozen-lockfile
+
+      - name: linting ESLint
+        working-directory: ./server
+        run: yarn lint
+        if: always()
+
+      - name: creating .env file
+        working-directory: ./server
+        run: |
+          touch .env
+          echo PORT=${{ secrets.SERVER_PORT }} >> .env
+
+          echo CLIENT_HOST=${{ secrets.SERVER_CLIENT_HOST }} >> .env
+
+          echo POSTGRES_PORT=${{ secrets.SERVER_POSTGRES_PORT }} >> .env
+          echo POSTGRES_TYPE=${{ secrets.SERVER_POSTGRES_TYPE }} >> .env
+          echo POSTGRES_USER=${{ secrets.SERVER_POSTGRES_USER }} >> .env
+          echo POSTGRES_HOST=${{ secrets.SERVER_POSTGRES_HOST }} >> .env
+          echo POSTGRES_DB=${{ secrets.SERVER_POSTGRES_DB }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.SERVER_POSTGRES_PASSWORD }} >> .env
+          echo POSTGRES_SCHEMA=${{ secrets.SERVER_POSTGRES_SCHEMA }} >> .env
+
+          echo POSTGRES_TESTING_PORT=${{ secrets.SERVER_POSTGRES_TESTING_PORT }} >> .env
+          echo POSTGRES_TESTING_TYPE=${{ secrets.SERVER_POSTGRES_TESTING_TYPE }} >> .env
+          echo POSTGRES_TESTING_USER=${{ secrets.SERVER_POSTGRES_TESTING_USER }} >> .env
+          echo POSTGRES_TESTING_HOST=${{ secrets.SERVER_POSTGRES_TESTING_HOST }} >> .env
+          echo POSTGRES_TESTING_DB=${{ secrets.SERVER_POSTGRES_DB }} >> .env
+          echo POSTGRES_TESTING_PASSWORD=${{ secrets.SERVER_POSTGRES_TESTING_PASSWORD }} >> .env
+          echo POSTGRES_TESTING_SCHEMA=${{ secrets.SERVER_POSTGRES_TESTING_SCHEMA }} >> .env
+
+
+          echo JWT_SECRET_KEY=${{ secrets.SERVER_JWT_SECRET_KEY }} >> .env
+          echo JWT_ACCESS_EXPIRATION_MINUTES=${{ secrets.SERVER_JWT_ACCESS_EXPIRATION_MINUTES }} >> .env
+          echo JWT_REFRESH_EXPIRATION_DAYS=${{ secrets.SERVER_JWT_REFRESH_EXPIRATION_DAYS }} >> .env
+
+          cat .env
+
+      - name: building
+        working-directory: ./server
+        run: yarn build
+
+      - name: building docker image
+        working-directory: ./server
+        run: make build
+
+      - name: running containers
+        working-directory: ./server
+        run: |
+          make up &
+          NEST_PID=$! &
+          sleep 40
+
+      - name: running e2e testing
+        working-directory: ./server
+        run: make test-e2e
