@@ -1,7 +1,11 @@
 name: Server linting, testing, building
 run-name: ${{ github.actor }} is running server ci/cd 🚀
 
-on: [push]
+on:
+  push:
+    branches:
+      - dev
+      - master
 
 jobs:
   pipeline:
