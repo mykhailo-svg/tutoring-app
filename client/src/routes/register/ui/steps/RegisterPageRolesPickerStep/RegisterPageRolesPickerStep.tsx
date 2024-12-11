@@ -1,21 +1,54 @@
 import { Card } from '@/shared/ui/cards';
 import styles from './RegisterPageRolesPickerStep.module.scss';
 import { USER_ROLE } from '@/global_types';
+import type { RegisterPageFields } from '@/routes/register/types';
+import type { UseFormSetValue } from 'react-hook-form';
+import { CheckCircledIcon as CheckIcon } from '@radix-ui/react-icons';
+import classNames from 'classnames';
 
-type RegisterPageRolesPickerStepProps = {};
+type RegisterPageRolesPickerStepProps = {
+  setFormState: UseFormSetValue<RegisterPageFields>;
+  role: USER_ROLE;
+};
 
 const AVAILABLE_ROLES = Object.values(USER_ROLE);
 
-export const RegisterPageRolesPickerStep: React.FC<RegisterPageRolesPickerStepProps> = () => {
+const ROLES_CONTENT_MAP: Record<USER_ROLE, { name: string; icon: JSX.Element }> = {
+  [USER_ROLE.OWNER]: {
+    name: 'Teacher',
+    icon: <TeacherIcon />,
+  },
+  [USER_ROLE.STUDENT]: {
+    name: 'Student',
+    icon: <StudentIcon />,
+  },
+};
+
+export const RegisterPageRolesPickerStep: React.FC<RegisterPageRolesPickerStepProps> = ({
+  setFormState,
+  role: selectedRole,
+}) => {
   return (
     <div className={styles.root}>
       {AVAILABLE_ROLES.map((role) => (
-        <Card hover key={role}>
-          <div className={styles.itemInner}>
-            <div className={styles.roleIcon}>
-              {role === USER_ROLE.OWNER ? <TeacherIcon /> : <StudentIcon />}
-            </div>
-            {role}
+        <Card
+          onClick={() => {
+            setFormState('role', role);
+          }}
+          active={role === selectedRole}
+          hover
+          key={role}
+        >
+          <div className={classNames(styles.itemInner, { [styles.active]: role === selectedRole })}>
+            {role === selectedRole && (
+              <div className={styles.checkMark}>
+                <CheckIcon height='25px' width='25px' />
+              </div>
+            )}
+
+            <div className={styles.roleIcon}>{ROLES_CONTENT_MAP[role].icon}</div>
+
+            <div className={styles.roleName}>{ROLES_CONTENT_MAP[role].name}</div>
           </div>
         </Card>
       ))}

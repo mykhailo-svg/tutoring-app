@@ -7,17 +7,15 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/buttons';
-import { TextField } from '@/shared/ui/inputs';
 import * as Toast from '@radix-ui/react-toast';
-import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { CommonToast } from '@/shared/ui/toasts';
 import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
-import { SIGN_UP_FIELDS_CONFIG } from './constants';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 import { MultiStepsFormStep, useMultiStepForm } from '@/shared/hooks';
 import { RegisterPageCredentialsForm, RegisterPageRolesPickerStep } from './ui/steps';
+import { USER_ROLE } from '@/global_types';
 
 type RegisterPageProps = {};
 
@@ -39,9 +37,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   const {
     register,
+    setValue,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterPageFields>();
+  } = useForm<RegisterPageFields>({ defaultValues: { role: USER_ROLE.STUDENT } });
 
   const onSubmit: SubmitHandler<RegisterPageFields> = useCallback(
     (data) => {
@@ -77,16 +77,18 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
       : '';
   }, [registrationError, hasRegistrationError]);
 
+  const [role] = watch(['role']);
+
   const steps = useMemo<MultiStepsFormStep[]>(() => {
     return [
       {
-        content: <RegisterPageRolesPickerStep />,
+        content: <RegisterPageRolesPickerStep role={role} setFormState={setValue} />,
       },
       {
         content: <RegisterPageCredentialsForm hookFormRegister={register} errors={errors} />,
       },
     ];
-  }, [register, errors]);
+  }, [register, setValue, errors, role]);
 
   const multiStepForm = useMultiStepForm(steps);
 
@@ -114,13 +116,31 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                     <Button variant='plain' as='a' href={appRoutes.auth.login} text='Sign in!' />
                   </div>
 
-                  <Button
-                    loading={pendingRegistration}
-                    variant='primary'
-                    as='button'
-                    text='Submit'
-                    type='submit'
-                  />
+                  <div className={styles.buttonsRow}>
+                    <Button
+                      className={styles.previousStepButton}
+                      loading={pendingRegistration}
+                      variant='secondary'
+                      as='button'
+                      onClick={multiStepForm.goToPrevious}
+                      disabled={!multiStepForm.hasPrevious}
+                      text='Previous'
+                      type='button'
+                    />
+                    <Button
+                      loading={pendingRegistration}
+                      variant='primary'
+                      as='button'
+                      onClick={(e) => {
+                        if (multiStepForm.hasNext) {
+                          e.preventDefault();
+                          multiStepForm.goToNext();
+                        }
+                      }}
+                      text={!multiStepForm.hasNext ? 'Submit' : 'Next'}
+                      type={'submit'}
+                    />
+                  </div>
                 </div>
               </div>
             </Form.Root>

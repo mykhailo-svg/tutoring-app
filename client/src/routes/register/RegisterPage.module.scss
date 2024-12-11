@@ -39,15 +39,28 @@
   overflow: auto;
 }
 
+.buttonsRow {
+  display: flex;
+  gap: 10px;
+}
+
+.previousStepButton {
+  flex: 1;
+}
+
 .fields {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  padding-bottom: 20px;
   flex: 1 1 auto;
 }
 
 .step {
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .title {

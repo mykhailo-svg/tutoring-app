@@ -8,7 +8,10 @@ export const useMultiStepForm = (steps: MultiStepsFormStep[]) => {
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
 
   const hasNext = useMemo(() => {
-    return steps.length - 1 <= activeStepIndex + 1;
+    console.log(activeStepIndex);
+    console.log(steps.length);
+
+    return steps.length - 1 > activeStepIndex;
   }, [activeStepIndex, steps]);
 
   const hasPrevious = useMemo(() => {
