@@ -1,10 +1,10 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 
-type Step = {
-  content: FC;
+export type MultiStepsFormStep = {
+  content: ReactNode;
 };
 
-export const useMultiStepForm = (steps: Step[]) => {
+export const useMultiStepForm = (steps: MultiStepsFormStep[]) => {
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
 
   const hasNext = useMemo(() => {
@@ -30,7 +30,7 @@ export const useMultiStepForm = (steps: Step[]) => {
   const activeStep = useMemo(() => {
     return {
       index: activeStepIndex,
-      content: steps[activeStepIndex],
+      content: steps[activeStepIndex].content,
     };
   }, [activeStepIndex, steps]);
 

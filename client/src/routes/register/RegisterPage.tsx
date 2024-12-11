@@ -16,6 +16,8 @@ import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
 import { SIGN_UP_FIELDS_CONFIG } from './constants';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
+import { MultiStepsFormStep, useMultiStepForm } from '@/shared/hooks';
+import { RegisterPageCredentialsForm, RegisterPageRolesPickerStep } from './ui/steps';
 
 type RegisterPageProps = {};
 
@@ -61,8 +63,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     }
   }, [registrationResponse]);
 
-  const isPasswordVisibleState = useToggle(false);
-
   const isToastActiveState = useToggle(true);
 
   useEffect(() => {
@@ -76,6 +76,19 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
         : 'Unknown error.Please try again'
       : '';
   }, [registrationError, hasRegistrationError]);
+
+  const steps = useMemo<MultiStepsFormStep[]>(() => {
+    return [
+      {
+        content: <RegisterPageRolesPickerStep />,
+      },
+      {
+        content: <RegisterPageCredentialsForm hookFormRegister={register} errors={errors} />,
+      },
+    ];
+  }, [register, errors]);
+
+  const multiStepForm = useMultiStepForm(steps);
 
   return (
     <Toast.Provider>
@@ -94,38 +107,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
               <h1 className={styles.title}>Register</h1>
 
               <div className={styles.fields}>
-                <TextField
-                  semanticId='name'
-                  register={register('name', SIGN_UP_FIELDS_CONFIG.name)}
-                  type='text'
-                  error={errors.name ? errors.name.message : ''}
-                  label='Name'
-                  placeholder='Name Surname'
-                />
-
-                <TextField
-                  semanticId='email'
-                  register={register('email', SIGN_UP_FIELDS_CONFIG.email)}
-                  error={errors.email ? errors.email.message : ''}
-                  label='Email'
-                  type='email'
-                  placeholder='example@mail.com'
-                />
-
-                <TextField
-                  type={isPasswordVisibleState.isActive ? 'text' : 'password'}
-                  semanticId='password'
-                  suffix={
-                    <div className={styles.passwordToggler} onClick={isPasswordVisibleState.toggle}>
-                      {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
-                    </div>
-                  }
-                  register={register('password', SIGN_UP_FIELDS_CONFIG.password)}
-                  error={errors.password ? errors.password.message : ''}
-                  label='Password'
-                  placeholder='Create password'
-                />
-
+                <div className={styles.step}> {multiStepForm.activeStep.content}</div>
                 <div className={styles.submit}>
                   <div className={styles.inlineQuestion}>
                     Already have an account?
