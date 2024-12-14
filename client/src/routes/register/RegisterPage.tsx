@@ -119,7 +119,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                   <div className={styles.buttonsRow}>
                     <Button
                       className={styles.previousStepButton}
-                      loading={pendingRegistration}
                       variant='secondary'
                       as='button'
                       onClick={multiStepForm.goToPrevious}

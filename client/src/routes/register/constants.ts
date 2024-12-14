@@ -5,7 +5,10 @@ type RegisterHandler = ReturnType<typeof useForm<RegisterPageFields>>['register'
 
 type RegisterHandlerArgs = Parameters<RegisterHandler>[1];
 
-export const SIGN_UP_FIELDS_CONFIG: Record<keyof RegisterPageFields, RegisterHandlerArgs> = {
+export const SIGN_UP_FIELDS_CONFIG: Omit<
+  Record<keyof RegisterPageFields, RegisterHandlerArgs>,
+  'role'
+> = {
   name: {
     maxLength: { value: 40, message: 'Max name length is 40 symbols' },
     minLength: { value: 4, message: 'Min name length is 4 symbols' },

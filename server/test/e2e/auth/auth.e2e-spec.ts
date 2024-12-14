@@ -1,11 +1,14 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { TestUtils } from '../../utils/TestUtils';
+import type { CreateUserDto } from '@src/modules/user/dto/create-user.dto';
+import { USER_ROLE } from '@src/globalTypes';
 
-const successfulUserPayload = {
+const successfulUserPayload: CreateUserDto = {
   email: 'wyzdrykms@gmail.com',
   name: 'Test User',
   password: 'passwo_rD1a',
+  role: USER_ROLE.OWNER,
 };
 
 const ENDPOINTS = {
@@ -53,6 +56,15 @@ describe('Auth E2E Tests', () => {
           ...successfulUserPayload,
           password: 'asdawrwr1',
         } as typeof successfulUserPayload)
+        .expect(400));
+
+    it('Should return bad role (400)', async () =>
+      request(app.getHttpServer())
+        .post(ENDPOINTS.register)
+        .send({
+          ...successfulUserPayload,
+          role: 'norole',
+        })
         .expect(400));
 
     it('Should return bad name (400)', async () =>

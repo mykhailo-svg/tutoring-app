@@ -11,6 +11,11 @@ export type AuthUser = {
   id: number;
 };
 
+export enum USER_ROLE {
+  STUDENT = 'STUDENT',
+  OWNER = 'OWNER',
+}
+
 export type AuthProtectedRequest = Request & { user: AuthUser };
 
 // Cookies
