@@ -7,15 +7,15 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { appRoutes } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/buttons';
-import { TextField } from '@/shared/ui/inputs';
 import * as Toast from '@radix-ui/react-toast';
-import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { CommonToast } from '@/shared/ui/toasts';
 import { COMMON_TOAST_TONE } from '@/shared/ui/toasts/CommonToast/types';
-import { SIGN_UP_FIELDS_CONFIG } from './constants';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
+import { MultiStepsFormStep, useMultiStepForm } from '@/shared/hooks';
+import { RegisterPageCredentialsForm, RegisterPageRolesPickerStep } from './ui/steps';
+import { USER_ROLE } from '@/global_types';
 
 type RegisterPageProps = {};
 
@@ -37,9 +37,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   const {
     register,
+    setValue,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterPageFields>();
+  } = useForm<RegisterPageFields>({ defaultValues: { role: USER_ROLE.STUDENT } });
 
   const onSubmit: SubmitHandler<RegisterPageFields> = useCallback(
     (data) => {
@@ -61,8 +63,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     }
   }, [registrationResponse]);
 
-  const isPasswordVisibleState = useToggle(false);
-
   const isToastActiveState = useToggle(true);
 
   useEffect(() => {
@@ -76,6 +76,21 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
         : 'Unknown error.Please try again'
       : '';
   }, [registrationError, hasRegistrationError]);
+
+  const [role] = watch(['role']);
+
+  const steps = useMemo<MultiStepsFormStep[]>(() => {
+    return [
+      {
+        content: <RegisterPageRolesPickerStep role={role} setFormState={setValue} />,
+      },
+      {
+        content: <RegisterPageCredentialsForm hookFormRegister={register} errors={errors} />,
+      },
+    ];
+  }, [register, setValue, errors, role]);
+
+  const multiStepForm = useMultiStepForm(steps);
 
   return (
     <Toast.Provider>
@@ -94,51 +109,37 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
               <h1 className={styles.title}>Register</h1>
 
               <div className={styles.fields}>
-                <TextField
-                  semanticId='name'
-                  register={register('name', SIGN_UP_FIELDS_CONFIG.name)}
-                  type='text'
-                  error={errors.name ? errors.name.message : ''}
-                  label='Name'
-                  placeholder='Name Surname'
-                />
-
-                <TextField
-                  semanticId='email'
-                  register={register('email', SIGN_UP_FIELDS_CONFIG.email)}
-                  error={errors.email ? errors.email.message : ''}
-                  label='Email'
-                  type='email'
-                  placeholder='example@mail.com'
-                />
-
-                <TextField
-                  type={isPasswordVisibleState.isActive ? 'text' : 'password'}
-                  semanticId='password'
-                  suffix={
-                    <div className={styles.passwordToggler} onClick={isPasswordVisibleState.toggle}>
-                      {isPasswordVisibleState.isActive ? <EyeOpenIcon /> : <EyeNoneIcon />}
-                    </div>
-                  }
-                  register={register('password', SIGN_UP_FIELDS_CONFIG.password)}
-                  error={errors.password ? errors.password.message : ''}
-                  label='Password'
-                  placeholder='Create password'
-                />
-
+                <div className={styles.step}> {multiStepForm.activeStep.content}</div>
                 <div className={styles.submit}>
                   <div className={styles.inlineQuestion}>
                     Already have an account?
                     <Button variant='plain' as='a' href={appRoutes.auth.login} text='Sign in!' />
                   </div>
 
-                  <Button
-                    loading={pendingRegistration}
-                    variant='primary'
-                    as='button'
-                    text='Submit'
-                    type='submit'
-                  />
+                  <div className={styles.buttonsRow}>
+                    <Button
+                      className={styles.previousStepButton}
+                      variant='secondary'
+                      as='button'
+                      onClick={multiStepForm.goToPrevious}
+                      disabled={!multiStepForm.hasPrevious}
+                      text='Previous'
+                      type='button'
+                    />
+                    <Button
+                      loading={pendingRegistration}
+                      variant='primary'
+                      as='button'
+                      onClick={(e) => {
+                        if (multiStepForm.hasNext) {
+                          e.preventDefault();
+                          multiStepForm.goToNext();
+                        }
+                      }}
+                      text={!multiStepForm.hasNext ? 'Submit' : 'Next'}
+                      type={'submit'}
+                    />
+                  </div>
                 </div>
               </div>
             </Form.Root>

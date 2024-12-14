@@ -1,3 +1,10 @@
+// USER
+
+export enum USER_ROLE {
+  STUDENT = 'STUDENT',
+  OWNER = 'OWNER',
+}
+
 export type User = {
   id: number;
   password?: string | undefined;

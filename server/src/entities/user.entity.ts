@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { USER_ROLE } from '@src/globalTypes';
 import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 
 @Entity()
@@ -25,4 +26,7 @@ export class User {
   @Column({ default: false })
   @ApiProperty({ default: false, description: 'Is user email verified' })
   isEmailVerified: boolean;
+
+  @Column({ enum: USER_ROLE, type: 'enum' })
+  role: USER_ROLE;
 }
