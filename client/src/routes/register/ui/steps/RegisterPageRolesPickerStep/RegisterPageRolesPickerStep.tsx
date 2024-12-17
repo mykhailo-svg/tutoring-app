@@ -29,29 +29,34 @@ export const RegisterPageRolesPickerStep: React.FC<RegisterPageRolesPickerStepPr
   role: selectedRole,
 }) => {
   return (
-    <div className={styles.root}>
-      {AVAILABLE_ROLES.map((role) => (
-        <Card
-          onClick={() => {
-            setFormState('role', role);
-          }}
-          active={role === selectedRole}
-          hover
-          key={role}
-        >
-          <div className={classNames(styles.itemInner, { [styles.active]: role === selectedRole })}>
-            {role === selectedRole && (
-              <div className={styles.checkMark}>
-                <CheckIcon height='25px' width='25px' />
-              </div>
-            )}
+    <div>
+      <h2 className={styles.subtitle}>How would you like to join us?</h2>
+      <div className={styles.roles}>
+        {AVAILABLE_ROLES.map((role) => (
+          <Card
+            onClick={() => {
+              setFormState('role', role);
+            }}
+            active={role === selectedRole}
+            hover
+            key={role}
+          >
+            <div
+              className={classNames(styles.itemInner, { [styles.active]: role === selectedRole })}
+            >
+              {role === selectedRole && (
+                <div className={styles.checkMark}>
+                  <CheckIcon height='25px' width='25px' />
+                </div>
+              )}
 
-            <div className={styles.roleIcon}>{ROLES_CONTENT_MAP[role].icon}</div>
+              <div className={styles.roleIcon}>{ROLES_CONTENT_MAP[role].icon}</div>
 
-            <div className={styles.roleName}>{ROLES_CONTENT_MAP[role].name}</div>
-          </div>
-        </Card>
-      ))}
+              <div className={styles.roleName}>{ROLES_CONTENT_MAP[role].name}</div>
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
