@@ -2,8 +2,15 @@
   display: flex;
   height: 100vh;
   background: var(--grey-color);
+  overflow: auto;
 }
 
 .content {
   flex: 1 1 auto;
+  overflow: auto;
+  position: relative;
+}
+
+.inner {
+  height: 6000px;
 }
