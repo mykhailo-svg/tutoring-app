@@ -1,0 +1,33 @@
+.root {
+  background: var(--primary-color);
+  width: 320px;
+  padding: 50px 0px 0px 45px;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 50px;
+}
+
+.link {
+  display: flex;
+
+  font-weight: 600;
+  font-size: 16px;
+
+  transition: color, background ease 0.3s;
+
+  align-items: center;
+  opacity: 1;
+  gap: 12px;
+  color: var(--grey-color);
+  padding: 25px 30px;
+  border-radius: 36px 0% 0% 36px;
+  &.linkActive,
+  &:hover {
+    color: var(--primary-color);
+    background: var(--grey-color);
+  }
+}
