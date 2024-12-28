@@ -1,20 +1,17 @@
 .root {
-  height: 100vh;
   background: var(--grey-color);
-  overflow: auto;
-}
-
-
-.row{
+  height: 100vh;
   display: flex;
 }
 
 .content {
   flex: 1 1 auto;
-  overflow: auto;
+
   position: relative;
+  overflow: auto;
 
   padding: 20px;
+  padding-top: 0px;
 }
 
 .inner {

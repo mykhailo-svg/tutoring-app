@@ -1,14 +1,13 @@
 @use '../../../../styles//mixins' as *;
 
 .root {
-  position: sticky;
-  top: 0;
   background: var(--grey-color);
 
-  display: flex;
+  padding-top: 20px;
 
-  align-items: center;
-  gap: 20px;
+  position: sticky;
+  top: 0;
+  display: flex;
 }
 
 .logo {

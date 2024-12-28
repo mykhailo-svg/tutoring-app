@@ -6,7 +6,13 @@
   padding: 50px 0px 0px 45px;
 }
 
+.logo {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .navigation {
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -37,6 +43,13 @@
   .root {
     padding: 15px;
     width: 90px;
+  }
+
+  .logo {
+    justify-content: center;
+    span {
+      display: none;
+    }
   }
 
   .link {

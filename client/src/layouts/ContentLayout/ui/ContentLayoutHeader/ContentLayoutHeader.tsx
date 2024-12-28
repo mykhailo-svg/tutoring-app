@@ -2,7 +2,7 @@
 
 import { useCurrentPage } from '@/shared/hooks';
 import styles from './ContentLayoutHeader.module.scss';
-import { Logo, UserAuthQuickActions } from '@/components';
+import { UserAuthQuickActions } from '@/components';
 
 type ContentLayoutHeaderProps = {};
 
@@ -11,10 +11,6 @@ export const ContentLayoutHeader: React.FC<ContentLayoutHeaderProps> = () => {
 
   return (
     <header className={styles.root}>
-      <div className={styles.logo}>
-        <Logo />
-      </div>
-
       <h1 className={styles.title}>{pageTitle}</h1>
       <UserAuthQuickActions />
     </header>

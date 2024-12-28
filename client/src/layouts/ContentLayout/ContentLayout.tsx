@@ -9,13 +9,10 @@ type ContentLayoutProps = {
 export const ContentLayout: React.FC<ContentLayoutProps> = async ({ children }) => {
   return (
     <div className={styles.root}>
-      <ContentLayoutHeader />
-
-      <div className={styles.row}>
-        <NavSidebar />
-        <div className={styles.content}>
-          <div className={styles.inner}>content{children}</div>
-        </div>
+      <NavSidebar />
+      <div className={styles.content}>
+        <ContentLayoutHeader />
+        <div className={styles.inner}>content{children}</div>
       </div>
     </div>
   );

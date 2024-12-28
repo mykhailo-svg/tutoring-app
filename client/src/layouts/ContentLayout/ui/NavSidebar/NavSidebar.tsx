@@ -5,8 +5,8 @@ import styles from './NavSidebar.module.scss';
 import { useMemo } from 'react';
 import { renderNavigationLinks } from './utils';
 import classNames from 'classnames';
-import { Logo } from '@/components/Logo';
 import { useCurrentPage } from '@/shared/hooks';
+import { Logo } from '@/components';
 
 type NavSidebarProps = {};
 
@@ -17,6 +17,10 @@ export const NavSidebar: React.FC<NavSidebarProps> = () => {
 
   return (
     <aside className={styles.root}>
+      <div className={styles.logo}>
+        <Logo />
+      </div>
+
       <nav className={styles.navigation}>
         {links.map((link) => (
           <Link
