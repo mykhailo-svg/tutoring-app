@@ -1,8 +1,12 @@
 .root {
-  display: flex;
   height: 100vh;
   background: var(--grey-color);
   overflow: auto;
+}
+
+
+.row{
+  display: flex;
 }
 
 .content {

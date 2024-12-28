@@ -10,12 +10,6 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-top: 50px;
-}
-
-.logo {
-  display: flex;
-  justify-content: flex-start;
 }
 
 .link {
@@ -45,13 +39,6 @@
     width: 90px;
   }
 
-  .logo {
-    span {
-      display: none;
-    }
-    justify-content: center;
-  }
-
   .link {
     border-radius: 8px;
     padding: 5px;
@@ -60,5 +47,10 @@
     span {
       display: none !important;
     }
+  }
+}
+@include responsiveStyles(tablet, false) {
+  .root {
+    display: none;
   }
 }

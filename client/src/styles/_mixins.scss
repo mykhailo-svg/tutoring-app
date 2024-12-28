@@ -6,8 +6,14 @@
       @content;
     }
   } @else if $device == tablet {
-    @media (min-width: 600px) and (max-width: 768px) {
-      @content;
+    @if $scoped== true {
+      @media (min-width: 600) and (max-width: 768px) {
+        @content;
+      }
+    } @else if $scoped== false {
+      @media (max-width: 768px) {
+        @content;
+      }
     }
   } @else if $device == laptop {
     @if $scoped== true {

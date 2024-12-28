@@ -17,10 +17,6 @@ export const NavSidebar: React.FC<NavSidebarProps> = () => {
 
   return (
     <aside className={styles.root}>
-      <div className={styles.logo}>
-        <Logo />
-      </div>
-
       <nav className={styles.navigation}>
         {links.map((link) => (
           <Link

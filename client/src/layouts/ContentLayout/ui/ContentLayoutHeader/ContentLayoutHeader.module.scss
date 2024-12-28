@@ -1,3 +1,5 @@
+@use '../../../../styles//mixins' as *;
+
 .root {
   position: sticky;
   top: 0;
@@ -6,10 +8,36 @@
   display: flex;
 
   align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  width: 320px;
+  padding: 25px 10px;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0px;
+  background: var(--primary-color);
 }
 
 .title {
   font-size: 24px;
   color: var(--primary-color);
   flex: 1 1 auto;
+}
+
+@include responsiveStyles(laptop, false) {
+  .logo {
+    width: 90px;
+
+    span {
+      display: none;
+    }
+  }
+}
+
+@include responsiveStyles(tablet, false) {
+  .logo {
+    background: transparent;
+  }
 }
