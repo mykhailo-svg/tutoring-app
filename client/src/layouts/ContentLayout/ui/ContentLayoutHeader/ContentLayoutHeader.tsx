@@ -1,12 +1,18 @@
-import { Popover } from '@/shared/ui/popovers';
+'use client';
+
+import { useCurrentPage } from '@/shared/hooks';
 import styles from './ContentLayoutHeader.module.scss';
+import { UserAuthQuickActions } from '@/components';
 
 type ContentLayoutHeaderProps = {};
 
 export const ContentLayoutHeader: React.FC<ContentLayoutHeaderProps> = () => {
+  const { translatedName: pageTitle } = useCurrentPage();
+
   return (
     <header className={styles.root}>
-      <Popover activator={<div>click</div>} >hello</Popover>
+      <h1 className={styles.title}>{pageTitle}</h1>
+      <UserAuthQuickActions />
     </header>
   );
 };

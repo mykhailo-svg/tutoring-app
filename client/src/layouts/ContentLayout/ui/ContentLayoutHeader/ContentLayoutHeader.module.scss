@@ -3,5 +3,13 @@
   top: 0;
   background: var(--grey-color);
 
-  padding: 20px;
+  display: flex;
+
+  align-items: center;
+}
+
+.title {
+  font-size: 24px;
+  color: var(--primary-color);
+  flex: 1 1 auto;
 }

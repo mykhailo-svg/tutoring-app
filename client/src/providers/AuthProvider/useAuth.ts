@@ -4,7 +4,7 @@ import { AuthContext } from './AuthContext';
 import jsCookies from 'js-cookie';
 import { COOKIES_NAME } from '@/global_types';
 import { redirect, useRouter } from 'next/navigation';
-import { appRoutes } from '@/shared/constants/routes';
+import { APP_ROUTES } from '@/shared/constants/routes';
 import { APIEndpoints, axiosClient } from '@/api';
 import cookies from 'js-cookie';
 
@@ -26,7 +26,7 @@ export const useAuth = () => {
     jsCookies.remove(COOKIES_NAME.ACCESS_TOKEN);
     jsCookies.remove(COOKIES_NAME.REFRESH_TOKEN);
 
-    redirect(appRoutes.auth.login);
+    redirect(APP_ROUTES.auth.login);
   }, [auth]);
 
   return { ...auth, logout };

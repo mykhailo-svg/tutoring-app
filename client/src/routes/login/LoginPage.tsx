@@ -2,7 +2,7 @@
 import * as Form from '@radix-ui/react-form';
 import styles from './LoginPage.module.scss';
 import { Button } from '@/shared/ui/buttons';
-import { appRoutes } from '@/shared/constants/routes';
+import { APP_ROUTES } from '@/shared/constants/routes';
 import { TextField } from '@/shared/ui/inputs';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LoginPageFields } from './types';
@@ -34,7 +34,7 @@ export const LoginPage = () => {
     if (loginResponse?.data) {
       setAuthState(() => ({ user: loginResponse.data }));
 
-      redirect(appRoutes.home);
+      redirect(APP_ROUTES.home);
     }
   }, [loginResponse]);
 
@@ -42,7 +42,7 @@ export const LoginPage = () => {
     <div className={styles.row}>
       <div className={styles.questionColumn}>
         <h2>Want to create an account?</h2>
-        <Button as='a' variant='secondary' text='Sign up' href={appRoutes.auth.register} />
+        <Button as='a' variant='secondary' text='Sign up' href={APP_ROUTES.auth.register} />
       </div>
 
       <div className={styles.formColumn}>
@@ -77,7 +77,7 @@ export const LoginPage = () => {
           <div className={styles.submit}>
             <div className={styles.plainQuestion}>
               Don't have an account?
-              <Button as='a' href={appRoutes.auth.register} variant='plain' text='Create it!' />
+              <Button as='a' href={APP_ROUTES.auth.register} variant='plain' text='Create it!' />
             </div>
             <Button loading={isLoading} text='Submit' variant='primary' as='button' type='submit' />
           </div>

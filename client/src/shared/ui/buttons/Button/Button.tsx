@@ -1,8 +1,11 @@
 import classNames from 'classnames';
-import { ComponentPropsWithoutRef, useMemo } from 'react';
+import { ComponentPropsWithoutRef, ReactNode, useMemo } from 'react';
 import styles from './Button.module.scss';
-import { CommonButtonVariant } from './types';
-import { COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS } from './constants';
+import { CommonButtonSize, CommonButtonVariant } from './types';
+import {
+  COMMON_BUTTON_SIZE_CLASS_MAP,
+  COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS,
+} from './constants';
 import { Spinner } from '../../loaders';
 import Link from 'next/link';
 
@@ -18,6 +21,9 @@ type ButtonProps<T extends HTMLTagType> = {
   loading?: boolean;
   variant?: CommonButtonVariant;
   disabled?: boolean;
+  fullWidth?: boolean;
+  size?: CommonButtonSize;
+  icon?: ReactNode;
 } & HTMLElementProps<T>;
 
 export function Button<T extends HTMLTagType>({
@@ -25,22 +31,33 @@ export function Button<T extends HTMLTagType>({
   text,
   loading = false,
   disabled = false,
+  size = 'large',
   variant = 'primary',
+  icon,
   as,
+  fullWidth,
   ...rest
 }: ButtonProps<T>) {
   const Tag = useMemo(() => (as === 'a' ? Link : (as as HTMLTagType)), [as]);
 
-  return (
-    <Tag
-      className={classNames(
+  const mergedClassName = useMemo(
+    () =>
+      classNames(
         styles.root,
         className,
+        COMMON_BUTTON_SIZE_CLASS_MAP[size],
         COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS[variant],
-        { [styles.disabled]: disabled || loading }
-      )}
-      {...(rest as any)}
-    >
+        {
+          [styles.disabled]: disabled || loading,
+          [styles.fullWidth]: fullWidth,
+        }
+      ),
+    [disabled, loading, className, variant, fullWidth, size]
+  );
+
+  return (
+    <Tag className={mergedClassName} {...(rest as any)}>
+      {icon}
       {text}
       {loading ? <Spinner /> : null}
     </Tag>

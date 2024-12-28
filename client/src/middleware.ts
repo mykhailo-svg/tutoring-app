@@ -4,7 +4,7 @@ import { APIEndpoints, getApiEndpointUrl } from './api';
 import { cookies } from 'next/headers';
 import { COOKIES_NAME } from './global_types';
 import { HttpStatusCode } from 'axios';
-import { appRoutes } from './shared/constants/routes';
+import { APP_ROUTES } from './shared/constants/routes';
 import { revalidatePath } from 'next/cache';
 
 export const middleware: NextMiddleware = async (request) => {
@@ -13,13 +13,13 @@ export const middleware: NextMiddleware = async (request) => {
   const cookiesClient = await cookies();
 
   const isOnAuthPage =
-    request.nextUrl.pathname === appRoutes.auth.login ||
-    request.nextUrl.pathname === appRoutes.auth.register;
+    request.nextUrl.pathname === APP_ROUTES.auth.login ||
+    request.nextUrl.pathname === APP_ROUTES.auth.register;
 
   const refreshToken = cookiesClient.get(COOKIES_NAME.REFRESH_TOKEN)?.value;
   const accessToken = cookiesClient.get(COOKIES_NAME.ACCESS_TOKEN)?.value;
 
-  const loginPageUrl = new URL(appRoutes.auth.login, request.url);
+  const loginPageUrl = new URL(APP_ROUTES.auth.login, request.url);
 
   if (!isOnAuthPage && !accessToken && !refreshToken) {
     return NextResponse.redirect(loginPageUrl);
@@ -68,7 +68,7 @@ export const middleware: NextMiddleware = async (request) => {
       return NextResponse.redirect(loginPageUrl);
     }
   } else if (isOnAuthPage) {
-    return NextResponse.redirect(new URL(appRoutes.home, request.url));
+    return NextResponse.redirect(new URL(APP_ROUTES.home, request.url));
   }
 
   return response;

@@ -5,7 +5,7 @@ import styles from './RegisterPage.module.scss';
 import { RegisterPageFields } from './types';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
-import { appRoutes } from '@/shared/constants/routes';
+import { APP_ROUTES } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/buttons';
 import * as Toast from '@radix-ui/react-toast';
 import { useToggle } from '@/shared/hooks/useToggle';
@@ -52,14 +52,14 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   useLayoutEffect(() => {
     if (user) {
-      router.push(appRoutes.home);
+      router.push(APP_ROUTES.home);
     }
   }, [user]);
 
   useEffect(() => {
     if (registrationResponse && registrationResponse.data.user) {
       setAuthState(() => ({ user: registrationResponse.data.user }));
-      router.push(appRoutes.home);
+      router.push(APP_ROUTES.home);
     }
   }, [registrationResponse]);
 
@@ -113,7 +113,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                 <div className={styles.submit}>
                   <div className={styles.inlineQuestion}>
                     Already have an account?
-                    <Button variant='plain' as='a' href={appRoutes.auth.login} text='Sign in!' />
+                    <Button variant='plain' as='a' href={APP_ROUTES.auth.login} text='Sign in!' />
                   </div>
 
                   <div className={styles.buttonsRow}>
@@ -152,7 +152,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
                 variant='secondary'
                 className={styles.signInButton}
                 as='a'
-                href={appRoutes.auth.login}
+                href={APP_ROUTES.auth.login}
                 text='Sign in'
               />
             </div>
