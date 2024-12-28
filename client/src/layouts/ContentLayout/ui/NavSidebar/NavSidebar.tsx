@@ -17,7 +17,10 @@ export const NavSidebar: React.FC<NavSidebarProps> = () => {
 
   return (
     <aside className={styles.root}>
-      <Logo />
+      <div className={styles.logo}>
+        <Logo />
+      </div>
+
       <nav className={styles.navigation}>
         {links.map((link) => (
           <Link
@@ -26,7 +29,7 @@ export const NavSidebar: React.FC<NavSidebarProps> = () => {
             href={link.href}
           >
             {link.icon}
-            <span> {link.title}</span>
+            <span>{link.title}</span>
           </Link>
         ))}
       </nav>

@@ -1,3 +1,5 @@
+@use '../../../../styles/mixins' as *;
+
 .root {
   background: var(--primary-color);
   width: 320px;
@@ -9,6 +11,11 @@
   flex-direction: column;
   gap: 15px;
   margin-top: 50px;
+}
+
+.logo {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .link {
@@ -29,5 +36,29 @@
   &:hover {
     color: var(--primary-color);
     background: var(--grey-color);
+  }
+}
+
+@include responsiveStyles(laptop, false) {
+  .root {
+    padding: 15px;
+    width: 90px;
+  }
+
+  .logo {
+    span {
+      display: none;
+    }
+    justify-content: center;
+  }
+
+  .link {
+    border-radius: 8px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    span {
+      display: none !important;
+    }
   }
 }

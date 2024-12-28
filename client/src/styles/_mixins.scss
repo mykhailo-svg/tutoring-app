@@ -1,0 +1,23 @@
+@use './variables' as *;
+
+@mixin responsiveStyles($device, $scoped) {
+  @if $device == phone {
+    @media (max-width: #{--breakpoint-phone}) {
+      @content;
+    }
+  } @else if $device == tablet {
+    @media (min-width: 600px) and (max-width: 768px) {
+      @content;
+    }
+  } @else if $device == laptop {
+    @if $scoped== true {
+      @media (min-width: 768px) and (max-width: 1024px) {
+        @content;
+      }
+    } @else if $scoped== false {
+      @media (max-width: 1024px) {
+        @content;
+      }
+    }
+  }
+}
