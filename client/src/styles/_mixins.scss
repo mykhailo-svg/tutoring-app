@@ -2,7 +2,7 @@
 
 @mixin responsiveStyles($device, $scoped) {
   @if $device == phone {
-    @media (max-width: #{--breakpoint-phone}) {
+    @media (max-width: 600px) {
       @content;
     }
   } @else if $device == tablet {

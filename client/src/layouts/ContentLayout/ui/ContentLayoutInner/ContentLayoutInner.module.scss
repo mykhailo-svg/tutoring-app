@@ -1,0 +1,23 @@
+@use '../../../../styles/mixins' as *;
+
+.content {
+  flex: 1 1 auto;
+
+  position: relative;
+  overflow: auto;
+
+  padding: 20px;
+  padding-top: 0px;
+}
+
+.inner {
+  padding-top: 20px;
+  height: 6000px;
+}
+
+@include responsiveStyles(phone, false) {
+  .content {
+    padding: 10px;
+    padding-top: 0px;
+  }
+}

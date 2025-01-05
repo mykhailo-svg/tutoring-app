@@ -58,12 +58,38 @@
     display: flex;
     justify-content: center;
     span {
-      display: none !important;
+      display: none;
     }
   }
 }
+.close {
+  display: none;
+  font-size: 60px;
+  flex: 1 1 auto;
+  color: white;
+}
 @include responsiveStyles(tablet, false) {
   .root {
-    display: none;
+    position: fixed;
+    z-index: 1;
+    height: 100vh;
+    width: 100vw;
+
+    &.mobileNotActive {
+      display: none;
+    }
+  }
+  .close {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .logo {
+    justify-content: flex-start;
+  }
+  .link {
+    span {
+      display: block;
+    }
   }
 }

@@ -5,18 +5,28 @@
 
   padding-top: 20px;
 
+  align-items: center;
+  gap: 20px;
+
   position: sticky;
   top: 0;
   display: flex;
 }
 
+.burger {
+  font-size: 40px;
+  flex: 1 1 auto;
+  display: none;
+}
+
 .logo {
-  width: 320px;
-  padding: 25px 10px;
+  span {
+    display: none;
+  }
   display: flex;
   justify-content: center;
   padding-bottom: 0px;
-  background: var(--primary-color);
+  display: none;
 }
 
 .title {
@@ -25,18 +35,17 @@
   flex: 1 1 auto;
 }
 
-@include responsiveStyles(laptop, false) {
-  .logo {
-    width: 90px;
-
-    span {
-      display: none;
-    }
+@include responsiveStyles(tablet, false) {
+  .logo,
+  .burger {
+    display: block;
   }
 }
-
-@include responsiveStyles(tablet, false) {
-  .logo {
-    background: transparent;
+@include responsiveStyles(phone, false) {
+  .root{
+    padding-top: 10px;
+  }
+  .title {
+    display: none;
   }
 }
