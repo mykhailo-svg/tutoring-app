@@ -20,9 +20,14 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({ mobileMenuActive, closeM
 
   const { pathname } = useCurrentPage();
 
+  const rootClassName = useMemo(
+    () => classNames(styles.root, { [styles.mobileNotActive]: !mobileMenuActive }),
+    [mobileMenuActive]
+  );
+
   return (
-    <aside className={classNames(styles.root, { [styles.mobileNotActive]: !mobileMenuActive })}>
-      <div style={{ display: 'flex' }}>
+    <aside className={rootClassName}>
+      <div className={styles.menu}>
         <div onClick={closeMenu} className={styles.logo}>
           <Logo />
         </div>

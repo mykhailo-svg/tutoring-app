@@ -36,7 +36,7 @@ export const LoginPage = () => {
 
       redirect(APP_ROUTES.home);
     }
-  }, [loginResponse]);
+  }, [loginResponse, setAuthState]);
 
   return (
     <div className={styles.row}>

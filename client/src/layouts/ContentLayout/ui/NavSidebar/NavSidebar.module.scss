@@ -68,6 +68,11 @@
   flex: 1 1 auto;
   color: white;
 }
+
+.menu {
+  display: flex;
+}
+
 @include responsiveStyles(tablet, false) {
   .root {
     position: fixed;

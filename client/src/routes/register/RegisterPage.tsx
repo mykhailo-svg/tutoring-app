@@ -63,11 +63,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     }
   }, [registrationResponse]);
 
-  const isToastActiveState = useToggle(true);
+  const { setValue: toastActiveSetValue, isActive: isToastActive } = useToggle(true);
 
   useEffect(() => {
-    isToastActiveState.setValue(hasRegistrationError);
-  }, [hasRegistrationError, isToastActiveState.setValue]);
+    toastActiveSetValue(hasRegistrationError);
+  }, [hasRegistrationError, toastActiveSetValue]);
 
   const toastErrorMessage = useMemo(() => {
     return hasRegistrationError
@@ -97,8 +97,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
       <CommonToast
         message={toastErrorMessage}
         tone={COMMON_TOAST_TONE.ERROR}
-        handleOpenChange={isToastActiveState.setValue}
-        active={isToastActiveState.isActive && toastErrorMessage.length > 0}
+        handleOpenChange={toastActiveSetValue}
+        active={isToastActive && toastErrorMessage.length > 0}
       />
       <Toast.Viewport className={styles.toastViewport} />
 
