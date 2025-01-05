@@ -10,6 +10,7 @@ export type User = {
   password?: string | undefined;
   email: string;
   name: string;
+  role: USER_ROLE;
   isEmailVerified: boolean;
 };
 

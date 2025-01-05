@@ -1,12 +1,13 @@
 import { ReactQueryProvider } from '@/providers';
 import { ReactNode } from 'react';
-import favicon from '../../../public/favicon.ico';
 import styles from './RootLayout.module.scss';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { createAuthHeaders } from '@/shared/helpers';
 import { getApiEndpointUrl, APIEndpoints } from '@/api';
 import { User } from '@/global_types';
-import { headers } from 'next/headers';
+import { Poppins } from 'next/font/google';
+
+const poppins = Poppins({ weight: ['400', '700', '800', '900'] });
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -30,7 +31,7 @@ export const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
 
   return (
     <html lang='en'>
-      <body>
+      <body className={poppins.className}>
         <ReactQueryProvider>
           <AuthProvider initialData={{ user }}>
             <main className={styles.container}>{children}</main>

@@ -1,5 +1,6 @@
-import { Header } from '@/components';
 import { ReactNode } from 'react';
+import styles from './ContentLayout.module.scss';
+import { NavSidebar, ContentLayoutHeader, ContentLayoutInner } from './ui';
 
 type ContentLayoutProps = {
   children: ReactNode;
@@ -7,8 +8,8 @@ type ContentLayoutProps = {
 
 export const ContentLayout: React.FC<ContentLayoutProps> = async ({ children }) => {
   return (
-    <>
-      <Header /> hello{children}
-    </>
+    <div className={styles.root}>
+      <ContentLayoutInner>{children}</ContentLayoutInner>
+    </div>
   );
 };

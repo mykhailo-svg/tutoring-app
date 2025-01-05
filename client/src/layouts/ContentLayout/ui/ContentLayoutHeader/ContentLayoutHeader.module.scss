@@ -1,0 +1,51 @@
+@use '../../../../styles//mixins' as *;
+
+.root {
+  background: var(--grey-color);
+
+  padding-top: 20px;
+
+  align-items: center;
+  gap: 20px;
+
+  position: sticky;
+  top: 0;
+  display: flex;
+}
+
+.burger {
+  font-size: 40px;
+  flex: 1 1 auto;
+  display: none;
+}
+
+.logo {
+  span {
+    display: none;
+  }
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0px;
+  display: none;
+}
+
+.title {
+  font-size: 24px;
+  color: var(--primary-color);
+  flex: 1 1 auto;
+}
+
+@include responsiveStyles(tablet, false) {
+  .logo,
+  .burger {
+    display: block;
+  }
+}
+@include responsiveStyles(phone, false) {
+  .root{
+    padding-top: 10px;
+  }
+  .title {
+    display: none;
+  }
+}

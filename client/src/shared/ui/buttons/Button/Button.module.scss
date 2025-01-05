@@ -1,14 +1,29 @@
 .root {
-  border-radius: var(--border-radius);
-  padding: 20px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   font-weight: 600;
-  font-size: 26px;
   &:hover {
     opacity: 0.8;
+  }
+  &.fullWidth {
+    width: 100%;
+  }
+
+  // Sizes
+  &.large {
+    padding: 20px;
+    font-size: 26px;
+  }
+  &.medium {
+    padding: 10px;
+    font-size: 20px;
+  }
+  &.small {
+    padding: 8px;
+    font-size: 16px;
   }
 }
 
@@ -16,6 +31,8 @@
   opacity: 0.4;
   pointer-events: none;
 }
+
+// Variants
 
 .primary {
   background: var(--primary-color);
@@ -34,4 +51,10 @@
   padding: 0px;
   color: var(--primary-color);
   font-size: inherit;
+}
+
+.minor {
+  background: #efe5f7;
+  color: var(--primary-color);
+  fill: var(--primary-color);
 }

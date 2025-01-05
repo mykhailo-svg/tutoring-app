@@ -3,11 +3,22 @@
 
   // Color system
   --primary-color: #5038ed;
+
+  --grey-color: #f3f4ff;
   --white-color: #fff;
 
-  --error-color: #EB5757;
+  --error-color: #eb5757;
   --error-color-soft: #fef1f2;
 
   --info-color: rgba(145, 208, 255, 1);
   --info-color-active: rgb(0, 107, 153);
+
+  // Border
+  --divider-line-border: 1px solid rgb(221, 221, 221);
+
+  // Breakpoints
+
+  --breakpoint-phone: 600px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
 }
