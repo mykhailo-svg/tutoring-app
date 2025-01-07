@@ -6,12 +6,20 @@ import { createAuthHeaders } from '@/shared/helpers';
 import { getApiEndpointUrl, APIEndpoints } from '@/api';
 import { User } from '@/global_types';
 import { Poppins } from 'next/font/google';
+import { dir } from 'i18next';
+import { LocalizationProvider } from '@/providers/LocalizationProvider';
 
 const poppins = Poppins({ weight: ['400', '700', '800', '900'] });
 
+const languages = ['en', 'de'];
+
 type RootLayoutProps = {
   children: ReactNode;
+  params: {
+    lng: string;
+  };
 };
+
 const getUser = async () => {
   try {
     const user = await fetch(getApiEndpointUrl(APIEndpoints.user.revealCurrent), {
@@ -26,15 +34,19 @@ const getUser = async () => {
   return null;
 };
 
-export const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
+export const RootLayout: React.FC<RootLayoutProps> = async ({ children, params }) => {
   const user = await getUser();
 
+  const { lng } = await params;
+
   return (
-    <html lang='en'>
+    <html lang={lng} dir={dir(lng)}>
       <body className={poppins.className}>
         <ReactQueryProvider>
           <AuthProvider initialData={{ user }}>
-            <main className={styles.container}>{children}</main>
+            <LocalizationProvider language={lng}>
+              <main className={styles.container}>{children}</main>
+            </LocalizationProvider>
           </AuthProvider>
         </ReactQueryProvider>
       </body>

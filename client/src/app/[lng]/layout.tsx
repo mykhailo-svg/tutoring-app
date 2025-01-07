@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import '../styles/_normalize.scss';
-import '../styles/_variables.scss';
+import '../../styles/_normalize.scss';
+import '../../styles/_variables.scss';
 import { RootLayout } from '@/layouts/Root';
 
 export const metadata: Metadata = {

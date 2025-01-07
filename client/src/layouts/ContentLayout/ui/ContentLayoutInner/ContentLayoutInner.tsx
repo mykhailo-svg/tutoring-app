@@ -4,11 +4,14 @@ import { ContentLayoutHeader } from '../ContentLayoutHeader';
 import { NavSidebar } from '../NavSidebar';
 import styles from './ContentLayoutInner.module.scss';
 import { useToggle } from '@/shared/hooks';
+import { useTranslation } from '@/app/i18n/client';
 
 type ContentLayoutInnerProps = { children?: ReactNode };
 
 export const ContentLayoutInner: React.FC<ContentLayoutInnerProps> = ({ children }) => {
   const mobileMenuToggler = useToggle(false);
+
+  const { t } = useTranslation('translation', '');
 
   return (
     <>
