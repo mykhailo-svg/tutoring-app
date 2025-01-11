@@ -4,6 +4,7 @@
 .row {
   display: flex;
   gap: 30px;
+  position: relative;
 }
 
 .avatar {
@@ -32,5 +33,15 @@
   gap: 3px;
   svg {
     color: var(--primary-color);
+  }
+}
+
+.editGeneralData {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  button{
+    border-radius: 100%;
   }
 }
