@@ -29,13 +29,13 @@
   align-items: center;
   opacity: 1;
   gap: 12px;
-  color: var(--grey-color);
+  color: var(--grey-color-light);
   padding: 25px 30px;
   border-radius: 36px 0% 0% 36px;
   &.linkActive,
   &:hover {
     color: var(--primary-color);
-    background: var(--grey-color);
+    background: var(--grey-color-light);
   }
 }
 
