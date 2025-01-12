@@ -31,10 +31,10 @@ const ProfilePage = () => {
       const uploadFile = async () => {
         const formData = new FormData();
 
-        formData.append('image', file);
-        formData.append('key', '');
+        formData.append('file', file);
+        // formData.append('key', '307a45fc4c0c9c040cca8449bba8fab3');
 
-        const upload = await fetch('https://api.imgbb.com/1/upload', {
+        const upload = await fetch('http://localhost:5000/api/user/upload', {
           body: formData,
           method: 'POST',
         });

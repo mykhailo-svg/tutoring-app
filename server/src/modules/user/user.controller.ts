@@ -12,8 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Auth } from '@src/decorators';
 import { AuthProtectedRequest } from '@src/globalTypes';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { getConfig } from '@src/config';
 
 @ApiTags('User')
 @Controller('user')
@@ -35,30 +34,19 @@ export class UserController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   public async uploadFile(@UploadedFile() file) {
+    const config = getConfig();
+
     const formData = new FormData();
 
-    // Convert the file buffer to a binary string (not base64)
-    const binaryFile = file.buffer.toString('binary');
+    formData.append('key', config.ibbImagesStorage.apiKey);
+    formData.append('image', file.buffer.toString('base64'));
 
-    console.log('Binary File Data:', binaryFile); // Debugging log to see the binary string
-
-    // Append necessary fields to the form data
-    formData.append('expires', '2025-01-12T20:00:00');
-    formData.append('autoDelete', 'true');
-    // Append the file buffer directly as raw binary (FormData will handle it)
-    formData.append('file', file.buffer);
-
-    const upload = await fetch('https://file.io/', {
+    const upload = await fetch('https://api.imgbb.com/1/upload', {
       body: formData,
       method: 'POST',
-      headers: {
-        authorization: 'Bearer PLB4IE7.HB78Z7N-9J645DF-GGEPPX7-MGCD1S3',
-      },
     });
 
     console.log(upload.status);
-    console.log(upload.body);
-    console.log(await upload.json());
 
     return file;
   }

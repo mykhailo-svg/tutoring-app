@@ -52,7 +52,7 @@ export const Modal: FC<ModalProps> = ({
           </Button>
         </div>
 
-        <div>{children}</div>
+        <div className={styles.inner}>{children}</div>
       </Dialog.Content>
     </Dialog.Portal>
   </Dialog.Root>
