@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { MODAL_SIZES_CLASS_MAP } from './constants';
 import { AiOutlineClose as CloseIcon } from 'react-icons/ai';
 import { Button } from '../../buttons';
+import { Scrollable } from '../../scrollable/Scrollable';
 
 type ModalProps = {
   open: boolean;
@@ -52,7 +53,7 @@ export const Modal: FC<ModalProps> = ({
           </Button>
         </div>
 
-        <div className={styles.inner}>{children}</div>
+        <Scrollable>{children}</Scrollable>
       </Dialog.Content>
     </Dialog.Portal>
   </Dialog.Root>

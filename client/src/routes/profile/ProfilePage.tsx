@@ -62,21 +62,23 @@ const ProfilePage = () => {
         onClose={editAvatarModalToggler.setNotActive}
         onOpen={editAvatarModalToggler.setActive}
       >
-        {selectedFile && (
-          <div>
-            <img src={selectedFile} />
-          </div>
-        )}
-
-        <input hidden onChange={handleImageSelect} type='file' ref={filePickerRef} />
-
-        <Button
-          as='button'
-          onClick={openFilePicker}
-          variant='primary'
-          size='medium'
-          text='Pick image'
-        />
+       <div style={{padding:"20px"}}>
+         {selectedFile && (
+           <div>
+             <img src={selectedFile} />
+           </div>
+         )}
+        
+         <input hidden onChange={handleImageSelect} type='file' ref={filePickerRef} />
+        
+         <Button
+           as='button'
+           onClick={openFilePicker}
+           variant='primary'
+           size='medium'
+           text='Pick image'
+         />
+       </div>
       </Modal>
       <ProfileGeneralData
         onAvatarClick={editAvatarModalToggler.toggle}
