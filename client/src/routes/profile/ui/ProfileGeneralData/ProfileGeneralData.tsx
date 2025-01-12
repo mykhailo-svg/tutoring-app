@@ -12,6 +12,7 @@ type ProfileGeneralDataProps = {
   email: string | undefined;
   role: USER_ROLE | undefined;
   onGeneralDataEdit?: () => void;
+  onAvatarClick?: () => void;
 };
 
 export const ProfileGeneralData: React.FC<ProfileGeneralDataProps> = ({
@@ -19,6 +20,7 @@ export const ProfileGeneralData: React.FC<ProfileGeneralDataProps> = ({
   name,
   email,
   onGeneralDataEdit,
+  onAvatarClick,
 }) => {
   const translatedRole = useMemo(() => translateUserRole(role), [role]);
 
@@ -44,6 +46,7 @@ export const ProfileGeneralData: React.FC<ProfileGeneralDataProps> = ({
           )}
 
           <img
+            onClick={onAvatarClick}
             src='https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg?cs=srgb&dl=pexels-pixabay-158063.jpg&fm=jpg'
             alt='profile'
             className={styles.avatar}

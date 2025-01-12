@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import styles from './Modal.module.scss';
 import { ModalSize } from './types';
@@ -13,9 +13,17 @@ type ModalProps = {
   onClose: () => void;
   size?: ModalSize;
   title: string;
+  children?: ReactNode;
 };
 
-export const Modal: FC<ModalProps> = ({ open, title, size = 'medium', onClose, onOpen }) => (
+export const Modal: FC<ModalProps> = ({
+  children,
+  open,
+  title,
+  size = 'medium',
+  onClose,
+  onOpen,
+}) => (
   <Dialog.Root
     onOpenChange={(value) => {
       if (value) {
@@ -43,6 +51,8 @@ export const Modal: FC<ModalProps> = ({ open, title, size = 'medium', onClose, o
             <CloseIcon />
           </Button>
         </div>
+
+        <div>{children}</div>
       </Dialog.Content>
     </Dialog.Portal>
   </Dialog.Root>
