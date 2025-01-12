@@ -8,6 +8,6 @@ up: ## Start all containers
 down: ## Stop all containers
 	docker compose down
 build: ## Build image	
-	docker compose build
+	docker compose build --no-cache
 test-e2e: ## Run tests inside the app container
 	docker compose exec -T nest-backend yarn test:e2e --detectOpenHandles

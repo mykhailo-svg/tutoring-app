@@ -6,11 +6,21 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { TokenModule } from '../token/token.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: (() => {
+        console.log(join(__dirname, '..', 'uploads'));
+
+        return join(__dirname, '..', 'uploads');
+      })(), // Path to your uploads directory
+      serveRoot: '/uploads', // URL path to serve the files
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
