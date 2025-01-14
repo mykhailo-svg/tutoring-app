@@ -6,6 +6,7 @@ import { useToggle } from '@/shared/hooks';
 import { Modal } from '@/shared/ui/modals/Modal';
 import { Button } from '@/shared/ui/buttons';
 import { ChangeEvent, useRef, useState } from 'react';
+import { ImageCropper } from '@/components/ImageCropper';
 
 const ProfilePage = () => {
   const {
@@ -62,23 +63,30 @@ const ProfilePage = () => {
         onClose={editAvatarModalToggler.setNotActive}
         onOpen={editAvatarModalToggler.setActive}
       >
-       <div style={{padding:"20px"}}>
-         {selectedFile && (
-           <div>
-             <img src={selectedFile} />
-           </div>
-         )}
-        
-         <input hidden onChange={handleImageSelect} type='file' ref={filePickerRef} />
-        
-         <Button
-           as='button'
-           onClick={openFilePicker}
-           variant='primary'
-           size='medium'
-           text='Pick image'
-         />
-       </div>
+        <div style={{ padding: '20px' }}>
+          <ImageCropper.Root
+            onDownload={(blob) => {
+              const formData = new FormData();
+
+              formData.append('file', blob);
+              // formData.append('key', '307a45fc4c0c9c040cca8449bba8fab3');
+
+              fetch('http://localhost:5000/api/user/upload', {
+                body: formData,
+                method: 'POST',
+              });
+            }}
+          />
+          <input hidden onChange={handleImageSelect} type='file' ref={filePickerRef} />
+
+          <Button
+            as='button'
+            onClick={openFilePicker}
+            variant='primary'
+            size='medium'
+            text='Pick image'
+          />
+        </div>
       </Modal>
       <ProfileGeneralData
         onAvatarClick={editAvatarModalToggler.toggle}
