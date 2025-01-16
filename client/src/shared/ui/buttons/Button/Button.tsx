@@ -16,7 +16,7 @@ type HTMLElementProps<T extends HTMLTagType> = T extends 'a'
   : ComponentPropsWithoutRef<'button'>;
 
 type ButtonProps<T extends HTMLTagType> = {
-  as: T;
+  as?: T;
   text: string;
   loading?: boolean;
   variant?: CommonButtonVariant;

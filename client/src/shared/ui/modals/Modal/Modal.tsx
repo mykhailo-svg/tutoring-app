@@ -1,7 +1,7 @@
 import React, { type FC, type ReactNode } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import styles from './Modal.module.scss';
-import { ModalSize } from './types';
+import { ModalActions, ModalSize } from './types';
 import classNames from 'classnames';
 import { MODAL_SIZES_CLASS_MAP } from './constants';
 import { AiOutlineClose as CloseIcon } from 'react-icons/ai';
@@ -15,6 +15,7 @@ type ModalProps = {
   size?: ModalSize;
   title: string;
   children?: ReactNode;
+  actions?: ModalActions;
 };
 
 export const Modal: FC<ModalProps> = ({
@@ -24,6 +25,7 @@ export const Modal: FC<ModalProps> = ({
   size = 'medium',
   onClose,
   onOpen,
+  actions,
 }) => (
   <Dialog.Root
     onOpenChange={(value) => {
@@ -53,7 +55,30 @@ export const Modal: FC<ModalProps> = ({
           </Button>
         </div>
 
-        <Scrollable>{children}</Scrollable>
+        <Scrollable className={styles.inner}>{children}</Scrollable>
+
+        {actions && (actions.primary || actions.secondary) && (
+          <div className={styles.footer}>
+            {actions.secondary && (
+              <Button
+                size='small'
+                onClick={actions.secondary.onAction}
+                as='button'
+                variant='minor'
+                text={actions.secondary.text}
+              />
+            )}
+
+            {actions.primary && (
+              <Button
+                size='small'
+                onClick={actions.primary.onAction}
+                as='button'
+                text={actions.primary.text}
+              />
+            )}
+          </div>
+        )}
       </Dialog.Content>
     </Dialog.Portal>
   </Dialog.Root>

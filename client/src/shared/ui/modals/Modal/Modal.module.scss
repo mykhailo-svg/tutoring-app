@@ -5,6 +5,18 @@
   animation: overlayShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: var(--divider-line-border);
+  padding: 6px 12px;
+}
+
+.inner {
+  flex: 1 1 auto;
+}
+
 .content {
   display: flex;
   flex-direction: column;

@@ -101,20 +101,16 @@ export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProp
           </ReactCrop>
         )}
         {!!completedCrop && (
-          <>
-            <canvas
-              ref={previewCanvasRef}
-              style={{
-                display: 'none',
-                border: '1px solid black',
-                objectFit: 'contain',
-                width: completedCrop.width,
-                height: completedCrop.height,
-              }}
-            />
-
-            <button onClick={onDownloadCropClick}>Download Crop</button>
-          </>
+          <canvas
+            ref={previewCanvasRef}
+            style={{
+              display: 'none',
+              border: '1px solid black',
+              objectFit: 'contain',
+              width: completedCrop.width,
+              height: completedCrop.height,
+            }}
+          />
         )}
       </>
     );

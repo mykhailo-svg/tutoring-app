@@ -3,9 +3,9 @@
 import { useAuth } from '@/providers/AuthProvider';
 import { ProfileGeneralData } from './ui';
 import { useToggle } from '@/shared/hooks';
-import { Modal } from '@/shared/ui/modals/Modal';
+import { Modal, type ModalActions } from '@/shared/ui/modals/Modal';
 import { Button } from '@/shared/ui/buttons';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useMemo, useRef, useState } from 'react';
 import { ImageCropper } from '@/components/ImageCropper';
 import { ImageCropperApi } from '@/components/ImageCropper/ImageCropperRoot';
 
@@ -44,6 +44,33 @@ const ProfilePage = () => {
 
   const imageCropperApiRef = useRef<ImageCropperApi>(null);
 
+  const modalActions = useMemo<ModalActions>(
+    () => ({
+      primary: {
+        onAction: async () => {
+          if (imageCropperApiRef.current) {
+            const blob = await imageCropperApiRef.current.getImageBlob();
+
+            const formData = new FormData();
+
+            formData.append('file', blob);
+
+            fetch('http://localhost:5000/api/user/upload', {
+              body: formData,
+              method: 'POST',
+            });
+          }
+        },
+        text: 'Save',
+      },
+      secondary: {
+        onAction: editAvatarModalToggler.setNotActive,
+        text: 'Cancel',
+      },
+    }),
+    [editAvatarModalToggler.setNotActive]
+  );
+
   return (
     <>
       <Modal
@@ -51,6 +78,7 @@ const ProfilePage = () => {
         open={editAvatarModalToggler.isActive}
         onClose={editAvatarModalToggler.setNotActive}
         onOpen={editAvatarModalToggler.setActive}
+        actions={modalActions}
       >
         <div style={{ padding: '20px' }}>
           <ImageCropper.Root imgSrc={selectedFile} ref={imageCropperApiRef} />
@@ -62,26 +90,6 @@ const ProfilePage = () => {
             variant='primary'
             size='medium'
             text='Pick image'
-          />
-          <Button
-            as='button'
-            onClick={async () => {
-              if (imageCropperApiRef.current) {
-                const blob = await imageCropperApiRef.current.getImageBlob();
-
-                const formData = new FormData();
-
-                formData.append('file', blob);
-
-                fetch('http://localhost:5000/api/user/upload', {
-                  body: formData,
-                  method: 'POST',
-                });
-              }
-            }}
-            variant='primary'
-            size='medium'
-            text='Upload image'
           />
         </div>
       </Modal>
