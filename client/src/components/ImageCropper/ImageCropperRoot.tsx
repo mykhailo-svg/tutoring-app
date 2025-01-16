@@ -1,121 +1,125 @@
-import { useState, useRef, DependencyList, useEffect, FC } from 'react';
+import {
+  useState,
+  useRef,
+  DependencyList,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 type ImageCropperRootProps = {
-  onDownload: (blob: Blob) => void;
   imgSrc: string | null;
   scale?: number;
   rotate?: number;
   aspect?: number | undefined;
 };
 
-export const ImageCropperRoot: FC<ImageCropperRootProps> = ({
-  onDownload,
-  scale = 1,
-  rotate,
-  aspect,
-  imgSrc,
-}) => {
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const blobUrlRef = useRef('');
-  const [crop, setCrop] = useState<Crop>();
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-
-  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    if (aspect) {
-      const { width, height } = e.currentTarget;
-      setCrop(centerAspectCrop(width, height, aspect));
-    }
-  }
-
-  async function onDownloadCropClick() {
-    const image = imgRef.current;
-    const previewCanvas = previewCanvasRef.current;
-    if (!image || !previewCanvas || !completedCrop) {
-      throw new Error('Crop canvas does not exist');
-    }
-
-    const offscreen = new OffscreenCanvas(completedCrop.width, completedCrop.height);
-    const ctx = offscreen.getContext('2d');
-
-    if (!ctx) {
-      throw new Error('No 2d context');
-    }
-
-    ctx.drawImage(previewCanvas, 0, 0, 150, 150, 0, 0, offscreen.width, offscreen.height);
-
-    const blob = await offscreen.convertToBlob({
-      type: 'image/png',
-    });
-
-    if (blobUrlRef.current) {
-      URL.revokeObjectURL(blobUrlRef.current);
-    }
-    blobUrlRef.current = URL.createObjectURL(blob);
-
-    onDownload(blob);
-  }
-
-  useDebounceEffect(
-    async () => {
-      if (
-        completedCrop?.width &&
-        completedCrop?.height &&
-        imgRef.current &&
-        previewCanvasRef.current
-      ) {
-        // We use canvasPreview as it's much faster than imgPreview.
-        canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop, scale, rotate);
-      }
-    },
-    100,
-    [completedCrop, scale, rotate]
-  );
-
-  return (
-    <>
-      {!!imgSrc && (
-        <ReactCrop
-          circularCrop
-          crop={crop}
-          onChange={(_, percentCrop) => setCrop(percentCrop)}
-          onComplete={(c) => setCompletedCrop(c)}
-          aspect={aspect}
-          minWidth={150}
-          minHeight={150}
-          maxHeight={150}
-          maxWidth={150}
-        >
-          <img
-            ref={imgRef}
-            alt='Crop me'
-            src={imgSrc}
-            style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
-            onLoad={onImageLoad}
-          />
-        </ReactCrop>
-      )}
-      {!!completedCrop && (
-        <>
-          <canvas
-            ref={previewCanvasRef}
-            style={{
-              display: 'none',
-              border: '1px solid black',
-              objectFit: 'contain',
-              width: completedCrop.width,
-              height: completedCrop.height,
-            }}
-          />
-
-          <button onClick={onDownloadCropClick}>Download Crop</button>
-        </>
-      )}
-    </>
-  );
+export type ImageCropperApi = {
+  getImageBlob: () => Promise<Blob>;
 };
+
+export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProps>(
+  ({ scale = 1, rotate, aspect, imgSrc }, ref) => {
+    const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
+    const [crop, setCrop] = useState<Crop>();
+    const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+
+    async function onDownloadCropClick() {
+      const image = imgRef.current;
+      const previewCanvas = previewCanvasRef.current;
+      if (!image || !previewCanvas || !completedCrop) {
+        throw new Error('Crop canvas does not exist');
+      }
+
+      const offscreen = new OffscreenCanvas(completedCrop.width, completedCrop.height);
+      const ctx = offscreen.getContext('2d');
+
+      if (!ctx) {
+        throw new Error('No 2d context');
+      }
+
+      ctx.drawImage(previewCanvas, 0, 0, 150, 150, 0, 0, offscreen.width, offscreen.height);
+
+      const blob = await offscreen.convertToBlob({
+        type: 'image/png',
+      });
+
+      return blob;
+    }
+
+    useImperativeHandle(ref, () => ({
+      getImageBlob: onDownloadCropClick,
+    }));
+
+    function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+      if (aspect) {
+        const { width, height } = e.currentTarget;
+        setCrop(centerAspectCrop(width, height, aspect));
+      }
+    }
+
+    useDebounceEffect(
+      async () => {
+        if (
+          completedCrop?.width &&
+          completedCrop?.height &&
+          imgRef.current &&
+          previewCanvasRef.current
+        ) {
+          // We use canvasPreview as it's much faster than imgPreview.
+          canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop, scale, rotate);
+        }
+      },
+      100,
+      [completedCrop, scale, rotate]
+    );
+
+    return (
+      <>
+        {!!imgSrc && (
+          <ReactCrop
+            circularCrop
+            crop={crop}
+            onChange={(_, percentCrop) => setCrop(percentCrop)}
+            onComplete={(c) => setCompletedCrop(c)}
+            aspect={aspect}
+            minWidth={150}
+            minHeight={150}
+            maxHeight={150}
+            maxWidth={150}
+          >
+            <img
+              ref={imgRef}
+              alt='Crop me'
+              src={imgSrc}
+              style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
+              onLoad={onImageLoad}
+            />
+          </ReactCrop>
+        )}
+        {!!completedCrop && (
+          <>
+            <canvas
+              ref={previewCanvasRef}
+              style={{
+                display: 'none',
+                border: '1px solid black',
+                objectFit: 'contain',
+                width: completedCrop.width,
+                height: completedCrop.height,
+              }}
+            />
+
+            <button onClick={onDownloadCropClick}>Download Crop</button>
+          </>
+        )}
+      </>
+    );
+  }
+);
 
 function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number) {
   return centerCrop(

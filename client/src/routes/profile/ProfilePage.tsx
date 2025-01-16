@@ -7,6 +7,7 @@ import { Modal } from '@/shared/ui/modals/Modal';
 import { Button } from '@/shared/ui/buttons';
 import { ChangeEvent, useRef, useState } from 'react';
 import { ImageCropper } from '@/components/ImageCropper';
+import { ImageCropperApi } from '@/components/ImageCropper/ImageCropperRoot';
 
 const ProfilePage = () => {
   const {
@@ -29,20 +30,6 @@ const ProfilePage = () => {
     const file = e.target.files ? e.target.files[0] : null;
 
     if (file) {
-      const uploadFile = async () => {
-        const formData = new FormData();
-
-        formData.append('file', file);
-        // formData.append('key', '307a45fc4c0c9c040cca8449bba8fab3');
-
-        const upload = await fetch('http://localhost:5000/api/user/upload', {
-          body: formData,
-          method: 'POST',
-        });
-      };
-
-      uploadFile();
-
       const fileReader = new FileReader();
 
       fileReader.onload = (ev) => {
@@ -55,6 +42,8 @@ const ProfilePage = () => {
     }
   };
 
+  const imageCropperApiRef = useRef<ImageCropperApi>(null);
+
   return (
     <>
       <Modal
@@ -64,19 +53,7 @@ const ProfilePage = () => {
         onOpen={editAvatarModalToggler.setActive}
       >
         <div style={{ padding: '20px' }}>
-          <ImageCropper.Root
-            imgSrc={selectedFile}
-            onDownload={(blob) => {
-              const formData = new FormData();
-
-              formData.append('file', blob);
-
-              fetch('http://localhost:5000/api/user/upload', {
-                body: formData,
-                method: 'POST',
-              });
-            }}
-          />
+          <ImageCropper.Root imgSrc={selectedFile} ref={imageCropperApiRef} />
           <input hidden onChange={handleImageSelect} type='file' ref={filePickerRef} />
 
           <Button
@@ -85,6 +62,26 @@ const ProfilePage = () => {
             variant='primary'
             size='medium'
             text='Pick image'
+          />
+          <Button
+            as='button'
+            onClick={async () => {
+              if (imageCropperApiRef.current) {
+                const blob = await imageCropperApiRef.current.getImageBlob();
+
+                const formData = new FormData();
+
+                formData.append('file', blob);
+
+                fetch('http://localhost:5000/api/user/upload', {
+                  body: formData,
+                  method: 'POST',
+                });
+              }
+            }}
+            variant='primary'
+            size='medium'
+            text='Upload image'
           />
         </div>
       </Modal>
