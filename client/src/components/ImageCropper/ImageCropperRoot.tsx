@@ -1,37 +1,27 @@
 import { useState, useRef, DependencyList, useEffect, FC } from 'react';
-import ReactCrop, {
-  Crop,
-  PixelCrop,
-  convertToPixelCrop,
-  centerCrop,
-  makeAspectCrop,
-} from 'react-image-crop';
+import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 type ImageCropperRootProps = {
   onDownload: (blob: Blob) => void;
+  imgSrc: string | null;
+  scale?: number;
+  rotate?: number;
+  aspect?: number | undefined;
 };
 
-export const ImageCropperRoot: FC<ImageCropperRootProps> = ({ onDownload }) => {
-  const [imgSrc, setImgSrc] = useState('');
+export const ImageCropperRoot: FC<ImageCropperRootProps> = ({
+  onDownload,
+  scale = 1,
+  rotate,
+  aspect,
+  imgSrc,
+}) => {
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const hiddenAnchorRef = useRef<HTMLAnchorElement>(null);
   const blobUrlRef = useRef('');
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-  const [scale, setScale] = useState(1);
-  const [rotate, setRotate] = useState(0);
-  const [aspect, setAspect] = useState<number | undefined>(16 / 9);
-
-  function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files && e.target.files.length > 0) {
-      setCrop(undefined); // Makes crop preview update between images.
-      const reader = new FileReader();
-      reader.addEventListener('load', () => setImgSrc(reader.result?.toString() || ''));
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  }
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
     if (aspect) {
@@ -47,34 +37,15 @@ export const ImageCropperRoot: FC<ImageCropperRootProps> = ({ onDownload }) => {
       throw new Error('Crop canvas does not exist');
     }
 
-    // This will size relative to the uploaded image
-    // size. If you want to size according to what they
-    // are looking at on screen, remove scaleX + scaleY
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-
-    const offscreen = new OffscreenCanvas(
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY
-    );
+    const offscreen = new OffscreenCanvas(completedCrop.width, completedCrop.height);
     const ctx = offscreen.getContext('2d');
+
     if (!ctx) {
       throw new Error('No 2d context');
     }
 
-    ctx.drawImage(
-      previewCanvas,
-      0,
-      0,
-      previewCanvas.width,
-      previewCanvas.height,
-      0,
-      0,
-      offscreen.width,
-      offscreen.height
-    );
-    // You might want { type: "image/jpeg", quality: <0 to 1> } to
-    // reduce image size
+    ctx.drawImage(previewCanvas, 0, 0, 150, 150, 0, 0, offscreen.width, offscreen.height);
+
     const blob = await offscreen.convertToBlob({
       type: 'image/png',
     });
@@ -103,51 +74,8 @@ export const ImageCropperRoot: FC<ImageCropperRootProps> = ({ onDownload }) => {
     [completedCrop, scale, rotate]
   );
 
-  function handleToggleAspectClick() {
-    if (aspect) {
-      setAspect(undefined);
-    } else {
-      setAspect(16 / 9);
-
-      if (imgRef.current) {
-        const { width, height } = imgRef.current;
-        const newCrop = centerAspectCrop(width, height, 16 / 9);
-        setCrop(newCrop);
-        // Updates the preview
-        setCompletedCrop(convertToPixelCrop(newCrop, width, height));
-      }
-    }
-  }
-
   return (
     <>
-      <div className='Crop-Controls'>
-        <input type='file' accept='image/*' onChange={onSelectFile} />
-        <div>
-          <label htmlFor='scale-input'>Scale: </label>
-          <input
-            id='scale-input'
-            type='number'
-            step='0.1'
-            value={scale}
-            disabled={!imgSrc}
-            onChange={(e) => setScale(Number(e.target.value))}
-          />
-        </div>
-        <div>
-          <label htmlFor='rotate-input'>Rotate: </label>
-          <input
-            id='rotate-input'
-            type='number'
-            value={rotate}
-            disabled={!imgSrc}
-            onChange={(e) => setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))}
-          />
-        </div>
-        <div>
-          <button onClick={handleToggleAspectClick}>Toggle aspect {aspect ? 'off' : 'on'}</button>
-        </div>
-      </div>
       {!!imgSrc && (
         <ReactCrop
           circularCrop
@@ -159,7 +87,6 @@ export const ImageCropperRoot: FC<ImageCropperRootProps> = ({ onDownload }) => {
           minHeight={150}
           maxHeight={150}
           maxWidth={150}
-          // circularCrop
         >
           <img
             ref={imgRef}
@@ -172,33 +99,18 @@ export const ImageCropperRoot: FC<ImageCropperRootProps> = ({ onDownload }) => {
       )}
       {!!completedCrop && (
         <>
-          <div>
-            <canvas
-              ref={previewCanvasRef}
-              style={{
-                border: '1px solid black',
-                objectFit: 'contain',
-                width: completedCrop.width,
-                height: completedCrop.height,
-              }}
-            />
-          </div>
-          <div>
-            <button onClick={onDownloadCropClick}>Download Crop</button>
+          <canvas
+            ref={previewCanvasRef}
+            style={{
+              display: 'none',
+              border: '1px solid black',
+              objectFit: 'contain',
+              width: completedCrop.width,
+              height: completedCrop.height,
+            }}
+          />
 
-            <a
-              href='#hidden'
-              ref={hiddenAnchorRef}
-              download
-              style={{
-                position: 'absolute',
-                top: '-200vh',
-                visibility: 'hidden',
-              }}
-            >
-              Hidden download
-            </a>
-          </div>
+          <button onClick={onDownloadCropClick}>Download Crop</button>
         </>
       )}
     </>

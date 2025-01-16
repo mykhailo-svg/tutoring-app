@@ -65,11 +65,11 @@ const ProfilePage = () => {
       >
         <div style={{ padding: '20px' }}>
           <ImageCropper.Root
+            imgSrc={selectedFile}
             onDownload={(blob) => {
               const formData = new FormData();
 
               formData.append('file', blob);
-              // formData.append('key', '307a45fc4c0c9c040cca8449bba8fab3');
 
               fetch('http://localhost:5000/api/user/upload', {
                 body: formData,
