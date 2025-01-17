@@ -5,9 +5,11 @@ import { ProfileGeneralData } from './ui';
 import { useToggle } from '@/shared/hooks';
 import { Modal, type ModalActions } from '@/shared/ui/modals/Modal';
 import { Button } from '@/shared/ui/buttons';
-import { ChangeEvent, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ImageCropper } from '@/components/ImageCropper';
 import { ImageCropperApi } from '@/components/ImageCropper/ImageCropperRoot';
+import { SystemFileSelect, SystemFileSelectApi } from '@/components/SystemFileSelect';
+import { getUploadedImagePreview } from '@/shared/helpers/getUploadedImagePreview';
 
 const ProfilePage = () => {
   const {
@@ -16,33 +18,10 @@ const ProfilePage = () => {
 
   const editAvatarModalToggler = useToggle();
 
-  const filePickerRef = useRef<HTMLInputElement | null>(null);
-
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
-  const openFilePicker = () => {
-    if (filePickerRef.current) {
-      filePickerRef.current.click();
-    }
-  };
-
-  const handleImageSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-
-    if (file) {
-      const fileReader = new FileReader();
-
-      fileReader.onload = (ev) => {
-        if (typeof fileReader.result === 'string') {
-          setSelectedFile(fileReader.result);
-        }
-      };
-
-      fileReader.readAsDataURL(file);
-    }
-  };
-
   const imageCropperApiRef = useRef<ImageCropperApi>(null);
+  const fileSelectApiRef = useRef<SystemFileSelectApi>(null);
 
   const modalActions = useMemo<ModalActions>(
     () => ({
@@ -71,6 +50,12 @@ const ProfilePage = () => {
     [editAvatarModalToggler.setNotActive]
   );
 
+  const handleFilePickerOpen = useCallback(() => {
+    if (fileSelectApiRef.current) {
+      fileSelectApiRef.current.openFileSelect();
+    }
+  }, []);
+
   return (
     <>
       <Modal
@@ -81,12 +66,18 @@ const ProfilePage = () => {
         actions={modalActions}
       >
         <div style={{ padding: '20px' }}>
+          <SystemFileSelect
+            onSelect={(files) => {
+              getUploadedImagePreview(files[0], setSelectedFile);
+            }}
+            ref={fileSelectApiRef}
+          />
+
           <ImageCropper.Root imgSrc={selectedFile} ref={imageCropperApiRef} />
-          <input hidden onChange={handleImageSelect} type='file' ref={filePickerRef} />
 
           <Button
             as='button'
-            onClick={openFilePicker}
+            onClick={handleFilePickerOpen}
             variant='primary'
             size='medium'
             text='Pick image'
