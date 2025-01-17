@@ -8,7 +8,11 @@ import { Button } from '@/shared/ui/buttons';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ImageCropper } from '@/components/ImageCropper';
 import { ImageCropperApi } from '@/components/ImageCropper/ImageCropperRoot';
-import { SystemFileSelect, SystemFileSelectApi } from '@/components/SystemFileSelect';
+import {
+  SystemFileSelect,
+  SystemFileSelectApi,
+  SystemFileSelectValidation,
+} from '@/components/SystemFileSelect';
 import { getUploadedImagePreview } from '@/shared/helpers/getUploadedImagePreview';
 
 const ProfilePage = () => {
@@ -56,6 +60,13 @@ const ProfilePage = () => {
     }
   }, []);
 
+  const imageSelectValidation = useMemo<SystemFileSelectValidation>(
+    () => ({
+      files: [{ type: 'image', extensions: ['png', 'jpeg', 'jpg'] }],
+    }),
+    []
+  );
+
   return (
     <>
       <Modal
@@ -67,6 +78,7 @@ const ProfilePage = () => {
       >
         <div style={{ padding: '20px' }}>
           <SystemFileSelect
+            validation={imageSelectValidation}
             onSelect={(files) => {
               getUploadedImagePreview(files[0], setSelectedFile);
             }}

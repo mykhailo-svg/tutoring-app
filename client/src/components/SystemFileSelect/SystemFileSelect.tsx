@@ -1,10 +1,20 @@
-import { type ChangeEvent, forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
-import type { SystemFileSelectApi } from './types';
+import {
+  type ChangeEvent,
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react';
+import type { SystemFileSelectValidation, SystemFileSelectApi } from './types';
 
-type SystemFileSelectProps = { onSelect: (files: FileList) => void };
+type SystemFileSelectProps = {
+  onSelect: (files: FileList) => void;
+  validation?: SystemFileSelectValidation;
+};
 
 export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelectProps>(
-  ({ onSelect }, ref) => {
+  ({ onSelect, validation }, ref) => {
     const filePickerRef = useRef<HTMLInputElement | null>(null);
 
     const openFileSelect = useCallback(() => {
@@ -28,6 +38,30 @@ export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelect
       openFileSelect,
     }));
 
-    return <input hidden onChange={handleSelect} type='file' ref={filePickerRef} />;
+    const acceptableFiles = useMemo(() => {
+      if (validation?.files) {
+        return validation.files
+          .map((file) =>
+            file.extensions.map(
+              (extension) => `${file.type}/${extension === 'all' ? '*' : extension}`
+            )
+          )
+          .flat()
+          .join(', ');
+      }
+      return undefined;
+    }, [validation]);
+
+    console.log(acceptableFiles);
+
+    return (
+      <input
+        hidden
+        onChange={handleSelect}
+        accept={acceptableFiles}
+        type='file'
+        ref={filePickerRef}
+      />
+    );
   }
 );
