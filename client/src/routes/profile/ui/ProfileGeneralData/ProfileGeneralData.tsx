@@ -6,6 +6,7 @@ import { translateUserRole } from '@/shared/helpers/translateUserRole';
 import { MdAlternateEmail as EmailIcon } from 'react-icons/md';
 import { Button } from '@/shared/ui/buttons';
 import { MdEdit as EditIcon } from 'react-icons/md';
+import { UserAvatar } from '@/components/UserAvatar';
 
 type ProfileGeneralDataProps = {
   name: string | undefined;
@@ -45,12 +46,10 @@ export const ProfileGeneralData: React.FC<ProfileGeneralDataProps> = ({
             </div>
           )}
 
-          <img
-            onClick={onAvatarClick}
-            src='https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg?cs=srgb&dl=pexels-pixabay-158063.jpg&fm=jpg'
-            alt='profile'
-            className={styles.avatar}
-          />
+          <div onClick={onAvatarClick} className={styles.avatar}>
+            <UserAvatar iconColor='var(--white-color)' size='medium' role={role} />
+          </div>
+
           <div>
             <h4 className={styles.name}>{name}</h4>
             <p className={styles.role}>{translatedRole}</p>

@@ -20,6 +20,7 @@
     "classnames": "^2.5.1",
     "http-status-codes": "^2.3.0",
     "js-cookie": "^3.0.5",
+    "lodash": "^4.17.21",
     "next": "15.0.0-rc.1",
     "react": "19.0.0-rc-cd22717c-20241013",
     "react-dom": "19.0.0-rc-cd22717c-20241013",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@types/http-status-codes": "^1.2.0",
     "@types/js-cookie": "^3.0.6",
+    "@types/lodash": "^4.17.14",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

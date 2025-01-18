@@ -1,0 +1,14 @@
+.previewContent {
+  display: flex;
+
+
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.previewAvatar {
+  border-radius: 100%;
+  background: var(--primary-color);
+}

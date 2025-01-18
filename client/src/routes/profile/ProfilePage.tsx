@@ -14,96 +14,23 @@ import {
   SystemFileSelectValidation,
 } from '@/components/SystemFileSelect';
 import { getUploadedImagePreview } from '@/shared/helpers/getUploadedImagePreview';
+import { ProfileEditAvatarImage } from './ui/ProfileEditAvatarImage';
 
 const ProfilePage = () => {
   const {
     data: { user },
   } = useAuth();
 
-  const editAvatarModalToggler = useToggle();
-
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
-  const imageCropperApiRef = useRef<ImageCropperApi>(null);
-  const fileSelectApiRef = useRef<SystemFileSelectApi>(null);
-
-  const modalActions = useMemo<ModalActions>(
-    () => ({
-      primary: {
-        onAction: async () => {
-          if (imageCropperApiRef.current) {
-            const blob = await imageCropperApiRef.current.getImageBlob();
-
-            const formData = new FormData();
-
-            formData.append('file', blob);
-
-            fetch('http://localhost:5000/api/user/upload', {
-              body: formData,
-              method: 'POST',
-            });
-          }
-        },
-        text: 'Save',
-      },
-      secondary: {
-        onAction: editAvatarModalToggler.setNotActive,
-        text: 'Cancel',
-      },
-    }),
-    [editAvatarModalToggler.setNotActive]
-  );
-
-  const handleFilePickerOpen = useCallback(() => {
-    if (fileSelectApiRef.current) {
-      fileSelectApiRef.current.openFileSelect();
-    }
-  }, []);
-
-  const handleFilePickerError = useCallback(() => {
-    console.log('error');
-  }, []);
-
-  const imageSelectValidation = useMemo<SystemFileSelectValidation>(
-    () => ({
-      files: [{ type: 'image', extensions: ['png', 'jpeg', 'jpg'] }],
-      sizeInKB: { max: 2000 },
-    }),
-    []
-  );
+  const avatarModalToggler = useToggle();
 
   return (
     <>
-      <Modal
-        title='Profile photo'
-        open={editAvatarModalToggler.isActive}
-        onClose={editAvatarModalToggler.setNotActive}
-        onOpen={editAvatarModalToggler.setActive}
-        actions={modalActions}
-      >
-        <div style={{ padding: '20px' }}>
-          <SystemFileSelect
-            onError={handleFilePickerError}
-            validation={imageSelectValidation}
-            onSelect={(files) => {
-              getUploadedImagePreview(files[0], setSelectedFile);
-            }}
-            ref={fileSelectApiRef}
-          />
+      {avatarModalToggler.isActive && (
+        <ProfileEditAvatarImage onClose={avatarModalToggler.setNotActive} />
+      )}
 
-          <ImageCropper.Root imgSrc={selectedFile} ref={imageCropperApiRef} />
-
-          <Button
-            as='button'
-            onClick={handleFilePickerOpen}
-            variant='primary'
-            size='medium'
-            text='Pick image'
-          />
-        </div>
-      </Modal>
       <ProfileGeneralData
-        onAvatarClick={editAvatarModalToggler.toggle}
+        onAvatarClick={avatarModalToggler.toggle}
         name={user?.name}
         role={user?.role}
         email={user?.email}

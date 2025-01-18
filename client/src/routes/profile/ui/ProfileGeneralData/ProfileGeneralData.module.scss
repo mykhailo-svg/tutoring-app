@@ -8,11 +8,9 @@
 }
 
 .avatar {
-  height: 90px;
-  width: 90px;
-  background: red;
   border-radius: 100%;
   cursor: pointer;
+  background: var(--primary-color);
 }
 
 .name {
