@@ -10,28 +10,49 @@ import type { SystemFileSelectValidation, SystemFileSelectApi } from './types';
 
 type SystemFileSelectProps = {
   onSelect: (files: FileList) => void;
+  onError: () => void;
   validation?: SystemFileSelectValidation;
 };
 
 export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelectProps>(
-  ({ onSelect, validation }, ref) => {
+  ({ onSelect, validation, onError }, ref) => {
     const filePickerRef = useRef<HTMLInputElement | null>(null);
 
     const openFileSelect = useCallback(() => {
       if (filePickerRef.current) {
         filePickerRef.current.click();
       }
-
-      console.log('select');
     }, []);
 
     const handleSelect = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
-        onSelect(event.target.files ?? ([] as any as FileList));
+        const files = event.target.files ?? ([] as any as FileList);
+
+        for (const file of files) {
+          let validated = true;
+
+          const sizeInKb = file.size / 1024;
+
+          const validSize =
+            (!validation?.sizeInKB?.min || sizeInKb > validation?.sizeInKB?.min) &&
+            (!validation?.sizeInKB?.max || sizeInKb < validation.sizeInKB.max);
+
+          if (!validSize) {
+            validated = false;
+          }
+
+          if (!validated) {
+            onError();
+
+            return;
+          }
+        }
+
+        onSelect(files);
 
         console.log(event.target.files);
       },
-      [onSelect]
+      [onSelect, onError, validation?.sizeInKB]
     );
 
     useImperativeHandle(ref, () => ({
@@ -51,8 +72,6 @@ export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelect
       }
       return undefined;
     }, [validation]);
-
-    console.log(acceptableFiles);
 
     return (
       <input

@@ -39,7 +39,10 @@ export const Modal: FC<ModalProps> = ({
   >
     <Dialog.Portal>
       <Dialog.Overlay className={styles.overlay} />
-      <Dialog.Content className={classNames(styles.content, MODAL_SIZES_CLASS_MAP[size])}>
+      <Dialog.Content
+        aria-describedby='modal'
+        className={classNames(styles.content, MODAL_SIZES_CLASS_MAP[size])}
+      >
         <div className={styles.header}>
           <Dialog.Title className={styles.title}>{title}</Dialog.Title>
           <Button

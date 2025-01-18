@@ -60,9 +60,14 @@ const ProfilePage = () => {
     }
   }, []);
 
+  const handleFilePickerError = useCallback(() => {
+    console.log('error');
+  }, []);
+
   const imageSelectValidation = useMemo<SystemFileSelectValidation>(
     () => ({
       files: [{ type: 'image', extensions: ['png', 'jpeg', 'jpg'] }],
+      sizeInKB: { max: 2000 },
     }),
     []
   );
@@ -78,6 +83,7 @@ const ProfilePage = () => {
       >
         <div style={{ padding: '20px' }}>
           <SystemFileSelect
+            onError={handleFilePickerError}
             validation={imageSelectValidation}
             onSelect={(files) => {
               getUploadedImagePreview(files[0], setSelectedFile);

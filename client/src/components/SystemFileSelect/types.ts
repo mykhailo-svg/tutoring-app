@@ -4,4 +4,8 @@ export type SystemFileSelectApi = {
 
 export type SystemFileSelectValidation = {
   files: { type: 'image'; extensions: (string | 'all')[] }[];
+  sizeInKB?: Partial<{
+    max: number;
+    min: number;
+  }>;
 };
