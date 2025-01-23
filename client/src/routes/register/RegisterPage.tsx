@@ -92,6 +92,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   const multiStepForm = useMultiStepForm(steps);
 
+
+  
   return (
     <Toast.Provider>
       <CommonToast

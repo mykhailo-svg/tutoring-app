@@ -29,7 +29,20 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ 
   const imageCropperApiRef = useRef<ImageCropperApi>(null);
   const fileSelectApiRef = useRef<SystemFileSelectApi>(null);
 
-  const modalActions = useMemo<ModalActions>(
+  const previewModalActions = useMemo<ModalActions>(
+    () => ({
+      primary: {
+        onAction: editAvatarModalToggler.setActive,
+        text: 'Edit',
+      },
+      secondary: {
+        onAction: onClose,
+        text: 'Cancel',
+      },
+    }),
+    [editAvatarModalToggler.setActive, onClose]
+  );
+  const editModalActions = useMemo<ModalActions>(
     () => ({
       primary: {
         onAction: async () => {
@@ -69,17 +82,24 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ 
   const imageSelectValidation = useMemo<SystemFileSelectValidation>(
     () => ({
       files: [{ type: 'image', extensions: ['png', 'jpeg', 'jpg'] }],
-      sizeInKB: { max: 2000 },
+      sizeInKB: { max: 5000 },
     }),
     []
   );
 
   return (
     <>
-      <Modal title='Profile photo' open onClose={onClose} onOpen={noop} actions={modalActions}>
+      <Modal
+        title='Profile photo'
+        open
+        onClose={onClose}
+        onOpen={noop}
+        size='small'
+        actions={previewModalActions}
+      >
         <div className={styles.previewContent}>
           <div className={styles.previewAvatar}>
-            <UserAvatar iconColor="var(--white-color)" size='huge' role={data.user?.role} />
+            <UserAvatar iconColor='var(--white-color)' size='huge' role={data.user?.role} />
           </div>
         </div>
       </Modal>

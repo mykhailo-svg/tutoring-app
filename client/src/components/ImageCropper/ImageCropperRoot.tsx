@@ -95,7 +95,11 @@ export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProp
               ref={imgRef}
               alt='Crop me'
               src={imgSrc}
-              style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
+              style={{
+                transform: `scale(${scale}) rotate(${rotate}deg)`,
+                width: '300px',
+                height: '300px',
+              }}
               onLoad={onImageLoad}
             />
           </ReactCrop>
