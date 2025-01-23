@@ -49,6 +49,11 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ 
           if (imageCropperApiRef.current) {
             const blob = await imageCropperApiRef.current.getImageBlob();
 
+
+            console.log(typeof blob);
+            
+console.log(blob);
+
             const formData = new FormData();
 
             formData.append('file', blob);
@@ -105,6 +110,7 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ 
       </Modal>
 
       <Modal
+        actions={editModalActions}
         title='Profile photo'
         open={editAvatarModalToggler.isActive}
         onClose={editAvatarModalToggler.setNotActive}
