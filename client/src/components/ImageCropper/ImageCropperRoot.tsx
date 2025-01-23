@@ -96,9 +96,11 @@ export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProp
               alt='Crop me'
               src={imgSrc}
               style={{
+                objectFit:"cover",
                 transform: `scale(${scale}) rotate(${rotate}deg)`,
                 width: '300px',
                 height: '300px',
+                scale:6
               }}
               onLoad={onImageLoad}
             />
