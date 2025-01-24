@@ -1,7 +1,6 @@
 .previewContent {
   display: flex;
 
-
   height: 100%;
 
   align-items: center;
@@ -11,4 +10,10 @@
 .previewAvatar {
   border-radius: 100%;
   background: var(--primary-color);
+}
+
+.cropCanvas {
+  position: relative;
+  height: 450px;
+  width: 450px;
 }

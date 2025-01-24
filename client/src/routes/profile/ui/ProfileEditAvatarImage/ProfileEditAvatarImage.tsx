@@ -14,6 +14,7 @@ import { noop } from 'lodash';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useAuth } from '@/providers/AuthProvider';
 import styles from './ProfileEditAvatarImage.module.scss';
+import { Slider } from '@/shared/ui/slider';
 
 type ProfileEditAvatarImageProps = {
   onClose: () => void;
@@ -49,10 +50,9 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ 
           if (imageCropperApiRef.current) {
             const blob = await imageCropperApiRef.current.getImageBlob();
 
-
             console.log(typeof blob);
-            
-console.log(blob);
+
+            console.log(blob);
 
             const formData = new FormData();
 
@@ -92,6 +92,8 @@ console.log(blob);
     []
   );
 
+  const [zoom, setZoom] = useState(1);
+
   return (
     <>
       <Modal
@@ -126,8 +128,15 @@ console.log(blob);
             ref={fileSelectApiRef}
           />
 
-          <ImageCropper.Root imgSrc={selectedFile} ref={imageCropperApiRef} />
-
+          <div className={styles.cropCanvas}>
+            <ImageCropper.Root
+              zoom={zoom}
+              setZoom={setZoom}
+              imgSrc={selectedFile}
+              ref={imageCropperApiRef}
+            />
+          </div>
+          <Slider min={1} max={10} onChange={setZoom} step={0.1} value={zoom} />
           <Button
             as='button'
             onClick={handleFilePickerOpen}

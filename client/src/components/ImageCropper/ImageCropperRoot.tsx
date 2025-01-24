@@ -10,12 +10,12 @@ import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-im
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper, { Area } from 'react-easy-crop';
 import { getCroppedImage } from './helpers';
+import { noop } from 'lodash';
 
 type ImageCropperRootProps = {
   imgSrc: string | null;
-  scale?: number;
-  rotate?: number;
-  aspect?: number | undefined;
+  zoom: number;
+  setZoom: (value: number) => void;
 };
 
 export type ImageCropperApi = {
@@ -23,9 +23,8 @@ export type ImageCropperApi = {
 };
 
 export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProps>(
-  ({ scale = 1, rotate, aspect, imgSrc }, ref) => {
+  ({ zoom = 1, setZoom = noop, imgSrc }, ref) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
 
     const [croppedPixels, setCroppedPixels] = useState<Area>();
 
@@ -38,21 +37,20 @@ export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProp
     }));
 
     return (
-      <div style={{ position: 'relative', height: '300px', width: '300px' }}>
-        {!!imgSrc && (
-          <Cropper
-            image={imgSrc}
-            crop={crop}
-            cropShape='round'
-            zoom={zoom}
-            cropSize={{ height: 150, width: 150 }}
-            aspect={1 / 1}
-            onCropChange={setCrop}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-          />
-        )}
-      </div>
+      imgSrc && (
+        <Cropper
+          maxZoom={10}
+          image={imgSrc}
+          crop={crop}
+          cropShape='round'
+          zoom={zoom}
+          cropSize={{ height: 150, width: 150 }}
+          aspect={1 / 1}
+          onCropChange={setCrop}
+          onCropComplete={onCropComplete}
+          onZoomChange={setZoom}
+        />
+      )
     );
   }
 );
