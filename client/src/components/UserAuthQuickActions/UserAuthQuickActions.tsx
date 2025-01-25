@@ -23,7 +23,7 @@ export const UserAuthQuickActions: React.FC<UserAuthQuickActionsProps> = () => {
         <div className={styles.root}>
           {data.user && (
             <div className={styles.avatar}>
-              <UserAvatar role={data.user.role} size='small' />
+              <UserAvatar imageSrc={data.user.avatar.display_url} role={data.user.role} size='small' />
             </div>
           )}
         </div>

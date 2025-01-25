@@ -16,6 +16,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import styles from './ProfileEditAvatarImage.module.scss';
 import { Slider } from '@/shared/ui/slider';
 import { useProfileAvatarUpload } from '../../hooks';
+import { User } from '@/global_types';
 
 type ProfileEditAvatarImageProps = {
   onClose: () => void;
@@ -26,7 +27,8 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
   onClose,
   active,
 }) => {
-  const { data } = useAuth();
+  const { data, setAuthState } = useAuth();
+  console.log(data);
 
   const editAvatarModalToggler = useToggle();
 
@@ -75,7 +77,13 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
 
             const uploadedImage = await uploadAvatar(blob);
 
-            console.log(await uploadedImage.json());
+            const uploadedImageData = await uploadedImage.json();
+
+            setAuthState((prevData) => ({
+              user: { ...(prevData.user as User), avatar: uploadedImageData.data },
+            }));
+            onClose();
+            console.log(uploadedImageData);
           }
         },
         text: 'Save',
@@ -123,7 +131,13 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
         >
           <div className={styles.previewContent}>
             <div className={styles.previewAvatar}>
-              <UserAvatar iconColor='var(--white-color)' size='huge' role={data.user?.role} />
+              <UserAvatar
+                imageSrc={data.user.avatar.display_url}
+                iconColor='var(--white-color)'
+                size='huge'
+                backgroundColor='var(--primary-color)'
+                role={data.user?.role}
+              />
             </div>
           </div>
         </Modal>

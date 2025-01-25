@@ -8,8 +8,8 @@
   // Sizes
 
   &.huge {
-    height: 150px;
-    width: 150px;
+    height: 250px;
+    width: 250px;
     font-size: 70px;
   }
 
@@ -21,5 +21,11 @@
   &.small {
     height: 50px;
     width: 50px;
+  }
+
+  img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
   }
 }

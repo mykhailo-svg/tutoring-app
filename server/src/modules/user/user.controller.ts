@@ -33,19 +33,11 @@ export class UserController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  public async uploadFile(@UploadedFile() file) {
-    const config = getConfig();
-
-    const formData = new FormData();
-
-    formData.append('key', config.ibbImagesStorage.apiKey);
-    formData.append('image', file.buffer.toString('base64'));
-
-    const upload = await fetch('https://api.imgbb.com/1/upload', {
-      body: formData,
-      method: 'POST',
-    });
-
-    return upload.json();
+  @Auth()
+  public async uploadFile(
+    @UploadedFile() file,
+    @Req() req: AuthProtectedRequest,
+  ) {
+    return this.userService.uploadUserAvatarImage(file, req.user.id);
   }
 }

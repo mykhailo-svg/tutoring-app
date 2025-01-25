@@ -17,20 +17,28 @@ const SIZE_CLASSNAME_MAP: Record<UserAvatarSize, string> = {
   medium: styles.medium,
 };
 
-type UserAvatarProps = { role?: USER_ROLE; size?: UserAvatarSize; iconColor?: string };
+type UserAvatarProps = {
+  role?: USER_ROLE;
+  size?: UserAvatarSize;
+  iconColor?: string;
+  backgroundColor?: string;
+  imageSrc?: string | null;
+};
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({
   role,
   size = 'small',
   iconColor = 'var(--primary-color)',
+  imageSrc,
+  backgroundColor,
 }) => {
   const Icon = useMemo(() => (role && USER_ROLE_ICON_DEFINITION[role]) ?? UserIcon, [role]);
 
   const rootClassName = useMemo(() => classNames(styles.root, SIZE_CLASSNAME_MAP[size]), [size]);
 
   return (
-    <div className={rootClassName}>
-      <Icon color={iconColor} />
+    <div style={{ background: !imageSrc ? backgroundColor : undefined }} className={rootClassName}>
+      {imageSrc ? <img src={imageSrc} /> : <Icon color={iconColor} />}
     </div>
   );
 };

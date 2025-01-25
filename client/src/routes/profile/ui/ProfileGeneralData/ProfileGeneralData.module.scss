@@ -9,8 +9,8 @@
 
 .avatar {
   border-radius: 100%;
+  overflow: hidden;
   cursor: pointer;
-  background: var(--primary-color);
 }
 
 .name {

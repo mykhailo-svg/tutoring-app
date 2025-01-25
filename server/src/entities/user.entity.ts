@@ -30,8 +30,27 @@ export class User {
   @Column({ enum: USER_ROLE, type: 'enum' })
   role: USER_ROLE;
 
-  @Column()
+  @Column({ type: 'json', default: null, nullable: true })
+  @ApiProperty({
+    default: null,
+    description: 'User avatar image',
+    nullable: true,
+  })
   avatar: {
-    s: number;
+    id: string;
+    displayUrl: string;
+    deleteUrl: string;
+    thumb: {
+      url: string;
+      fileName: string;
+    };
+    image: {
+      url: string;
+      fileName: string;
+    };
+    medium: {
+      url: string;
+      fileName: string;
+    };
   };
 }

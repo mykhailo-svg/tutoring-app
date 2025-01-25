@@ -12,6 +12,7 @@ type ProfileGeneralDataProps = {
   name: string | undefined;
   email: string | undefined;
   role: USER_ROLE | undefined;
+  avatarImage?: string | null;
   onGeneralDataEdit?: () => void;
   onAvatarClick?: () => void;
 };
@@ -20,6 +21,7 @@ export const ProfileGeneralData: React.FC<ProfileGeneralDataProps> = ({
   role,
   name,
   email,
+  avatarImage,
   onGeneralDataEdit,
   onAvatarClick,
 }) => {
@@ -47,7 +49,13 @@ export const ProfileGeneralData: React.FC<ProfileGeneralDataProps> = ({
           )}
 
           <div onClick={onAvatarClick} className={styles.avatar}>
-            <UserAvatar iconColor='var(--white-color)' size='medium' role={role} />
+            <UserAvatar
+              imageSrc={avatarImage}
+              iconColor='var(--white-color)'
+              backgroundColor='var(--primary-color)'
+              size='medium'
+              role={role}
+            />
           </div>
 
           <div>
