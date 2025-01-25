@@ -25,9 +25,10 @@ const ProfilePage = () => {
 
   return (
     <>
-      {avatarModalToggler.isActive && (
-        <ProfileEditAvatarImage onClose={avatarModalToggler.setNotActive} />
-      )}
+      <ProfileEditAvatarImage
+        active={avatarModalToggler.isActive}
+        onClose={avatarModalToggler.setNotActive}
+      />
 
       <ProfileGeneralData
         onAvatarClick={avatarModalToggler.toggle}

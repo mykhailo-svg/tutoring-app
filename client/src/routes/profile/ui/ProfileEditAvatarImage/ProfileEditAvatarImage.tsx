@@ -15,33 +15,56 @@ import { UserAvatar } from '@/components/UserAvatar';
 import { useAuth } from '@/providers/AuthProvider';
 import styles from './ProfileEditAvatarImage.module.scss';
 import { Slider } from '@/shared/ui/slider';
+import { useProfileAvatarUpload } from '../../hooks';
 
 type ProfileEditAvatarImageProps = {
   onClose: () => void;
+  active: boolean;
 };
 
-export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ onClose }) => {
+export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
+  onClose,
+  active,
+}) => {
   const { data } = useAuth();
 
   const editAvatarModalToggler = useToggle();
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
+  const handleImageSelect = useCallback(
+    (files: FileList) => {
+      getUploadedImagePreview(files[0], (previewUrl) => {
+        setSelectedFile(previewUrl);
+        editAvatarModalToggler.setActive();
+      });
+    },
+    [setSelectedFile, editAvatarModalToggler.setActive]
+  );
+
   const imageCropperApiRef = useRef<ImageCropperApi>(null);
   const fileSelectApiRef = useRef<SystemFileSelectApi>(null);
+
+  const { uploadAvatar, isPending } = useProfileAvatarUpload();
+  const handleFilePickerOpen = useCallback(() => {
+    if (fileSelectApiRef.current) {
+      fileSelectApiRef.current.openFileSelect();
+    }
+  }, []);
 
   const previewModalActions = useMemo<ModalActions>(
     () => ({
       primary: {
-        onAction: editAvatarModalToggler.setActive,
+        onAction: handleFilePickerOpen,
         text: 'Edit',
+        loading: isPending,
       },
       secondary: {
         onAction: onClose,
         text: 'Cancel',
       },
     }),
-    [editAvatarModalToggler.setActive, onClose]
+    [handleFilePickerOpen, onClose, isPending]
   );
   const editModalActions = useMemo<ModalActions>(
     () => ({
@@ -50,35 +73,21 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ 
           if (imageCropperApiRef.current) {
             const blob = await imageCropperApiRef.current.getImageBlob();
 
-            console.log(typeof blob);
+            const uploadedImage = await uploadAvatar(blob);
 
-            console.log(blob);
-
-            const formData = new FormData();
-
-            formData.append('file', blob);
-
-            fetch('http://localhost:5000/api/user/upload', {
-              body: formData,
-              method: 'POST',
-            });
+            console.log(await uploadedImage.json());
           }
         },
         text: 'Save',
+        loading: isPending,
       },
       secondary: {
         onAction: editAvatarModalToggler.setActive,
         text: 'Cancel',
       },
     }),
-    [editAvatarModalToggler.setNotActive]
+    [editAvatarModalToggler.setNotActive, uploadAvatar, isPending]
   );
-
-  const handleFilePickerOpen = useCallback(() => {
-    if (fileSelectApiRef.current) {
-      fileSelectApiRef.current.openFileSelect();
-    }
-  }, []);
 
   const handleFilePickerError = useCallback(() => {
     console.log('error');
@@ -95,57 +104,50 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({ 
   const [zoom, setZoom] = useState(1);
 
   return (
-    <>
-      <Modal
-        title='Profile photo'
-        open
-        onClose={onClose}
-        onOpen={noop}
-        size='small'
-        actions={previewModalActions}
-      >
-        <div className={styles.previewContent}>
-          <div className={styles.previewAvatar}>
-            <UserAvatar iconColor='var(--white-color)' size='huge' role={data.user?.role} />
-          </div>
-        </div>
-      </Modal>
+    active && (
+      <>
+        <SystemFileSelect
+          onError={handleFilePickerError}
+          validation={imageSelectValidation}
+          onSelect={handleImageSelect}
+          ref={fileSelectApiRef}
+        />
 
-      <Modal
-        actions={editModalActions}
-        title='Profile photo'
-        open={editAvatarModalToggler.isActive}
-        onClose={editAvatarModalToggler.setNotActive}
-        onOpen={editAvatarModalToggler.setActive}
-      >
-        <div style={{ padding: '20px' }}>
-          <SystemFileSelect
-            onError={handleFilePickerError}
-            validation={imageSelectValidation}
-            onSelect={(files) => {
-              getUploadedImagePreview(files[0], setSelectedFile);
-            }}
-            ref={fileSelectApiRef}
-          />
-
-          <div className={styles.cropCanvas}>
-            <ImageCropper.Root
-              zoom={zoom}
-              setZoom={setZoom}
-              imgSrc={selectedFile}
-              ref={imageCropperApiRef}
-            />
+        <Modal
+          title='Profile photo'
+          open
+          onClose={onClose}
+          onOpen={noop}
+          size='small'
+          actions={previewModalActions}
+        >
+          <div className={styles.previewContent}>
+            <div className={styles.previewAvatar}>
+              <UserAvatar iconColor='var(--white-color)' size='huge' role={data.user?.role} />
+            </div>
           </div>
-          <Slider min={1} max={10} onChange={setZoom} step={0.1} value={zoom} />
-          <Button
-            as='button'
-            onClick={handleFilePickerOpen}
-            variant='primary'
-            size='medium'
-            text='Pick image'
-          />
-        </div>
-      </Modal>
-    </>
+        </Modal>
+
+        <Modal
+          actions={editModalActions}
+          title='Profile photo'
+          open={editAvatarModalToggler.isActive}
+          onClose={editAvatarModalToggler.setNotActive}
+          onOpen={editAvatarModalToggler.setActive}
+        >
+          <div className={styles.editAvatarModalInner}>
+            <div className={styles.cropCanvas}>
+              <ImageCropper.Root
+                zoom={zoom}
+                setZoom={setZoom}
+                imgSrc={selectedFile}
+                ref={imageCropperApiRef}
+              />
+            </div>
+            <Slider min={1} max={10} onChange={setZoom} step={0.1} value={zoom} />
+          </div>
+        </Modal>
+      </>
+    )
   );
 };

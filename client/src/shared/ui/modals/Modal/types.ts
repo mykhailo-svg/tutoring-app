@@ -6,6 +6,7 @@ export type ModalActions = Partial<
     {
       text: string;
       onAction: () => void;
+      loading?: boolean;
     }
   >
 >;

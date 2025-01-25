@@ -74,6 +74,7 @@ export const Modal: FC<ModalProps> = ({
 
             {actions.primary && (
               <Button
+                loading={actions.primary.loading}
                 size='small'
                 onClick={actions.primary.onAction}
                 as='button'

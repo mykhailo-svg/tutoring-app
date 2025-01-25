@@ -12,8 +12,17 @@
   background: var(--primary-color);
 }
 
+.editAvatarModalInner {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 100%;
+}
+
 .cropCanvas {
   position: relative;
-  height: 450px;
-  width: 450px;
+  min-height: 200px;
+  flex: 1 1 auto;
+  width: 100%;
 }

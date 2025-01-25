@@ -29,4 +29,9 @@ export class User {
 
   @Column({ enum: USER_ROLE, type: 'enum' })
   role: USER_ROLE;
+
+  @Column()
+  avatar: {
+    s: number;
+  };
 }

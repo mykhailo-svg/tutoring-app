@@ -46,8 +46,6 @@ export class UserController {
       method: 'POST',
     });
 
-    console.log(upload.status);
-
-    return file;
+    return upload.json();
   }
 }
