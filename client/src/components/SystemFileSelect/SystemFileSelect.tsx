@@ -5,6 +5,7 @@ import {
   useImperativeHandle,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import type { SystemFileSelectValidation, SystemFileSelectApi } from './types';
 
@@ -17,7 +18,7 @@ type SystemFileSelectProps = {
 export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelectProps>(
   ({ onSelect, validation, onError }, ref) => {
     const filePickerRef = useRef<HTMLInputElement | null>(null);
-
+    const [key, setKey] = useState('0');
     const openFileSelect = useCallback(() => {
       if (filePickerRef.current) {
         filePickerRef.current.click();
@@ -26,6 +27,10 @@ export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelect
 
     const handleSelect = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
+        const resetValue = () => {
+          event.target.value = '';
+        };
+
         const files = event.target.files ?? ([] as any as FileList);
 
         for (const file of files) {
@@ -43,12 +48,14 @@ export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelect
 
           if (!validated) {
             onError();
-
+            event.target.value = '';
             return;
           }
         }
 
         onSelect(files);
+
+        resetValue();
       },
       [onSelect, onError, validation?.sizeInKB]
     );
