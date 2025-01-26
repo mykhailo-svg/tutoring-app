@@ -13,7 +13,5 @@ export const uploadUserAvatarImage = async (image: Blob) => {
     headers: { Authorization: `Bearer ${cookies.get(COOKIES_NAME.ACCESS_TOKEN)}` },
   });
 
-  console.log(uploadedImage);
-
   return uploadedImage;
 };

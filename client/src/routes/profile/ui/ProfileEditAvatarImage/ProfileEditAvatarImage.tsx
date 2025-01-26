@@ -78,12 +78,13 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
             const uploadedImage = await uploadAvatar(blob);
 
             const uploadedImageData = await uploadedImage.json();
+            editAvatarModalToggler.setNotActive();
 
+            setSelectedFile(null);
             setAuthState((prevData) => ({
               user: { ...(prevData.user as User), avatar: uploadedImageData.data },
             }));
             onClose();
-            console.log(uploadedImageData);
           }
         },
         text: 'Save',

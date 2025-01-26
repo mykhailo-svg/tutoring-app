@@ -2,10 +2,6 @@
 
 import { Popover } from '@/shared/ui/popovers';
 import styles from './UserAuthQuickActions.module.scss';
-import { USER_ROLE } from '@/global_types';
-import { FC, useMemo } from 'react';
-import { PiStudentBold as StudentIcon } from 'react-icons/pi';
-import { FaChalkboardTeacher as TeacherIcon, FaRegUser as UserIcon } from 'react-icons/fa';
 import { useAuth } from '@/providers/AuthProvider';
 import { translateUserRole } from '@/shared/helpers/translateUserRole';
 import { Button } from '@/shared/ui/buttons';
@@ -23,7 +19,11 @@ export const UserAuthQuickActions: React.FC<UserAuthQuickActionsProps> = () => {
         <div className={styles.root}>
           {data.user && (
             <div className={styles.avatar}>
-              <UserAvatar imageSrc={data.user.avatar.display_url} role={data.user.role} size='small' />
+              <UserAvatar
+                imageSrc={data.user.avatar.display_url}
+                role={data.user.role}
+                size='small'
+              />
             </div>
           )}
         </div>

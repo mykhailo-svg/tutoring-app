@@ -49,8 +49,6 @@ export const SystemFileSelect = forwardRef<SystemFileSelectApi, SystemFileSelect
         }
 
         onSelect(files);
-
-        console.log(event.target.files);
       },
       [onSelect, onError, validation?.sizeInKB]
     );
