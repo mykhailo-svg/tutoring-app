@@ -14,10 +14,12 @@ export type ImageCropperApi = {
   getImageBlob: () => Promise<Blob>;
 };
 
+const MAX_CROP_SIZE = { height: 400, width: 400 };
+
 export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProps>(
   ({ zoom = 1, setZoom = noop, imgSrc }, ref) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [cropSize, setCropSize] = useState({ height: 400, width: 400 });
+    const [cropSize, setCropSize] = useState(MAX_CROP_SIZE);
 
     const [croppedPixels, setCroppedPixels] = useState<Area>();
 
@@ -34,6 +36,7 @@ export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProp
         <Cropper
           onMediaLoaded={(size) => {
             const minValue = min(Object.values(size));
+            console.log(size);
 
             if (minValue && minValue < cropSize.height) {
               setCropSize({ width: minValue, height: minValue });
@@ -41,6 +44,8 @@ export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProp
               setCropSize({ width: 400, height: 400 });
             }
           }}
+          objectFit='cover'
+          restrictPosition
           maxZoom={10}
           image={imgSrc}
           crop={crop}

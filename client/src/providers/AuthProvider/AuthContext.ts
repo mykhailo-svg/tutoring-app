@@ -5,6 +5,7 @@ import { createContext } from 'react';
 
 export type AuthContextData = {
   user: User | null;
+  isAuthenticated: boolean;
 };
 
 export type AuthContextDataMutate = (
@@ -16,6 +17,7 @@ export type AuthContextType = { data: AuthContextData; setAuthState: AuthContext
 export const AuthContext = createContext<AuthContextType>({
   data: {
     user: null,
+    isAuthenticated: false,
   },
   setAuthState: () => {},
 });

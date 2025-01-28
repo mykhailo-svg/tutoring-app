@@ -146,6 +146,7 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
         <Modal
           actions={editModalActions}
           title='Profile photo'
+          size='small'
           open={editAvatarModalToggler.isActive}
           onClose={editAvatarModalToggler.setNotActive}
           onOpen={editAvatarModalToggler.setActive}
