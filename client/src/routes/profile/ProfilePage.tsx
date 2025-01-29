@@ -1,20 +1,11 @@
 'use client';
 
 import { useAuth } from '@/providers/AuthProvider';
-import { ProfileGeneralData } from './ui';
+import { ProfileEditableGeneralData, ProfileGeneralData } from './ui';
 import { useToggle } from '@/shared/hooks';
-import { Modal, type ModalActions } from '@/shared/ui/modals/Modal';
-import { Button } from '@/shared/ui/buttons';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { ImageCropper } from '@/components/ImageCropper';
-import { ImageCropperApi } from '@/components/ImageCropper/ImageCropperRoot';
-import {
-  SystemFileSelect,
-  SystemFileSelectApi,
-  SystemFileSelectValidation,
-} from '@/components/SystemFileSelect';
-import { getUploadedImagePreview } from '@/shared/helpers/getUploadedImagePreview';
 import { ProfileEditAvatarImage } from './ui/ProfileEditAvatarImage';
+import styles from './ProfilePage.module.scss';
+import { useProfileState } from './hooks';
 
 const ProfilePage = () => {
   const {
@@ -23,8 +14,10 @@ const ProfilePage = () => {
 
   const avatarModalToggler = useToggle();
 
+  const { profileData } = useProfileState();
+
   return (
-    <>
+    <div className={styles.root}>
       <ProfileEditAvatarImage
         active={avatarModalToggler.isActive}
         onClose={avatarModalToggler.setNotActive}
@@ -37,7 +30,9 @@ const ProfilePage = () => {
         role={user?.role}
         email={user?.email}
       />
-    </>
+
+      <ProfileEditableGeneralData />
+    </div>
   );
 };
 
