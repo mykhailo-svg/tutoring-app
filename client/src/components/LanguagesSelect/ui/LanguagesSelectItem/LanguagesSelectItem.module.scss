@@ -1,0 +1,10 @@
+.root {
+  display: flex;
+}
+
+.remove {
+  &.disabled {
+    pointer-events: none;
+    opacity: 0;
+  }
+}
