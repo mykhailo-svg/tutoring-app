@@ -45,4 +45,5 @@ export enum LANGUAGE_LEVEL {
   B2 = 'B2',
   C1 = 'C1',
   C2 = 'C2',
+  NATIVE = 'NATIVE',
 }
