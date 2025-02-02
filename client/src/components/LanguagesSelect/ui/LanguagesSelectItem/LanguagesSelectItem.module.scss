@@ -3,7 +3,7 @@
 }
 
 .remove {
-  &.disabled {
+  &.disabledRemove {
     pointer-events: none;
     opacity: 0;
   }

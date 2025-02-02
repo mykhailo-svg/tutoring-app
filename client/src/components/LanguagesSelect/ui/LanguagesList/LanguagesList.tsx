@@ -1,13 +1,22 @@
 import { useMemo, useState } from 'react';
-import { AVAILABLE_LANGUAGES_LIST, LANGUAGE_TRANSLATIONS } from './constants';
+import { AVAILABLE_LANGUAGE, AVAILABLE_LANGUAGES_LIST, LANGUAGE_TRANSLATIONS } from './constants';
 import { Scrollable } from '@/shared/ui/scrollable/Scrollable';
 import styles from './LanguagesList.module.scss';
 import { OptionList, OptionsListItem } from '@/shared/ui/lists';
 import { TextField } from '@/shared/ui/inputs';
+import { LanguagesSelectState } from '../../LanguagesSelect';
 
-type LanguagesListProps = {};
+type LanguagesListProps = {
+  language: AVAILABLE_LANGUAGE | undefined;
+  currentLanguagesState: LanguagesSelectState['languages'];
+  onSelect: (lang: AVAILABLE_LANGUAGE) => void;
+};
 
-export const LanguagesList: React.FC<LanguagesListProps> = () => {
+export const LanguagesList: React.FC<LanguagesListProps> = ({
+  language: currentLang,
+  onSelect,
+  currentLanguagesState,
+}) => {
   const [query, setQuery] = useState('');
 
   const options = useMemo<OptionsListItem[]>(() => {
@@ -16,16 +25,14 @@ export const LanguagesList: React.FC<LanguagesListProps> = () => {
       value: language.value,
     }));
 
-    if (query) {
-      return languages.filter(
-        (language) => language.label.toLowerCase().indexOf(query.toLowerCase()) > -1
-      );
-    } else {
-      return languages;
-    }
-  }, [query]);
+    return languages.filter((language) => {
+      const matchesQuery = !query || language.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
 
-  const [language, setLanguage] = useState<string>('');
+      const notDuplicated = !currentLanguagesState[language.value];
+
+      return matchesQuery && notDuplicated;
+    });
+  }, [query, currentLanguagesState]);
 
   return (
     <div>
@@ -39,7 +46,11 @@ export const LanguagesList: React.FC<LanguagesListProps> = () => {
         />
       </div>
       <Scrollable className={styles.list}>
-        <OptionList selected={language} onSelect={setLanguage} options={options} />
+        <OptionList
+          selected={currentLang}
+          onSelect={onSelect as (lang: string) => void}
+          options={options}
+        />
       </Scrollable>
     </div>
   );

@@ -3,23 +3,27 @@ import { useMemo, useState } from 'react';
 import styles from './LanguageLevelPicker.module.scss';
 import { OptionList, OptionsListItem } from '@/shared/ui/lists';
 
-type LanguageLevelPickerProps = {};
+type LanguageLevelPickerProps = {
+  selectedLevel?: LANGUAGE_LEVEL | null | undefined;
+  onSelect: (level: LANGUAGE_LEVEL) => void;
+};
 
 const AVAILABLE_LEVELS = Object.values(LANGUAGE_LEVEL);
 
-export const LanguageLevelPicker: React.FC<LanguageLevelPickerProps> = () => {
+export const LanguageLevelPicker: React.FC<LanguageLevelPickerProps> = ({
+  selectedLevel,
+  onSelect,
+}) => {
   const options = useMemo<OptionsListItem[]>(
     () => AVAILABLE_LEVELS.map((level) => ({ label: translateLanguageLevel(level), value: level })),
     []
   );
 
-  const [selectedLevel, setSelectedLevel] = useState<LANGUAGE_LEVEL>(LANGUAGE_LEVEL.A1);
-
   return (
     <div className={styles.root}>
       <OptionList
         label='Language level'
-        onSelect={(value) => setSelectedLevel(value as LANGUAGE_LEVEL)}
+        onSelect={onSelect as (lang: string) => void}
         selected={selectedLevel}
         options={options}
       />

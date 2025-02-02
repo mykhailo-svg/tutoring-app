@@ -1,15 +1,22 @@
 import { LANGUAGE_LEVEL } from '@/global_types';
-import { type Dispatch, type SetStateAction, useCallback, useMemo } from 'react';
+import { type Dispatch, ReactNode, type SetStateAction, useCallback, useMemo } from 'react';
 import styles from './LanguagesSelect.module.scss';
 import { Button } from '@/shared/ui/buttons';
 import { LanguagesSelectItem } from './ui';
+import { AVAILABLE_LANGUAGE } from './ui/LanguagesList/constants';
+
+export type ChangeLanguagesState = (
+  mutation: (prevValue: LanguagesSelectState) => Partial<LanguagesSelectState>
+) => void;
 
 type LanguagesSelectProps = {
   state: LanguagesSelectState;
   setLanguages: Dispatch<SetStateAction<LanguagesSelectState>>;
 };
 
-type Languages = Record<string, { level: LANGUAGE_LEVEL } | null>;
+type Languages = Record<string, LanguagesSelectLanguage | null>;
+
+export type LanguagesSelectLanguage = { level: LANGUAGE_LEVEL | null | undefined };
 
 export type LanguagesSelectState = {
   languages: Languages;
@@ -17,8 +24,8 @@ export type LanguagesSelectState = {
 };
 
 export const LanguagesSelect: React.FC<LanguagesSelectProps> = ({ state, setLanguages }) => {
-  const onLanguagesStateChange = useCallback(
-    (mutation: (prevValue: LanguagesSelectState) => Partial<LanguagesSelectState>) => {
+  const onLanguagesStateChange: ChangeLanguagesState = useCallback(
+    (mutation) => {
       setLanguages((prevValue) => ({ ...prevValue, ...mutation(prevValue) }));
     },
     [setLanguages]
@@ -29,14 +36,34 @@ export const LanguagesSelect: React.FC<LanguagesSelectProps> = ({ state, setLang
   }, [onLanguagesStateChange]);
 
   const list = useMemo(() => {
-    return <></>;
-  }, []);
+    const elements: ReactNode[] = [];
+
+    for (const languageKey in state.languages) {
+      const language = state.languages[languageKey];
+
+      elements.push(
+        <LanguagesSelectItem
+          languagesState={state.languages}
+          language={{ id: languageKey as AVAILABLE_LANGUAGE, level: language?.level }}
+          onLanguagesStateChange={onLanguagesStateChange}
+        />
+      );
+    }
+
+    return elements;
+  }, [state.languages, onLanguagesStateChange]);
 
   return (
     <div className={styles.root}>
       <div className={styles.list}>
         {list}
-        {state.unsavedLanguage && <LanguagesSelectItem language={null} />}
+        {state.unsavedLanguage && (
+          <LanguagesSelectItem
+            languagesState={state.languages}
+            onLanguagesStateChange={onLanguagesStateChange}
+            language={null}
+          />
+        )}
       </div>
 
       <div>

@@ -7,7 +7,7 @@ export type OptionsListItem = { value: string; label: string };
 
 type OptionListProps = {
   options: OptionsListItem[];
-  selected: string;
+  selected?: string | null | undefined;
   label?: string;
   onSelect: (value: string) => void;
 };
