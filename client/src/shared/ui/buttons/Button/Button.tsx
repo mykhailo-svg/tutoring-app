@@ -1,8 +1,9 @@
 import classNames from 'classnames';
 import { ComponentPropsWithoutRef, ReactNode, useMemo } from 'react';
 import styles from './Button.module.scss';
-import { CommonButtonSize, CommonButtonVariant } from './types';
+import { ButtonDisclosure, CommonButtonSize, CommonButtonVariant } from './types';
 import {
+  BUTTON_DISCLOSURES,
   COMMON_BUTTON_SIZE_CLASS_MAP,
   COMMON_BUTTON_VARIANTS_CLASSES_DEFINITIONS,
 } from './constants';
@@ -24,6 +25,7 @@ type ButtonProps<T extends HTMLTagType> = {
   fullWidth?: boolean;
   size?: CommonButtonSize;
   icon?: ReactNode;
+  disclosure?: ButtonDisclosure;
 } & HTMLElementProps<T>;
 
 export function Button<T extends HTMLTagType>({
@@ -36,6 +38,7 @@ export function Button<T extends HTMLTagType>({
   icon,
   as,
   fullWidth,
+  disclosure,
   ...rest
 }: ButtonProps<T>) {
   const Tag = useMemo(() => (as === 'a' ? Link : (as as HTMLTagType)), [as]);
@@ -60,6 +63,7 @@ export function Button<T extends HTMLTagType>({
       {icon}
       {text}
       {loading ? <Spinner /> : null}
+      {disclosure && <div className={styles.disclosure}>{BUTTON_DISCLOSURES[disclosure]}</div>}
     </Tag>
   );
 }

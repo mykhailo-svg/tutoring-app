@@ -43,6 +43,7 @@ export const LanguagesSelect: React.FC<LanguagesSelectProps> = ({ state, setLang
 
       elements.push(
         <LanguagesSelectItem
+          key={languageKey}
           languagesState={state.languages}
           language={{ id: languageKey as AVAILABLE_LANGUAGE, level: language?.level }}
           onLanguagesStateChange={onLanguagesStateChange}

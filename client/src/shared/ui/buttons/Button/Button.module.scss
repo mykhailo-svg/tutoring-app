@@ -44,6 +44,7 @@
   background: var(--white-color);
   color: var(--primary-color);
   fill: var(--primary-color);
+  outline: 0.5px solid;
 }
 
 .plain {
@@ -57,4 +58,10 @@
   background: var(--secondary-color);
   color: var(--primary-color);
   fill: var(--primary-color);
+}
+
+.disclosure {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
 }

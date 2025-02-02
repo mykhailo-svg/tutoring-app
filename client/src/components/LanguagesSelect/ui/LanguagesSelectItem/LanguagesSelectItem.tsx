@@ -27,10 +27,24 @@ export const LanguagesSelectItem: React.FC<LanguagesSelectItemProps> = ({
 }) => {
   const handleLanguageChange = useCallback(
     (lang: AVAILABLE_LANGUAGE) => {
-      onLanguagesStateChange((prevValue) => ({
-        languages: { ...prevValue.languages, [lang]: { level: LANGUAGE_LEVEL.A1 } },
-        ...(!language ? { unsavedLanguage: false } : {}),
-      }));
+      onLanguagesStateChange((prevValue) => {
+        const nextLanguagesState = { ...prevValue.languages };
+
+        if (language) {
+          nextLanguagesState[lang] = nextLanguagesState[language.id];
+
+          delete nextLanguagesState[language.id];
+        } else {
+          nextLanguagesState[lang] = {
+            level: null,
+          };
+        }
+
+        return {
+          languages: nextLanguagesState,
+          ...(!language ? { unsavedLanguage: false } : {}),
+        };
+      });
     },
     [onLanguagesStateChange, language]
   );
@@ -63,36 +77,43 @@ export const LanguagesSelectItem: React.FC<LanguagesSelectItemProps> = ({
 
   return (
     <div className={styles.root}>
-      <Popover
-        activator={
-          <Button
-            as='button'
-            variant='secondary'
-            size='small'
-            text={language?.id ? LANGUAGE_TRANSLATIONS[language?.id] : 'Select'}
+      <div className={styles.selects}>
+        <Popover
+          activator={
+            <Button
+              as='button'
+              disclosure='down'
+              variant='secondary'
+              size='small'
+              text={language?.id ? LANGUAGE_TRANSLATIONS[language?.id] : 'Select'}
+            />
+          }
+        >
+          <LanguagesList
+            currentLanguagesState={languagesState}
+            onSelect={handleLanguageChange}
+            language={language?.id}
           />
-        }
-      >
-        <LanguagesList
-          currentLanguagesState={languagesState}
-          onSelect={handleLanguageChange}
-          language={language?.id}
-        />
-      </Popover>
+        </Popover>
 
-      <Popover
-        activator={
-          <Button
-            disabled={!language}
-            as='button'
-            variant='secondary'
-            size='small'
-            text={language?.level ?? 'Select'}
+        <Popover
+          activator={
+            <Button
+              disabled={!language}
+              as='button'
+              disclosure='down'
+              variant='secondary'
+              size='small'
+              text={language?.level ?? 'Select'}
+            />
+          }
+        >
+          <LanguageLevelPicker
+            onSelect={handleLanguageLevelChange}
+            selectedLevel={language?.level}
           />
-        }
-      >
-        <LanguageLevelPicker onSelect={handleLanguageLevelChange} selectedLevel={language?.level} />
-      </Popover>
+        </Popover>
+      </div>
 
       <div className={classNames(styles.remove, { [styles.disabledRemove]: !language })}>
         <Button onClick={handleDelete} size='small' as='button' icon={<DeleteIcon />} />
