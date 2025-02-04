@@ -7,7 +7,7 @@ import { getApiEndpointUrl, APIEndpoints } from '@/api';
 import { User } from '@/global_types';
 import { Poppins } from 'next/font/google';
 
-const poppins = Poppins({ weight: ['400', '700', '800', '900'] });
+const poppins = Poppins({ weight: ['400', '500', '600', '700', '800', '900'] });
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -33,7 +33,7 @@ export const RootLayout: React.FC<RootLayoutProps> = async ({ children }) => {
     <html lang='en'>
       <body className={poppins.className}>
         <ReactQueryProvider>
-          <AuthProvider initialData={{ user }}>
+          <AuthProvider initialData={{ user, isAuthenticated: Boolean(user) }}>
             <main className={styles.container}>{children}</main>
           </AuthProvider>
         </ReactQueryProvider>

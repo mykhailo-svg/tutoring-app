@@ -21,7 +21,9 @@ export const ContentLayoutHeader: React.FC<ContentLayoutHeaderProps> = ({ toggle
       </div>
 
       <h1 className={styles.title}>{pageTitle}</h1>
-      <UserAuthQuickActions />
+      <div className={styles.quickActions}>
+        <UserAuthQuickActions />
+      </div>
     </header>
   );
 };

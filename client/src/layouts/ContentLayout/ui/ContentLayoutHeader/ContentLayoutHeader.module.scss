@@ -11,6 +11,13 @@
   position: sticky;
   top: 0;
   display: flex;
+
+  z-index: 10;
+}
+
+
+.quickActions{
+  padding-bottom: 10px;
 }
 
 .burger {
@@ -42,7 +49,7 @@
   }
 }
 @include responsiveStyles(phone, false) {
-  .root{
+  .root {
     padding-top: 10px;
   }
   .title {
