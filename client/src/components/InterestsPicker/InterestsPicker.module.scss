@@ -26,6 +26,16 @@
   }
 }
 
+.activeInterest {
+  color: var(--secondary-color);
+  background: var(--primary-color);
+}
+
+.interestDisabled {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
 .category {
   p {
     font-weight: 600;

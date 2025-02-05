@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import { MouseEventHandler, ReactNode, useMemo } from 'react';
 import styles from './Card.module.scss';
 import classNames from 'classnames';
 import { CardShadow } from './types';
@@ -10,6 +10,7 @@ type CardProps = {
   active?: boolean;
   shadow?: CardShadow;
   onClick?: MouseEventHandler;
+  className?: string;
 };
 
 export const Card: React.FC<CardProps> = ({
@@ -18,15 +19,19 @@ export const Card: React.FC<CardProps> = ({
   onClick,
   hover,
   active,
+  className: customClassName,
 }) => {
-  return (
-    <div
-      onClick={onClick}
-      className={classNames(styles.root, CARD_SHADOW_CLASS_MAP[shadow], {
+  const rootClassName = useMemo(
+    () =>
+      classNames(styles.root, customClassName, CARD_SHADOW_CLASS_MAP[shadow], {
         [styles.hoverable]: hover,
         [styles.active]: active,
-      })}
-    >
+      }),
+    [hover, active, customClassName]
+  );
+
+  return (
+    <div onClick={onClick} className={rootClassName}>
       {children}
     </div>
   );

@@ -1,4 +1,55 @@
+.root {
+  display: flex;
+  gap: 10px;
+  & > div {
+    flex: 1;
+  }
+}
+
 .save {
   display: flex;
   justify-content: flex-end;
+}
+
+.card {
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  padding: 16px;
+  border-bottom: var(--divider-line-border);
+}
+
+.interestsSubtitle {
+  font-size: 13px;
+}
+
+.cardInner {
+  padding: 16px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardContent {
+  flex: 1 1 auto;
+}
+
+.interestsModalInner {
+  padding: 20px;
+}
+
+.interestsModalTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.interestsModalSubtitle {
+  font-size: 13px;
+}
+.interestsModalHeading {
+  margin-bottom: 12px;
+  text-align: center;
 }

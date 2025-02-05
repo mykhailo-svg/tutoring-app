@@ -88,9 +88,18 @@ const INTERESTS_TRANSLATIONS: Record<string, string> = {
   FISHING: 'Fishing',
 };
 
+const INTERESTS_CATEGORY_TRANSLATIONS: Record<string, string> = {
+  SPORTS_FITNESS: 'Sport and fitness',
+  ENTERTAINMENT_LEISURE: 'Entertainment and leisure',
+  EDUCATION_HOBBIES: 'Education and hobbies',
+};
+
 export const translateInterest = (interest: string) => {
   return INTERESTS_TRANSLATIONS[interest] ?? interest;
 };
+
+export const translateInterestsCategory = (category: string) =>
+  INTERESTS_CATEGORY_TRANSLATIONS[category] ?? category;
 
 export const getInterestIcon = (interest: string) => {
   const formattedInterest = interest
