@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { SafeUser } from '@src/globalTypes';
 import * as bcrypt from 'bcrypt';
 import { getConfig } from '@src/config';
+import { UpdateUserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -61,5 +62,9 @@ export class UserService {
     delete safeUser.password;
 
     return safeUser;
+  }
+
+  async updateUserGeneralData(userId: number, data: UpdateUserDto) {
+    await this.usersRepository.update({ id: userId }, data);
   }
 }

@@ -53,4 +53,12 @@ export class User {
       fileName: string;
     };
   };
+
+  @Column({ type: 'simple-array', default: null, nullable: true })
+  @ApiProperty({
+    default: null,
+    description: 'User avatar image',
+    nullable: true,
+  })
+  interests: string[];
 }

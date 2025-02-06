@@ -4,47 +4,9 @@
   gap: 24px;
 }
 
-.interest {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  padding: 4px 12px;
-
-  background: var(--secondary-color);
-  color: var(--primary-color);
-  border-radius: 8px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  img {
-    height: 24px;
-    width: 24px;
-  }
-}
-
-.activeInterest {
-  color: var(--secondary-color);
-  background: var(--primary-color);
-}
-
-.interestDisabled {
-  pointer-events: none;
-  opacity: 0.3;
-}
-
 .category {
   p {
     font-weight: 600;
     margin-bottom: 8px;
   }
-}
-
-.interests {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
 }

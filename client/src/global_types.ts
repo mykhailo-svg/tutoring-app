@@ -12,6 +12,7 @@ export type User = {
   name: string;
   role: USER_ROLE;
   isEmailVerified: boolean;
+  interests?: string[];
 };
 
 // AUTH

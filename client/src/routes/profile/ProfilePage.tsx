@@ -5,7 +5,6 @@ import { ProfileEditableGeneralData, ProfileGeneralData } from './ui';
 import { useToggle } from '@/shared/hooks';
 import { ProfileEditAvatarImage } from './ui/ProfileEditAvatarImage';
 import styles from './ProfilePage.module.scss';
-import { useProfileState } from './hooks';
 
 const ProfilePage = () => {
   const {
@@ -13,8 +12,6 @@ const ProfilePage = () => {
   } = useAuth();
 
   const avatarModalToggler = useToggle();
-
-  const { profileData } = useProfileState();
 
   return (
     <div className={styles.root}>
