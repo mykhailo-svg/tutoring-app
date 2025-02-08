@@ -14,7 +14,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { Auth, Validation } from '@src/decorators';
 import { AuthProtectedRequest } from '@src/globalTypes';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { getConfig } from '@src/config';
 import { UpdateUserDto } from './dto';
 
 @ApiTags('User')
