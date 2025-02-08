@@ -9,7 +9,7 @@ export const Popover: FC<PopoverProps> = ({ activator, children }) => (
     <RadixPopover.Trigger asChild>{activator}</RadixPopover.Trigger>
 
     <RadixPopover.Portal>
-      <RadixPopover.Content className={styles.content} sideOffset={5}>
+      <RadixPopover.Content style={{ width: 'var(--radix-popover-trigger-width)' }} className={styles.content} sideOffset={5}>
         <div>{children}</div>
 
         <RadixPopover.Arrow className={styles.arrow} />

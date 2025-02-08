@@ -3,7 +3,6 @@ import styles from './CommonToast.module.scss';
 import classNames from 'classnames';
 import { COMMON_TOAST_TONE } from './types';
 import { COMMON_TOAST_TONE_CLASS_DEFINITIONS } from './constants';
-import { ReactNode } from 'react';
 import { Cross2Icon as CloseIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
 type CommonToastProps = {

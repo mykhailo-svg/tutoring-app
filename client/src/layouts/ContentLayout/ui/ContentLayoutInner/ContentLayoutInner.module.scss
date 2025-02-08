@@ -12,7 +12,6 @@
 
 .inner {
   padding-top: 20px;
-  height: 6000px;
 }
 
 @include responsiveStyles(phone, false) {

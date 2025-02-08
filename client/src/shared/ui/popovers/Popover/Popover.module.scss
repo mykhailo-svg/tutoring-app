@@ -1,6 +1,9 @@
 .content {
   border-radius: 4px;
   min-width: 200px;
+  max-height: 70vh;
+  margin: 0px;
+  overflow: hidden;
   margin-right: 25px;
   background-color: var(--white-color);
   box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;

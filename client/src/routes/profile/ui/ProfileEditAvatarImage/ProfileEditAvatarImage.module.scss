@@ -1,0 +1,29 @@
+.previewContent {
+  display: flex;
+
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.previewAvatar {
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+.editAvatarModalInner {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 100%;
+}
+
+.cropCanvas {
+  position: relative;
+  min-height: 200px;
+  flex: 1 1 auto;
+  max-height: 400px;
+  width: 100%;
+}

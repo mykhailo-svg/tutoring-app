@@ -3,14 +3,7 @@
 }
 
 .avatar {
-  height: 50px;
-  width: 50px;
-  background: var(--white-color);
-  font-size: 35px;
-  display: flex;
-  color: var(--primary-color);
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
   border-radius: 4px;
 }
 

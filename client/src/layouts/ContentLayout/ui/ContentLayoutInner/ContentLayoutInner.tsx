@@ -19,7 +19,7 @@ export const ContentLayoutInner: React.FC<ContentLayoutInnerProps> = ({ children
       />
       <div className={styles.content}>
         <ContentLayoutHeader toggleMenu={mobileMenuToggler.toggle} />
-        <div className={styles.inner}>content{children}</div>
+        <div className={styles.inner}>{children}</div>
       </div>
     </>
   );

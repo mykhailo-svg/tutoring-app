@@ -22,8 +22,8 @@
     font-size: 20px;
   }
   &.small {
-    padding: 8px;
-    font-size: 16px;
+    padding: 5px 10px;
+    font-size: 14px;
   }
 }
 
@@ -44,6 +44,7 @@
   background: var(--white-color);
   color: var(--primary-color);
   fill: var(--primary-color);
+  outline: 0.5px solid;
 }
 
 .plain {
@@ -54,7 +55,13 @@
 }
 
 .minor {
-  background: #efe5f7;
+  background: var(--secondary-color);
   color: var(--primary-color);
   fill: var(--primary-color);
+}
+
+.disclosure {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
 }

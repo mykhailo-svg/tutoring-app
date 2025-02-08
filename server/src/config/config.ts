@@ -27,5 +27,8 @@ export function getConfig() {
         configService.get('JWT_REFRESH_EXPIRATION_DAYS'),
       ),
     },
+    ibbImagesStorage: {
+      apiKey: configService.get<string>('IBB_IMAGES_STORAGE_API_KEY'),
+    },
   };
 }

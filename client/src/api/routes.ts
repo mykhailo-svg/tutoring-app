@@ -7,6 +7,8 @@ export const APIEndpoints = {
   },
   user: {
     revealCurrent: '/user',
+    uploadAvatarImage: '/user/upload',
+    updateUserGeneralData: '/user',
   },
 };
 

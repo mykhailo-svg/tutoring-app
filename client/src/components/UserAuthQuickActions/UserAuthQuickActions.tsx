@@ -2,14 +2,11 @@
 
 import { Popover } from '@/shared/ui/popovers';
 import styles from './UserAuthQuickActions.module.scss';
-import { USER_ROLE } from '@/global_types';
-import { FC, useMemo } from 'react';
-import { PiStudentBold as StudentIcon } from 'react-icons/pi';
-import { FaChalkboardTeacher as TeacherIcon, FaRegUser as UserIcon } from 'react-icons/fa';
 import { useAuth } from '@/providers/AuthProvider';
 import { translateUserRole } from '@/shared/helpers/translateUserRole';
 import { Button } from '@/shared/ui/buttons';
 import { MdLogout as LogoutIcon } from 'react-icons/md';
+import { UserAvatar } from '../UserAvatar';
 
 type UserAuthQuickActionsProps = {};
 
@@ -19,7 +16,17 @@ export const UserAuthQuickActions: React.FC<UserAuthQuickActionsProps> = () => {
   return (
     <Popover
       activator={
-        <div className={styles.root}>{data.user && <AvatarThumbnail role={data.user.role} />}</div>
+        <div className={styles.root}>
+          {data.user && (
+            <div className={styles.avatar}>
+              <UserAvatar
+                imageSrc={data.user.avatar.display_url}
+                role={data.user.role}
+                size='small'
+              />
+            </div>
+          )}
+        </div>
       }
     >
       <div className={styles.popover}>
@@ -43,20 +50,3 @@ export const UserAuthQuickActions: React.FC<UserAuthQuickActionsProps> = () => {
     </Popover>
   );
 };
-
-const USER_ROLE_ICON_DEFINITION: Record<USER_ROLE, FC> = {
-  [USER_ROLE.OWNER]: TeacherIcon,
-  [USER_ROLE.STUDENT]: StudentIcon,
-};
-
-type AvatarThumbnailProps = { role: USER_ROLE };
-
-function AvatarThumbnail({ role }: AvatarThumbnailProps) {
-  const Icon = useMemo(() => USER_ROLE_ICON_DEFINITION[role] ?? UserIcon, [role]);
-
-  return (
-    <div className={styles.avatar}>
-      <Icon />
-    </div>
-  );
-}

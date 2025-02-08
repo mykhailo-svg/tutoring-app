@@ -1,4 +1,25 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateUserDto } from './create-user.dto';
+import { Type } from 'class-transformer';
+import {
+  IsOptional,
+  IsArray,
+  IsString,
+  IsObject,
+  ValidateNested,
+} from 'class-validator';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+class LevelObjectDto {
+  @IsString()
+  level: string;
+}
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  interests: string[];
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested({ each: true })
+  languages: Record<string, LevelObjectDto>;
+}

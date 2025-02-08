@@ -1,0 +1,46 @@
+.root {
+}
+
+.row {
+  display: flex;
+  gap: 30px;
+  position: relative;
+}
+
+.avatar {
+  border-radius: 100%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.name {
+  color: var(--primary-color);
+  font-size: 24px;
+  text-transform: capitalize;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.role {
+  color: var(--grey-color);
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.email {
+  display: flex;
+  gap: 3px;
+  svg {
+    color: var(--primary-color);
+  }
+}
+
+.editGeneralData {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  button {
+    border-radius: 100%;
+  }
+}

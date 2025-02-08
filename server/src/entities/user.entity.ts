@@ -29,4 +29,44 @@ export class User {
 
   @Column({ enum: USER_ROLE, type: 'enum' })
   role: USER_ROLE;
+
+  @Column({ type: 'json', default: null, nullable: true })
+  @ApiProperty({
+    default: null,
+    description: 'User avatar image',
+    nullable: true,
+  })
+  avatar: {
+    id: string;
+    displayUrl: string;
+    deleteUrl: string;
+    thumb: {
+      url: string;
+      fileName: string;
+    };
+    image: {
+      url: string;
+      fileName: string;
+    };
+    medium: {
+      url: string;
+      fileName: string;
+    };
+  };
+
+  @Column({ type: 'simple-array', default: null, nullable: true })
+  @ApiProperty({
+    default: null,
+    description: 'User interests',
+    nullable: true,
+  })
+  interests: string[];
+
+  @Column({ type: 'json', default: null, nullable: true })
+  @ApiProperty({
+    default: null,
+    description: 'Extended user languages',
+    nullable: true,
+  })
+  spokenLanguagesData: Record<string, { level: string }>;
 }

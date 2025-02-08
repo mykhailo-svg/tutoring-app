@@ -15,6 +15,8 @@ export const useAuth = () => {
 
   const router = useRouter();
 
+  console.log(auth);
+
   const logout = useCallback(() => {
     const refreshToken = cookies.get(COOKIES_NAME.REFRESH_TOKEN);
 
