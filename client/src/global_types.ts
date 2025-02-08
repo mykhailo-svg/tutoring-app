@@ -1,5 +1,7 @@
 // USER
 
+import { Languages } from './components/LanguagesSelect';
+
 export enum USER_ROLE {
   STUDENT = 'STUDENT',
   OWNER = 'OWNER',
@@ -13,6 +15,8 @@ export type User = {
   role: USER_ROLE;
   isEmailVerified: boolean;
   interests?: string[];
+  spokenLanguagesData?: Languages<false>;
+  avatar?: any;
 };
 
 // AUTH

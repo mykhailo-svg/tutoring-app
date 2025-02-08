@@ -14,7 +14,10 @@ type LanguagesSelectProps = {
   setLanguages: Dispatch<SetStateAction<LanguagesSelectState>>;
 };
 
-type Languages = Record<string, LanguagesSelectLanguage | null>;
+export type Languages<Nullable extends boolean = true> = Record<
+  string,
+  Nullable extends false ? LanguagesSelectLanguage : LanguagesSelectLanguage | null
+>;
 
 export type LanguagesSelectLanguage = { level: LANGUAGE_LEVEL | null | undefined };
 

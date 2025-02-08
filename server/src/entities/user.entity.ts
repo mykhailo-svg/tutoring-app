@@ -57,8 +57,16 @@ export class User {
   @Column({ type: 'simple-array', default: null, nullable: true })
   @ApiProperty({
     default: null,
-    description: 'User avatar image',
+    description: 'User interests',
     nullable: true,
   })
   interests: string[];
+
+  @Column({ type: 'json', default: null, nullable: true })
+  @ApiProperty({
+    default: null,
+    description: 'Extended user languages',
+    nullable: true,
+  })
+  spokenLanguagesData: Record<string, { level: string }>;
 }

@@ -21,7 +21,7 @@ const ProfilePage = () => {
       />
 
       <ProfileGeneralData
-        avatarImage={user.avatar.display_url}
+        avatarImage={user?.avatar?.display_url}
         onAvatarClick={avatarModalToggler.toggle}
         name={user?.name}
         role={user?.role}

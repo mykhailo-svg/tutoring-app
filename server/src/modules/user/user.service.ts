@@ -65,6 +65,24 @@ export class UserService {
   }
 
   async updateUserGeneralData(userId: number, data: UpdateUserDto) {
-    await this.usersRepository.update({ id: userId }, data);
+    const updatedUserData: Parameters<typeof this.usersRepository.update>[1] =
+      {};
+
+    const fieldsHandlers: Record<keyof UpdateUserDto, () => void> = {
+      interests: () => {
+        updatedUserData.interests = data.interests;
+      },
+      languages: () => {
+        updatedUserData.spokenLanguagesData = data.languages;
+      },
+    };
+
+    console.log(data);
+
+    for (const dataKey in data) {
+      fieldsHandlers[dataKey]();
+    }
+
+    await this.usersRepository.update({ id: userId }, updatedUserData);
   }
 }
