@@ -8,6 +8,7 @@ import { UserModule } from '../user/user.module';
 import { TokenModule } from '../token/token.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { GatewayModule } from '../gateway/gateway.module';
 
 @Module({
   imports: [
@@ -33,8 +34,10 @@ import { join } from 'path';
       synchronize: true,
     }),
     AuthModule,
+    
     UserModule,
     TokenModule,
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],
