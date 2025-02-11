@@ -14,7 +14,9 @@ const Messenger = () => {
   console.log(messages);
 
   useEffect(() => {
-    const websocket = new WebSocket(`ws://localhost:5000`);
+    const websocket = new WebSocket(
+      `ws://localhost:5000?accessToken=${cookies.get(COOKIES_NAME.ACCESS_TOKEN)}`
+    );
 
     websocket.onopen = () => {
       console.log('Ws connected...');
