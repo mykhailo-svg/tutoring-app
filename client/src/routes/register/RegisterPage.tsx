@@ -50,11 +50,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = () => {
     [registerRequest]
   );
 
-  useLayoutEffect(() => {
-    if (user) {
-      router.push(APP_ROUTES.home);
-    }
-  }, [user]);
+  // useLayoutEffect(() => {
+  //   if (user) {
+  //     router.push(APP_ROUTES.home);
+  //   }
+  // }, [user]);
 
   useEffect(() => {
     if (registrationResponse && registrationResponse.data.user) {

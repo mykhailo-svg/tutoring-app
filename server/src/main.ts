@@ -12,8 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: false });
   app.setGlobalPrefix(config.app.globalPrefix);
 
-  app.useWebSocketAdapter(new WsAdapter(app)); // <---
-
+  app.useWebSocketAdapter(new WsAdapter(app));
   const options = new DocumentBuilder()
     .setTitle('Feedback app')
     .setDescription('')
