@@ -13,37 +13,37 @@ const Messenger = () => {
 
   console.log(messages);
 
-  useEffect(() => {
-    const websocket = new WebSocket(
-      `ws://localhost:5000?accessToken=${cookies.get(COOKIES_NAME.ACCESS_TOKEN)}`
-    );
+  // useEffect(() => {
+  //   const websocket = new WebSocket(
+  //     `ws://localhost:5000?accessToken=${cookies.get(COOKIES_NAME.ACCESS_TOKEN)}`
+  //   );
 
-    websocket.onopen = () => {
-      console.log('Ws connected...');
-      websocket.send(JSON.stringify({ event: 'newMessage', data: 'Hello' }));
-    };
+  //   websocket.onopen = () => {
+  //     console.log('Ws connected...');
+  //     websocket.send(JSON.stringify({ event: 'newMessage', data: 'Hello' }));
+  //   };
 
-    websocket.onmessage = (event) => {
-      setMessages((prevData) => [...prevData, event.data]);
+  //   websocket.onmessage = (event) => {
+  //     setMessages((prevData) => [...prevData, event.data]);
 
-      console.log(event.data);
+  //     console.log(event.data);
 
-      console.log('Received message:', event.data);
-    };
+  //     console.log('Received message:', event.data);
+  //   };
 
-    websocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+  //   websocket.onerror = (error) => {
+  //     console.error('WebSocket error:', error);
+  //   };
 
-    websocket.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
+  //   websocket.onclose = () => {
+  //     console.log('WebSocket disconnected');
+  //   };
 
-    websocketRef.current = websocket;
-    return () => {
-      websocket.close();
-    };
-  }, []);
+  //   websocketRef.current = websocket;
+  //   return () => {
+  //     websocket.close();
+  //   };
+  // }, []);
 
   const [text, setText] = useState('');
 

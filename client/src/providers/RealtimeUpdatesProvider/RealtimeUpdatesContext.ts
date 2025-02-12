@@ -1,6 +1,7 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
+type RealtimeUpdatesContextType = { websocket: null | WebSocket };
 
-type RealtimeUpdatesContextType = {}
-
-export const RealtimeUpdatesContext = createContext({})
+export const RealtimeUpdatesContext = createContext<RealtimeUpdatesContextType>({
+  websocket: null,
+});
