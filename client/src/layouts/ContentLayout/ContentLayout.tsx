@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import styles from './ContentLayout.module.scss';
-import { NavSidebar, ContentLayoutHeader, ContentLayoutInner } from './ui';
+import { ContentLayoutInner } from './ui';
+import { RealtimeUpdatesProvider } from '@/providers/RealtimeUpdatesProvider';
 
 type ContentLayoutProps = {
   children: ReactNode;
@@ -8,8 +9,10 @@ type ContentLayoutProps = {
 
 export const ContentLayout: React.FC<ContentLayoutProps> = async ({ children }) => {
   return (
-    <div className={styles.root}>
-      <ContentLayoutInner>{children}</ContentLayoutInner>
-    </div>
+    <RealtimeUpdatesProvider>
+      <div className={styles.root}>
+        <ContentLayoutInner>{children}</ContentLayoutInner>
+      </div>
+    </RealtimeUpdatesProvider>
   );
 };

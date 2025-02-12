@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   NotFoundException,
+  Param,
   Post,
   Put,
   Req,
@@ -25,6 +27,23 @@ export class UserController {
   @Auth()
   async revealUser(@Req() req: AuthProtectedRequest) {
     const existingUser = await this.userService.getById({ id: req.user.id });
+
+    if (!existingUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.userService.removeSensitiveData(existingUser);
+  }
+
+  @Get(':id')
+  async getUserById(@Param('id') id: string) {
+    const userId = parseInt(`${id}`);
+
+    if (!isFinite(userId)) {
+      throw new BadRequestException('Malformed user id');
+    }
+
+    const existingUser = await this.userService.getById({ id: userId });
 
     if (!existingUser) {
       throw new NotFoundException('User not found');

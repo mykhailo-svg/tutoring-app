@@ -1,3 +1,5 @@
+import { User } from '@/global_types';
+
 export const APIEndpoints = {
   auth: {
     register: '/auth/register',
@@ -9,6 +11,7 @@ export const APIEndpoints = {
     revealCurrent: '/user',
     uploadAvatarImage: '/user/upload',
     updateUserGeneralData: '/user',
+    getById: (id: User['id']) => `/user/${id}`,
   },
 };
 

@@ -1,0 +1,20 @@
+.root {
+  background: var(--white-color);
+  border-radius: 8px;
+}
+
+.avatar {
+  overflow: hidden;
+}
+
+.preview {
+  display: flex;
+  gap: 15px;
+}
+
+.name {
+  color: #303972;
+  font-weight: 700;
+  text-transform: capitalize;
+  font-size: 16px;
+}

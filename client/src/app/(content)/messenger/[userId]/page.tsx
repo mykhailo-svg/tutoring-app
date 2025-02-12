@@ -1,7 +1,3 @@
-type pageProps = {};
+import { ChatPage } from '@/routes/chat';
 
-const Chat: React.FC<pageProps> = () => {
-  return <>chat</>;
-};
-
-export default Chat;
+export default ChatPage;
