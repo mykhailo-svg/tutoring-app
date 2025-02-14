@@ -17,4 +17,27 @@
   font-weight: 700;
   text-transform: capitalize;
   font-size: 16px;
+  flex: 1 1 auto;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.status {
+  color: var(--grey-color);
+  font-size: 14px;
+
+  display: flex;
+
+  align-items: center;
+  gap: 5px;
+
+  div {
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    background: var(--success-color);
+  }
 }
