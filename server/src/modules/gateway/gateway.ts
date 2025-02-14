@@ -9,6 +9,7 @@ import { Server, WebSocket } from 'ws';
 import * as jwt from 'jsonwebtoken';
 import { getConfig } from '@src/config/config';
 import { verifyJwtToken } from '../auth';
+import { Cache } from 'cache-manager';
 
 @WebSocketGateway({
   cors: { origin: '*' }, // Allow connections from any origin

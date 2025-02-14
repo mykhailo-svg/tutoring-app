@@ -2,19 +2,39 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { TokenModule } from '../token/token.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { GatewayModule } from '../gateway/gateway.module';
+import { redisStore } from 'cache-manager-redis-store';
+import { CacheModule, CacheModuleAsyncOptions } from '@nestjs/cache-manager';
+
+export const RedisOptions: CacheModuleAsyncOptions = {
+  isGlobal: true,
+  imports: [ConfigModule],
+  useFactory: async (configService: ConfigService) => {
+    const store = await redisStore({
+      socket: {
+        host: 'tutoring-app-redis-service',
+        port: 6379,
+      },
+    });
+    return {
+      store: () => store,
+    };
+  },
+  inject: [ConfigService],
+};
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
+    CacheModule.registerAsync(RedisOptions),
     ServeStaticModule.forRoot({
       rootPath: (() => {
         console.log(join(__dirname, '..', 'uploads'));
@@ -34,11 +54,12 @@ import { GatewayModule } from '../gateway/gateway.module';
       synchronize: true,
     }),
     AuthModule,
-    
+
     UserModule,
     TokenModule,
     GatewayModule,
   ],
+  exports: [AppService],
   controllers: [AppController],
   providers: [AppService],
 })

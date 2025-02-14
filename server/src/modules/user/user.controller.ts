@@ -17,16 +17,22 @@ import { Auth, Validation } from '@src/decorators';
 import { AuthProtectedRequest } from '@src/globalTypes';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from './dto';
+import { AppService } from '../app/app.service';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly cacheManager: AppService,
+  ) {}
 
   @Get()
   @Auth()
   async revealUser(@Req() req: AuthProtectedRequest) {
     const existingUser = await this.userService.getById({ id: req.user.id });
+
+    this.cacheManager.getData();
 
     if (!existingUser) {
       throw new NotFoundException('User not found');
