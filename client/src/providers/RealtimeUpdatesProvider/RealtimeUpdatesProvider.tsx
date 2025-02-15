@@ -1,9 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { RealtimeUpdatesContext } from './RealtimeUpdatesContext';
 import cookies from 'js-cookie';
 import { COOKIES_NAME } from '@/global_types';
+import {
+  REALTIME_UPDATES_EVENTS,
+  RealtimeUpdatesEventHandler,
+  RealtimeUpdatesEventSubscriber,
+} from './types';
+import { nanoid } from 'nanoid';
+import { set } from 'lodash';
 
 type RealtimeUpdatesProviderProps = {
   children: ReactNode;
@@ -11,7 +18,10 @@ type RealtimeUpdatesProviderProps = {
 
 export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = ({ children }) => {
   const [websocketInstance, setWebsocketInstance] = useState<null | WebSocket>(null);
-  const [messages, setMessages] = useState<string[]>([]);
+
+  const eventSubscriptionsRef = useRef<
+    Partial<Record<REALTIME_UPDATES_EVENTS, Record<string, RealtimeUpdatesEventHandler>>>
+  >({});
 
   useEffect(() => {
     const websocket = new WebSocket(
@@ -20,15 +30,20 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
 
     websocket.onopen = () => {
       console.log('Ws connected...');
-      websocket.send(JSON.stringify({ event: 'newMessage', data: 'Hello' }));
     };
 
     websocket.onmessage = (event) => {
-      setMessages((prevData) => [...prevData, event.data]);
-
-      console.log(event.data);
-
       console.log('Received message:', event.data);
+
+      const type = JSON.parse(event.data).type;
+
+      const targetHandlers: RealtimeUpdatesEventHandler[] = Object.values(
+        eventSubscriptionsRef.current[type] ?? {}
+      );
+
+      for (const handler of targetHandlers) {
+        handler(JSON.parse(event.data));
+      }
     };
 
     websocket.onerror = (error) => {
@@ -40,14 +55,20 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     };
 
     setWebsocketInstance(websocket);
+
     return () => {
       websocket.close();
     };
   }, [setWebsocketInstance]);
 
+  const subscribeEvent: RealtimeUpdatesEventSubscriber = useCallback((event, handler, id) => {
+    const handlerId = id ?? nanoid();
+    set(eventSubscriptionsRef.current, `${event}.${handlerId}`, handler);
+  }, []);
+
   const contextData = useMemo<Parameters<typeof RealtimeUpdatesContext.Provider>[0]['value']>(
-    () => ({ websocket: websocketInstance }),
-    [websocketInstance]
+    () => ({ websocket: websocketInstance, subscribeEvent }),
+    [websocketInstance, subscribeEvent]
   );
 
   return (

@@ -1,17 +1,9 @@
 import { Inject, OnModuleInit, UnauthorizedException } from '@nestjs/common';
-import {
-  MessageBody,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, WebSocket } from 'ws';
-import * as jwt from 'jsonwebtoken';
-import { getConfig } from '@src/config/config';
 import { verifyJwtToken } from '../auth';
-import { Cache } from 'cache-manager';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { GatewayService } from './gateway.service';
+import { GATEWAY_MESSAGE_TYPE } from './constants';
 
 @WebSocketGateway({
   cors: { origin: '*' }, // Allow connections from any origin
@@ -25,7 +17,7 @@ export class MyGateway implements OnModuleInit {
   clients: Record<number, WebSocket> = {};
 
   onModuleInit() {
-    // Handle new WebSocket connection
+    // Handle connection
     this.server.on('connection', async (client: WebSocket, req: Request) => {
       const urlObj = new URL(req.url, `http://${process.env.HOST}`);
       const token = urlObj.searchParams.get('accessToken');
@@ -37,7 +29,8 @@ export class MyGateway implements OnModuleInit {
 
         return;
       }
-      // // Handle incoming messages from this client
+
+      // Handle message
       client.on('message', (message: string) => {
         console.log(message.toString());
 
@@ -48,13 +41,30 @@ export class MyGateway implements OnModuleInit {
         }
       });
 
-      // this.clients.push(client);
-
       // // Handle disconnect
       client.on('close', () => {
         delete this.clients[payload.id];
+
+        for (const clientId in this.clients) {
+          this.clients[clientId].send(
+            JSON.stringify({
+              type: GATEWAY_MESSAGE_TYPE.USER_DISCONNECTED,
+              userId: payload.id,
+            }),
+          );
+        }
+
         this.gatewayService.removeCachedOnlineUser(payload.id);
       });
+
+      for (const clientId in this.clients) {
+        this.clients[clientId].send(
+          JSON.stringify({
+            type: GATEWAY_MESSAGE_TYPE.USER_CONNECTED,
+            userId: payload.id,
+          }),
+        );
+      }
 
       this.clients[payload.id] = client;
 
