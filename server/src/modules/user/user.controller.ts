@@ -18,6 +18,7 @@ import { AuthProtectedRequest } from '@src/globalTypes';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from './dto';
 import { AppService } from '../app/app.service';
+import { GatewayService } from '../gateway/gateway.service';
 
 @ApiTags('User')
 @Controller('user')
@@ -25,6 +26,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly cacheManager: AppService,
+    private readonly gatewayService: GatewayService,
   ) {}
 
   @Get()
@@ -55,7 +57,11 @@ export class UserController {
       throw new NotFoundException('User not found');
     }
 
-    return this.userService.removeSensitiveData(existingUser);
+    const isOnline = await this.gatewayService.getIsUserOnline(userId);
+
+    console.log(isOnline);
+
+    return { ...this.userService.removeSensitiveData(existingUser), isOnline };
   }
 
   @Post('upload')

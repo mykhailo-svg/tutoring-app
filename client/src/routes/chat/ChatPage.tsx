@@ -27,7 +27,7 @@ export const ChatPage: React.FC<ChatPageProps> = async ({ params }) => {
 
   return (
     <div className={styles.root}>
-      <ChatHeader name={companionUser.name} />
+      <ChatHeader online={companionUser.isOnline} name={companionUser.name} />
       <div>chat {companionUser?.name}</div>
     </div>
   );

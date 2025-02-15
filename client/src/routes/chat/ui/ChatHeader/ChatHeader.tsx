@@ -5,10 +5,10 @@ import styles from './ChatHeader.module.scss';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useState } from 'react';
 
-type ChatHeaderProps = { name: string };
+type ChatHeaderProps = { name: string; online?: boolean };
 
-export const ChatHeader: React.FC<ChatHeaderProps> = ({ name }) => {
-  const [isOnline, setIsOnline] = useState(true);
+export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online }) => {
+  const [isOnline, setIsOnline] = useState(online ?? false);
 
   return (
     <Card className={styles.root}>
@@ -24,7 +24,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name }) => {
           <span className={styles.name}>{name}</span>
 
           <div className={styles.status}>
-            <div></div> <span>Online</span>
+            <div></div> <span>{isOnline ? 'Online' : 'Offline'}</span>
           </div>
         </div>
       </div>

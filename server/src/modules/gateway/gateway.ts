@@ -1,4 +1,4 @@
-import { OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { Inject, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -10,11 +10,15 @@ import * as jwt from 'jsonwebtoken';
 import { getConfig } from '@src/config/config';
 import { verifyJwtToken } from '../auth';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { GatewayService } from './gateway.service';
 
 @WebSocketGateway({
   cors: { origin: '*' }, // Allow connections from any origin
 })
 export class MyGateway implements OnModuleInit {
+  constructor(private readonly gatewayService: GatewayService) {}
+
   @WebSocketServer()
   server: Server;
 
@@ -49,9 +53,12 @@ export class MyGateway implements OnModuleInit {
       // // Handle disconnect
       client.on('close', () => {
         delete this.clients[payload.id];
+        this.gatewayService.removeCachedOnlineUser(payload.id);
       });
 
       this.clients[payload.id] = client;
+
+      this.gatewayService.cacheOnlineUser(payload.id);
     });
   }
 }
