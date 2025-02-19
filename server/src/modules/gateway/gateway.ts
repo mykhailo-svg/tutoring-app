@@ -49,7 +49,7 @@ export class MyGateway implements OnModuleInit {
           this.clients[clientId].send(
             JSON.stringify({
               type: GATEWAY_MESSAGE_TYPE.USER_DISCONNECTED,
-              userId: payload.id,
+              payload: { userId: payload.id },
             }),
           );
         }
@@ -61,7 +61,7 @@ export class MyGateway implements OnModuleInit {
         this.clients[clientId].send(
           JSON.stringify({
             type: GATEWAY_MESSAGE_TYPE.USER_CONNECTED,
-            userId: payload.id,
+            payload: { userId: payload.id },
           }),
         );
       }

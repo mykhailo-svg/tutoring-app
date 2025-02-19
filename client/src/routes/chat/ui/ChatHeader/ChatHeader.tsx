@@ -23,10 +23,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online, companionI
   useEffect(() => {
     const userDisconnectedEventId = subscribeEvent(
       REALTIME_UPDATES_EVENTS.USER_DISCONNECTED,
-      (payload: any) => {
+      (payload) => {
         console.log(payload);
 
-        if (payload.userId === companionId) {
+        if (payload?.payload?.userId === companionId) {
           setIsOnline(false);
         }
       },
@@ -35,9 +35,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online, companionI
 
     const userConnectedEventId = subscribeEvent(
       REALTIME_UPDATES_EVENTS.USER_CONNECTED,
-      (payload: any) => {
-        console.log(payload);
-        if (payload.userId === companionId) {
+      (payload) => {
+        if (payload?.payload?.userId === companionId) {
           setIsOnline(true);
         }
       },
@@ -66,7 +65,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online, companionI
         );
       }
     };
-  }, [subscribeEvent, unsubscribeEvent, setIsOnline]);
+  }, [subscribeEvent, unsubscribeEvent, setIsOnline, companionId]);
 
   return (
     <div className={styles.root}>

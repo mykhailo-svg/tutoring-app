@@ -1,9 +1,16 @@
+import { User } from '@/global_types';
+
 export enum REALTIME_UPDATES_EVENTS {
   USER_DISCONNECTED = 'USER_DISCONNECTED',
   USER_CONNECTED = 'USER_CONNECTED',
 }
 
-export type RealtimeUpdatesEventHandler<Payload = any> = (payload: Payload) => void;
+export type RealtimeUpdatesEventHandler<Payload = any> = (payload: {
+  type: REALTIME_UPDATES_EVENTS;
+  payload: {
+    userId: User['id'];
+  };
+}) => void;
 
 export type RealtimeUpdatesEventSubscriber = (
   event: REALTIME_UPDATES_EVENTS,
