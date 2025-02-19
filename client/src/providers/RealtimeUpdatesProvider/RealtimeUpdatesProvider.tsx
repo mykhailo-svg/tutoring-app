@@ -16,12 +16,17 @@ import { set } from 'lodash';
 type RealtimeUpdatesProviderProps = {
   children: ReactNode;
 };
-
+REALTIME_UPDATES_EVENTS;
 export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = ({ children }) => {
   const [websocketInstance, setWebsocketInstance] = useState<null | WebSocket>(null);
 
   const eventSubscriptionsRef = useRef<
-    Partial<Record<REALTIME_UPDATES_EVENTS, Record<string, RealtimeUpdatesEventHandler>>>
+    Partial<
+      Record<
+        (typeof REALTIME_UPDATES_EVENTS)[keyof typeof REALTIME_UPDATES_EVENTS],
+        Record<string, RealtimeUpdatesEventHandler>
+      >
+    >
   >({});
 
   useEffect(() => {
@@ -39,7 +44,7 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
       const type = JSON.parse(event.data).type;
 
       const targetHandlers: RealtimeUpdatesEventHandler[] = Object.values(
-        eventSubscriptionsRef.current[type] ?? {}
+        eventSubscriptionsRef.current[type as keyof typeof eventSubscriptionsRef.current] ?? {}
       );
 
       for (const handler of targetHandlers) {
