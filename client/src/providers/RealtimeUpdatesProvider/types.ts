@@ -6,6 +6,10 @@ export const REALTIME_UPDATES_EVENTS = {
   MESSAGE: 'MESSAGE',
 } as const;
 
+export enum REALTIME_UPDATES_ACTIONS {
+  SEND_MESSAGE = 'SEND_MESSAGE',
+}
+
 type REALTIME_UPDATES_EVENTS =
   (typeof REALTIME_UPDATES_EVENTS)[keyof typeof REALTIME_UPDATES_EVENTS];
 
@@ -30,3 +34,5 @@ export type RealtimeUpdatesEventSubscriptionRemover = (
   event: REALTIME_UPDATES_EVENTS,
   id: string
 ) => void;
+
+export type RealtimeUpdatesAction = (event: REALTIME_UPDATES_ACTIONS, payload: any) => void;

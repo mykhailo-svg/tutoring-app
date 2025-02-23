@@ -6,6 +6,7 @@ import cookies from 'js-cookie';
 import { COOKIES_NAME } from '@/global_types';
 import {
   REALTIME_UPDATES_EVENTS,
+  RealtimeUpdatesAction,
   RealtimeUpdatesEventHandler,
   RealtimeUpdatesEventSubscriber,
   RealtimeUpdatesEventSubscriptionRemover,
@@ -16,7 +17,7 @@ import { set } from 'lodash';
 type RealtimeUpdatesProviderProps = {
   children: ReactNode;
 };
-REALTIME_UPDATES_EVENTS;
+
 export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = ({ children }) => {
   const [websocketInstance, setWebsocketInstance] = useState<null | WebSocket>(null);
 
@@ -81,9 +82,18 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     []
   );
 
+  const action: RealtimeUpdatesAction = useCallback(
+    (actionType, payload) => {
+      if (websocketInstance) {
+        websocketInstance.send(JSON.stringify({ action: actionType, payload }));
+      }
+    },
+    [websocketInstance]
+  );
+
   const contextData = useMemo<Parameters<typeof RealtimeUpdatesContext.Provider>[0]['value']>(
-    () => ({ websocket: websocketInstance, subscribeEvent, unsubscribeEvent }),
-    [websocketInstance, subscribeEvent, unsubscribeEvent]
+    () => ({ websocket: websocketInstance, subscribeEvent, unsubscribeEvent, action }),
+    [websocketInstance, subscribeEvent, unsubscribeEvent, action]
   );
 
   return (

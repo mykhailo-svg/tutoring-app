@@ -34,9 +34,18 @@ export class MyGateway implements OnModuleInit {
       client.on('message', (message: string) => {
         console.log(message.toString());
 
-        for (const clientId in this.clients) {
-          this.clients[clientId].send(
-            `${payload.id}:${JSON.parse(message.toString()).data}`,
+        const parsedMessage: { payload?: { message: string; to: number } } =
+          JSON.parse(message.toString());
+
+        if (this.clients[parsedMessage?.payload?.to]) {
+          this.clients[parsedMessage.payload.to].send(
+            JSON.stringify({
+              type: GATEWAY_MESSAGE_TYPE.MESSAGE,
+              payload: {
+                initiator: payload.id,
+                message: parsedMessage.payload.message,
+              },
+            }),
           );
         }
       });

@@ -34,7 +34,7 @@ export const ChatPage: React.FC<ChatPageProps> = async ({ params }) => {
         companionId={companionUser.id}
       />
       <div className={styles.chatContainer}>
-        <Chat />
+        <Chat companion={companionUser} />
       </div>
     </Card>
   );
