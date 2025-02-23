@@ -17,6 +17,7 @@ export type User = {
   interests?: string[];
   spokenLanguagesData?: Languages<false>;
   avatar?: any;
+  isOnline?: boolean;
 };
 
 // AUTH

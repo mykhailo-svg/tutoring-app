@@ -15,6 +15,7 @@ const SIZE_CLASSNAME_MAP: Record<UserAvatarSize, string> = {
   huge: styles.huge,
   small: styles.small,
   medium: styles.medium,
+  thumbnail: styles.thumbnail,
 };
 
 type UserAvatarProps = {

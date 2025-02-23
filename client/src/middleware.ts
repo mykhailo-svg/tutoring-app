@@ -75,5 +75,5 @@ export const middleware: NextMiddleware = async (request) => {
 };
 
 export const config = {
-  matcher: ['/', '/auth/login', '/auth/register'],
+  matcher: ['/', '/auth/login', ],
 };

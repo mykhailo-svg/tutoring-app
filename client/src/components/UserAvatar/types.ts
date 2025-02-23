@@ -1,1 +1,1 @@
-export type UserAvatarSize = 'huge' | 'small' | 'medium';
+export type UserAvatarSize = 'thumbnail' | 'huge' | 'small' | 'medium';

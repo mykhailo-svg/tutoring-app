@@ -18,6 +18,8 @@ services:
     command: yarn start:dev
     depends_on:
       - postgres
+      - postgres-testing
+      - tutoring-app-redis-service
 
   postgres:
     container_name: postgres-db
@@ -52,6 +54,18 @@ services:
       - backend_network
     restart: unless-stopped
     command: -p 5437
+
+  tutoring-app-redis-service:
+    container_name: tutoring-app-redis-service
+    image: redis:latest
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping | grep PONG']
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    networks:
+      - backend_network
+    command: ['redis-server']
 
   pgadmin:
     container_name: pgadmin

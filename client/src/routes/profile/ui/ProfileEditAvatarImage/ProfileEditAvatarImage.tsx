@@ -133,7 +133,7 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
           <div className={styles.previewContent}>
             <div className={styles.previewAvatar}>
               <UserAvatar
-                imageSrc={data?.user?.avatar.display_url}
+                imageSrc={data.user?.avatar?.display_url}
                 iconColor='var(--white-color)'
                 size='huge'
                 backgroundColor='var(--primary-color)'

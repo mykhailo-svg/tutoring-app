@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import { getConfig } from './config';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const config = getConfig();
@@ -11,6 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: false });
   app.setGlobalPrefix(config.app.globalPrefix);
 
+  app.useWebSocketAdapter(new WsAdapter(app));
   const options = new DocumentBuilder()
     .setTitle('Feedback app')
     .setDescription('')

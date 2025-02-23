@@ -8,5 +8,6 @@ export const renderNavigationLinks = (): Link[] => {
   return [
     { href: '/', title: 'Dashboard', id: 'dashboard', icon: <HomeIcon /> },
     { href: '/profile', title: 'Profile', id: 'profile', icon: <ProfileIcon /> },
+    { href: '/messenger', title: 'Messenger', id: 'profile', icon: <ProfileIcon /> },
   ];
 };
