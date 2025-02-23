@@ -15,7 +15,7 @@ import { CacheModule, CacheModuleAsyncOptions } from '@nestjs/cache-manager';
 export const RedisOptions: CacheModuleAsyncOptions = {
   isGlobal: true,
   imports: [ConfigModule],
-  useFactory: async (configService: ConfigService) => {
+  useFactory: async () => {
     const store = await redisStore({
       socket: {
         host: 'tutoring-app-redis-service',
