@@ -1,0 +1,67 @@
+.root {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  &:hover {
+    opacity: 0.8;
+  }
+  &.fullWidth {
+    width: 100%;
+  }
+
+  // Sizes
+  &.large {
+    padding: 20px;
+    font-size: 26px;
+  }
+  &.medium {
+    padding: 10px;
+    font-size: 20px;
+  }
+  &.small {
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+}
+
+.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+// Variants
+
+.primary {
+  background: var(--primary-color);
+  color: var(--white-color);
+  fill: var(--white-color);
+}
+
+.secondary {
+  background: var(--white-color);
+  color: var(--primary-color);
+  fill: var(--primary-color);
+  outline: 0.5px solid;
+}
+
+.plain {
+  display: inline;
+  padding: 0px;
+  color: var(--primary-color);
+  font-size: inherit;
+}
+
+.minor {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  fill: var(--primary-color);
+}
+
+.disclosure {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
+}

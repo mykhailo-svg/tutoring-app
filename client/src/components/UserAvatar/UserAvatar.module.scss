@@ -1,0 +1,35 @@
+.root {
+  font-size: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+
+  // Sizes
+
+  &.huge {
+    height: 250px;
+    width: 250px;
+    font-size: 70px;
+  }
+
+  &.medium {
+    height: 90px;
+    width: 90px;
+  }
+
+  &.small {
+    height: 50px;
+    width: 50px;
+  }
+  &.thumbnail {
+    height: 42px;
+    width: 42px;
+  }
+
+  img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
+}

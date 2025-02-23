@@ -1,0 +1,28 @@
+.root {
+  border-radius: var(--border-radius);
+  padding: 15px;
+  transition: all ease 0.3s;
+
+  background: var(--white-color);
+
+  &.active {
+    background: linear-gradient(to top right, #9181ff, #5038ed);
+  }
+
+  &.hoverable {
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 0px 15px rgba(0, 0, 0, 0.15),
+        /* More pronounced shadow on hover */ 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.normalShadow {
+  box-shadow: 0 0px 6px rgba(0, 0, 0, 0.1), /* Soft bottom shadow */ 0 1px 3px rgba(0, 0, 0, 0.06); /* Subtle lift effect */
+}
+
+.noShadow {
+  box-shadow: none;
+}

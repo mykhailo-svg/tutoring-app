@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.category {
+  p {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+}

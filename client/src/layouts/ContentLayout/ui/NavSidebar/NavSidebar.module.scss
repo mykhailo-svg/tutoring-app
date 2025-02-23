@@ -1,0 +1,100 @@
+@use '../../../../styles/mixins' as *;
+
+.root {
+  background: var(--primary-color);
+  width: 320px;
+  padding: 50px 0px 0px 45px;
+}
+
+.logo {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.navigation {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.link {
+  display: flex;
+
+  font-weight: 600;
+  font-size: 16px;
+
+  transition: color, background ease 0.3s;
+
+  align-items: center;
+  opacity: 1;
+  gap: 12px;
+  color: var(--grey-color-light);
+  padding: 25px 30px;
+  border-radius: 36px 0% 0% 36px;
+  &.linkActive,
+  &:hover {
+    color: var(--primary-color);
+    background: var(--grey-color-light);
+  }
+}
+
+@include responsiveStyles(laptop, false) {
+  .root {
+    padding: 15px;
+    width: 90px;
+  }
+
+  .logo {
+    justify-content: center;
+    span {
+      display: none;
+    }
+  }
+
+  .link {
+    border-radius: 8px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    span {
+      display: none;
+    }
+  }
+}
+.close {
+  display: none;
+  font-size: 60px;
+  flex: 1 1 auto;
+  color: white;
+}
+
+.menu {
+  display: flex;
+}
+
+@include responsiveStyles(tablet, false) {
+  .root {
+    position: fixed;
+    z-index: 1;
+    height: 100vh;
+    width: 100vw;
+
+    &.mobileNotActive {
+      display: none;
+    }
+  }
+  .close {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .logo {
+    justify-content: flex-start;
+  }
+  .link {
+    span {
+      display: block;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.root {
+  cursor: pointer;
+}
+
+.avatar {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.popover {
+}
+
+.info,
+.actions {
+  padding: 14px;
+}
+
+.info {
+  border-bottom: var(--divider-line-border);
+}
+
+.name {
+  text-transform: capitalize;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.role {
+  font-size: 12px;
+}
+
+.logout {
+  padding: 14px;
+}

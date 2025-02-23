@@ -1,0 +1,32 @@
+.root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  height: 20px;
+  cursor: pointer;
+}
+
+.track {
+  background: var(--secondary-color);
+  position: relative;
+  flex-grow: 1;
+  height: 3px;
+}
+
+.range {
+  position: absolute;
+  background: var(--primary-color);
+
+  height: 100%;
+}
+
+.thumb {
+  display: block;
+  width: 20px;
+  cursor: grabbing;
+  height: 20px;
+  background: var(--primary-color);
+  border-radius: 100%;
+}

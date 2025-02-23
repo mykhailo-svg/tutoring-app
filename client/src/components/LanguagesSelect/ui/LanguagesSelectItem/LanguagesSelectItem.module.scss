@@ -1,0 +1,25 @@
+.root {
+  display: flex;
+  gap: 10px;
+}
+
+.remove {
+  &.disabledRemove {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  button{
+    height: 100%;
+  }
+}
+
+.selects {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 10px;
+  
+  button{
+    flex: 50%;
+  }
+}
