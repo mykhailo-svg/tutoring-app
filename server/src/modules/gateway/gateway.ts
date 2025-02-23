@@ -1,4 +1,4 @@
-import { Inject, OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { OnModuleInit } from '@nestjs/common';
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, WebSocket } from 'ws';
 import { verifyJwtToken } from '../auth';
