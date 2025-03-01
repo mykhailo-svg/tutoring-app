@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DirectMessage } from '@src/entities';
+import { DirectMessage, User } from '@src/entities';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 // import { UserService } from '../user/user.service';
@@ -15,6 +15,8 @@ export class DirectMessageService {
     @InjectRepository(DirectMessage)
     private directMessagesRepository: Repository<DirectMessage>,
     private userService: UserService,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   async createDirectMessage({ message }: CreateDirectMessagePayload) {
@@ -63,6 +65,28 @@ export class DirectMessageService {
       loadRelationIds: true,
     });
 
+    this.getChats(sender.id);
+
     return messages;
+  }
+
+  async getChats(userId: User['id']) {
+    const users = await this.usersRepository
+      .createQueryBuilder('user')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from(DirectMessage, 'dm')
+          .where(
+            '(dm.senderId = :currentUserId AND dm.recipientId = user.id) OR (dm.senderId = user.id AND dm.recipientId = :currentUserId)',
+          )
+          .getQuery();
+        return `EXISTS (${subQuery})`;
+      })
+      .setParameter('currentUserId', userId)
+      .getMany();
+
+    console.log(users);
   }
 }

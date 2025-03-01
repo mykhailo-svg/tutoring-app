@@ -9,7 +9,7 @@ export class DirectMessageController {
 
   @Get(':id')
   @Auth()
-  async revealUser(@Req() req: AuthProtectedRequest, @Param('id') id: string) {
+  async getMessages(@Req() req: AuthProtectedRequest, @Param('id') id: string) {
     const user = req.user;
 
     const recipientId = parseInt(id);
@@ -18,5 +18,13 @@ export class DirectMessageController {
       senderId: user.id,
       recipientId,
     });
+  }
+
+  @Get()
+  @Auth()
+  async getChats(@Req() req: AuthProtectedRequest) {
+    const user = req.user;
+
+    return this.directMessagesService.getChats(user.id);
   }
 }
