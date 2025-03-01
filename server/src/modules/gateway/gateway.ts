@@ -1,15 +1,21 @@
-import { OnModuleInit } from '@nestjs/common';
+import { forwardRef, Inject, OnModuleInit } from '@nestjs/common';
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, WebSocket } from 'ws';
 import { verifyJwtToken } from '../auth';
 import { GatewayService } from './gateway.service';
 import { GATEWAY_MESSAGE_TYPE } from './constants';
+import { UserService } from '../user/user.service';
+import { DirectMessageService } from '../direct-message/direct-message.service';
 
 @WebSocketGateway({
   cors: { origin: '*' }, // Allow connections from any origin
 })
 export class MyGateway implements OnModuleInit {
-  constructor(private readonly gatewayService: GatewayService) {}
+  constructor(
+    private readonly gatewayService: GatewayService,
+    @Inject(forwardRef(() => DirectMessageService))
+    private directMessagesService: DirectMessageService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -36,7 +42,15 @@ export class MyGateway implements OnModuleInit {
 
         const parsedMessage: { payload?: { message: string; to: number } } =
           JSON.parse(message.toString());
+        console.log('message');
 
+        this.directMessagesService.createDirectMessage({
+          message: {
+            recipientId: parsedMessage.payload.to,
+            senderId: payload.id,
+            content: parsedMessage.payload.message,
+          },
+        });
         if (this.clients[parsedMessage?.payload?.to]) {
           this.clients[parsedMessage.payload.to].send(
             JSON.stringify({

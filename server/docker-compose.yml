@@ -58,6 +58,7 @@ services:
   tutoring-app-redis-service:
     container_name: tutoring-app-redis-service
     image: redis:latest
+    restart: always
     healthcheck:
       test: ['CMD-SHELL', 'redis-cli ping | grep PONG']
       interval: 1s

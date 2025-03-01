@@ -13,6 +13,9 @@ export const APIEndpoints = {
     updateUserGeneralData: '/user',
     getById: (id: User['id']) => `/user/${id}`,
   },
+  directMessages: {
+    get: (companionId: number) => `/direct-message/${companionId}`,
+  },
 };
 
 export const getApiEndpointUrl = (endpoint: string) => {

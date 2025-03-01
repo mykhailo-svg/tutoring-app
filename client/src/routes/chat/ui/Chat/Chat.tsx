@@ -3,19 +3,20 @@
 import styles from './Chat.module.scss';
 import { ChatMessagesList } from '../ChatMessagesList';
 import { ChatInput } from '../ChatInput';
-import type { User } from '@/global_types';
+import type { DirectMessage, User } from '@/global_types';
 import { useState } from 'react';
 
 type ChatProps = {
   companion: User;
+  initialMessages: any[];
 };
 
-export const Chat: React.FC<ChatProps> = ({ companion }) => {
-  const [messages, setMessages] = useState<{ name: string; value: string }[]>([]);
+export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
+  const [messages, setMessages] = useState<DirectMessage[]>(initialMessages ?? []);
 
   return (
     <div className={styles.root}>
-      <ChatMessagesList messages={messages} />
+      <ChatMessagesList companion={companion} messages={messages} />
       <ChatInput setMessages={setMessages} companion={companion} />
     </div>
   );

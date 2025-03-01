@@ -4,6 +4,8 @@ import styles from './ChatPage.module.scss';
 import { Chat, ChatHeader } from './ui';
 import { getUserById } from '@/api/actions/user';
 import { Card } from '@/shared/ui/cards';
+import { getApiEndpointUrl, APIEndpoints } from '@/api';
+import { createAuthHeaders } from '@/shared/helpers';
 
 type ChatPageProps = { params: Promise<{ userId: string }> };
 
@@ -26,6 +28,17 @@ export const ChatPage: React.FC<ChatPageProps> = async ({ params }) => {
     return redirect('/messenger');
   }
 
+  const messages = await fetch(
+    getApiEndpointUrl(APIEndpoints.directMessages.get(companionUser.id)),
+    {
+      headers: await createAuthHeaders(),
+      cache: 'no-cache',
+    }
+  );
+  const data = await messages.json();
+
+  console.log(data);
+
   return (
     <Card className={styles.root}>
       <ChatHeader
@@ -34,7 +47,7 @@ export const ChatPage: React.FC<ChatPageProps> = async ({ params }) => {
         companionId={companionUser.id}
       />
       <div className={styles.chatContainer}>
-        <Chat companion={companionUser} />
+        <Chat initialMessages={data} companion={companionUser} />
       </div>
     </Card>
   );

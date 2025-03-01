@@ -20,6 +20,16 @@ export type User = {
   isOnline?: boolean;
 };
 
+// DIRECT_MESSAGE
+
+export type DirectMessage = {
+  id: number;
+  sender: number;
+  recipient: number;
+  content: string;
+  createdAt: string;
+};
+
 // AUTH
 export enum TokenType {
   RESET_PASSWORD = 'resetPassword',
