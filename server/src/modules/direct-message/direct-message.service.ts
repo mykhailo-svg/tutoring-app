@@ -73,6 +73,27 @@ export class DirectMessageService {
   async getChats(userId: User['id']) {
     const users = await this.usersRepository
       .createQueryBuilder('user')
+      .leftJoinAndMapOne(
+        'user.latestMessage',
+        (qb) =>
+          qb
+            .subQuery()
+            .select([
+              'dm.id AS id',
+              'dm.content AS content',
+              'dm.senderId AS senderId',
+              'dm.recipientId AS recipientId',
+              'dm.createdAt AS createdAt',
+            ])
+            .from(DirectMessage, 'dm')
+            .where(
+              '(dm.senderId = user.id AND dm.recipientId = :currentUserId) OR (dm.senderId = :currentUserId AND dm.recipientId = user.id)',
+            )
+            .orderBy('dm.createdAt', 'DESC')
+            .limit(1),
+        'latestMessage',
+        'latestMessage.senderId = user.id OR latestMessage.recipientId = user.id',
+      )
       .where((qb) => {
         const subQuery = qb
           .subQuery()
