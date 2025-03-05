@@ -53,61 +53,52 @@ export class DirectMessageService {
     senderId: number;
     recipientId: number;
   }) {
-    const recipient = await this.userService.getById({
-      id: recipientId,
-    });
-
-    const sender = await this.userService.getById({
-      id: senderId,
-    });
-
     const messages = await this.directMessagesRepository.find({
       loadRelationIds: true,
+      where: [
+        { sender: { id: senderId }, recipient: { id: recipientId } },
+        { sender: { id: recipientId }, recipient: { id: senderId } },
+      ],
     });
-
-    this.getChats(sender.id);
 
     return messages;
   }
 
   async getChats(userId: User['id']) {
-    const users = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndMapOne(
-        'user.latestMessage',
-        (qb) =>
-          qb
-            .subQuery()
-            .select([
-              'dm.id AS id',
-              'dm.content AS content',
-              'dm.senderId AS senderId',
-              'dm.recipientId AS recipientId',
-              'dm.createdAt AS createdAt',
-            ])
-            .from(DirectMessage, 'dm')
-            .where(
-              '(dm.senderId = user.id AND dm.recipientId = :currentUserId) OR (dm.senderId = :currentUserId AND dm.recipientId = user.id)',
-            )
-            .orderBy('dm.createdAt', 'DESC')
-            .limit(1),
-        'latestMessage',
-        'latestMessage.senderId = user.id OR latestMessage.recipientId = user.id',
-      )
-      .where((qb) => {
-        const subQuery = qb
-          .subQuery()
-          .select('1')
-          .from(DirectMessage, 'dm')
-          .where(
-            '(dm.senderId = :currentUserId AND dm.recipientId = user.id) OR (dm.senderId = user.id AND dm.recipientId = :currentUserId)',
-          )
-          .getQuery();
-        return `EXISTS (${subQuery})`;
-      })
-      .setParameter('currentUserId', userId)
-      .getMany();
+    const queriesChats: (User & DirectMessage)[] = await this.usersRepository
+      .query(`SELECT u.*, latestMessage.*
+FROM "user" u
+LEFT JOIN LATERAL (
+    SELECT *
+    FROM "direct_message" dm
+    WHERE 
+        (dm."senderId" = u.id AND dm."recipientId" = 42)
+        OR (dm."senderId" = 42 AND dm."recipientId" = u.id)
+    ORDER BY dm."createdAt" DESC
+    LIMIT 1
+) latestMessage ON TRUE
+WHERE u.id <> 42
+ORDER BY 
+    (CASE 
+        WHEN latestMessage."isRead" = FALSE AND latestMessage."senderId" <> 42 THEN 0  -- Unread messages first
+        ELSE 1 
+    END)
 
-    console.log(users);
+`);
+    console.log(queriesChats);
+
+    return queriesChats.map((chat) => {
+      //@ts-ignore
+      console.log(chat.senderId);
+      return {
+        user: {
+          //@ts-ignore
+          id: chat.recipientId,
+          content: chat.content,
+          name: chat.name,
+        },
+        lastMessage: { content: chat.content },
+      };
+    });
   }
 }
