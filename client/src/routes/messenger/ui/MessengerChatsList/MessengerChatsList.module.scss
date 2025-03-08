@@ -1,0 +1,15 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  border-top: var(--divider-line-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.search {
+  padding: 15px;
+  padding-top: 0px;
+}

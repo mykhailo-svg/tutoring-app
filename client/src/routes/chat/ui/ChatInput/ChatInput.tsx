@@ -11,7 +11,9 @@ import { Button } from '@/shared/ui/buttons';
 import { TextField } from '@/shared/ui/inputs';
 import { isNull } from 'lodash';
 import { nanoid } from 'nanoid';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import styles from './ChatInput.module.scss';
+import { IoSend as SendIcon } from 'react-icons/io5';
 
 type ChatInputProps = {
   companion: User;
@@ -69,18 +71,34 @@ export const ChatInput: React.FC<ChatInputProps> = ({ companion, setMessages }) 
     );
   }, [companion.name, authData.user]);
 
+  const canSendMessage = useMemo(() => message.trim().length > 0, [message]);
+
   return (
     <div>
       <form
+        className={styles.form}
         onSubmit={(e) => {
           e.preventDefault();
-          handleSendMessage();
-          setMessage('');
+          if (canSendMessage) {
+            handleSendMessage();
+            setMessage('');
+          }
         }}
       >
-        <TextField label='' value={message} onChange={setMessage} />
+        <TextField
+          placeholder='Write a message...'
+          label=''
+          value={message}
+          onChange={setMessage}
+        />
+        <Button
+          disabled={!canSendMessage}
+          as='button'
+          size='medium'
+          type='submit'
+          icon={<SendIcon />}
+        />
       </form>
-      <Button as='button' onClick={handleSendMessage} text='Send' />
     </div>
   );
 };

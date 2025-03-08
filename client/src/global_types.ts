@@ -30,6 +30,13 @@ export type DirectMessage = {
   createdAt: string;
 };
 
+export type DirectMessagesChat = {
+  id: number;
+  user: User;
+  lastMessage: { content: string };
+  unreadMessages?: number;
+};
+
 // AUTH
 export enum TokenType {
   RESET_PASSWORD = 'resetPassword',

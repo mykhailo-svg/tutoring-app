@@ -15,6 +15,7 @@ export const APIEndpoints = {
   },
   directMessages: {
     get: (companionId: number) => `/direct-message/${companionId}`,
+    getChats: '/direct-message',
   },
 };
 

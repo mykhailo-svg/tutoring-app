@@ -65,8 +65,10 @@ export class DirectMessageService {
   }
 
   async getChats(userId: User['id']) {
-    const queriesChats: (User & DirectMessage)[] = await this.usersRepository
-      .query(`SELECT u.*, latestMessage.*
+    const queriesChats: (User & DirectMessage & { unreadmessages: string })[] =
+      await this.usersRepository.query(`SELECT u.*, 
+       latestMessage.*, 
+       COALESCE(unreadMessages.count, 0) AS unreadMessages  -- Count of unread messages
 FROM "user" u
 LEFT JOIN LATERAL (
     SELECT *
@@ -77,27 +79,41 @@ LEFT JOIN LATERAL (
     ORDER BY dm."createdAt" DESC
     LIMIT 1
 ) latestMessage ON TRUE
+LEFT JOIN LATERAL (
+    SELECT COUNT(*) AS count
+    FROM "direct_message" dm
+    WHERE dm."recipientId" = 42  -- Messages sent to user 42
+      AND dm."senderId" = u.id  -- From the specific user
+      AND dm."isRead" = FALSE  -- Unread messages only
+) unreadMessages ON TRUE
 WHERE u.id <> 42
 ORDER BY 
     (CASE 
-        WHEN latestMessage."isRead" = FALSE AND latestMessage."senderId" <> 42 THEN 0  -- Unread messages first
+        WHEN latestMessage."isRead" = FALSE AND latestMessage."senderId" <> 42 THEN 0  -- Prioritize unread messages
         ELSE 1 
-    END)
+    END);
 
 `);
-    console.log(queriesChats);
 
     return queriesChats.map((chat) => {
       //@ts-ignore
-      console.log(chat.senderId);
+
+      console.log(userId);
+
+      const companionId = //@ts-ignore
+        `${userId}` === `${chat.recipientId}` ? chat.senderId : chat.recipientId;
+      console.log(companionId);
+      //@ts-ignore
+      console.log(`sender:${chat.senderId} recipient:${chat.recipientId}`);
       return {
         user: {
           //@ts-ignore
-          id: chat.recipientId,
+          id: companionId,
           content: chat.content,
           name: chat.name,
         },
         lastMessage: { content: chat.content },
+        unreadMessages: parseInt(chat.unreadmessages),
       };
     });
   }
