@@ -28,9 +28,6 @@ export class DirectMessageService {
       id: message.senderId,
     });
 
-    console.log(senderUser);
-    console.log(recipientUser);
-
     if (!senderUser || !recipientUser) {
       return;
     }
@@ -42,8 +39,6 @@ export class DirectMessageService {
         sender: senderUser,
       },
     ]);
-
-    console.log(await this.directMessagesRepository.find());
   }
 
   async getPaginatedMessages({
@@ -66,34 +61,7 @@ export class DirectMessageService {
 
   async getChats(userId: User['id']) {
     const queriesChats: (User & DirectMessage & { unreadmessages: string })[] =
-      await this.usersRepository.query(`SELECT u.*, 
-       latestMessage.*, 
-       COALESCE(unreadMessages.count, 0) AS unreadMessages  -- Count of unread messages
-FROM "user" u
-LEFT JOIN LATERAL (
-    SELECT *
-    FROM "direct_message" dm
-    WHERE 
-        (dm."senderId" = u.id AND dm."recipientId" = 42)
-        OR (dm."senderId" = 42 AND dm."recipientId" = u.id)
-    ORDER BY dm."createdAt" DESC
-    LIMIT 1
-) latestMessage ON TRUE
-LEFT JOIN LATERAL (
-    SELECT COUNT(*) AS count
-    FROM "direct_message" dm
-    WHERE dm."recipientId" = 42  -- Messages sent to user 42
-      AND dm."senderId" = u.id  -- From the specific user
-      AND dm."isRead" = FALSE  -- Unread messages only
-) unreadMessages ON TRUE
-WHERE u.id <> 42
-ORDER BY 
-    (CASE 
-        WHEN latestMessage."isRead" = FALSE AND latestMessage."senderId" <> 42 THEN 0  -- Prioritize unread messages
-        ELSE 1 
-    END);
-
-`);
+      await this.usersRepository.query(getChatsQuerySQL(userId));
 
     return queriesChats.map((chat) => {
       //@ts-ignore
@@ -104,12 +72,9 @@ ORDER BY
         `${userId}` === `${chat.recipientId}` //@ts-ignore
           ? chat.senderId //@ts-ignore
           : chat.recipientId;
-      console.log(companionId);
-      //@ts-ignore
-      console.log(`sender:${chat.senderId} recipient:${chat.recipientId}`);
+
       return {
         user: {
-          //@ts-ignore
           id: companionId,
           content: chat.content,
           name: chat.name,
@@ -131,4 +96,37 @@ ORDER BY
       { isRead: true },
     );
   }
+}
+
+function getChatsQuerySQL(userId: User['id']) {
+  return `
+    SELECT 
+      u.*, 
+      latestMessage.*, 
+      COALESCE(unreadMessages.count, 0) AS unreadMessages -- Count of unread messages
+    FROM "user" u
+    LEFT JOIN LATERAL (
+      SELECT *
+      FROM "direct_message" dm
+      WHERE 
+        (dm."senderId" = u.id AND dm."recipientId" = ${userId})
+        OR (dm."senderId" = ${userId} AND dm."recipientId" = u.id)
+      ORDER BY dm."createdAt" DESC
+      LIMIT 1
+    ) latestMessage ON TRUE
+    LEFT JOIN LATERAL (
+      SELECT COUNT(*) AS count
+      FROM "direct_message" dm
+      WHERE 
+        dm."recipientId" = ${userId}  -- Messages sent to user ${userId}
+        AND dm."senderId" = u.id  -- From the specific user
+        AND dm."isRead" = FALSE  -- Unread messages only
+    ) unreadMessages ON TRUE
+    WHERE u.id <> ${userId}
+    ORDER BY 
+      CASE 
+        WHEN latestMessage."isRead" = FALSE AND latestMessage."senderId" <> ${userId} THEN 0 -- Prioritize unread messages
+        ELSE 1 
+      END;
+  `;
 }
