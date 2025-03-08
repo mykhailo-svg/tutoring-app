@@ -5,11 +5,18 @@
 
   display: flex;
   align-items: center;
-  
+
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: var(--grey-color-light);
+  }
 }
 
 .preview {
   flex: 30% 0;
+  display: flex;
+  gap: 15px;
 }
 
 .unreadMessagesCount {

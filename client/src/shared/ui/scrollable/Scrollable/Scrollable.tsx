@@ -5,7 +5,7 @@ import classNames from 'classnames';
 type ScrollableProps = {
   children?: ReactNode;
   className?: string;
-  ref: MutableRefObject<HTMLDivElement | null>;
+  ref?: MutableRefObject<HTMLDivElement | null>;
 };
 
 export const Scrollable: React.FC<ScrollableProps> = ({ children, className, ref }) => {

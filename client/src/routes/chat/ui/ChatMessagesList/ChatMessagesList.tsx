@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import classNames from 'classnames';
 import { Scrollable } from '@/shared/ui/scrollable/Scrollable';
 import { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
+import { APIEndpoints, axiosClient } from '@/api';
 
 type ChatMessagesListProps = { messages: DirectMessage[]; companion: User };
 
@@ -18,6 +19,10 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, co
       scrollableRef.current.scrollTo({ top: scrollableRef.current.scrollHeight });
     }
   }, [messages.length]);
+
+  useEffect(() => {
+    axiosClient.put(APIEndpoints.directMessages.setIsRead(companion.id));
+  }, [companion.id]);
 
   return (
     <Card shadow='none' className={styles.root}>

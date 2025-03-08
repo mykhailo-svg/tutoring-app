@@ -1,15 +1,23 @@
 .root {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.listScrollable {
+  position: relative;
+  flex: 1 1 auto;
 }
 
 .list {
-  border-top: var(--divider-line-border);
   display: flex;
   flex-direction: column;
+  width: 100%;
+  position: absolute;
 }
 
 .search {
   padding: 15px;
-  padding-top: 0px;
+  border-bottom: var(--divider-line-border);
 }

@@ -6,6 +6,7 @@ import styles from './MessengerChatsList.module.scss';
 import { MessengerChatItem } from '../MessengerChatItem';
 import type { GetDirectMessengerChatsResponse } from '../../types';
 import { TextField } from '@/shared/ui/inputs';
+import { Scrollable } from '@/shared/ui/scrollable/Scrollable';
 
 type MessengerChatsListProps = {
   initialChats: GetDirectMessengerChatsResponse | undefined;
@@ -17,9 +18,12 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
   return (
     <div className={styles.root}>
       <div className={styles.search}>
-        <TextField label='' placeholder='Search' />
+        <TextField size='small' label='' placeholder='Search' />
       </div>
-      <List chats={chats} />
+      <Scrollable className={styles.listScrollable}>
+        {' '}
+        <List chats={chats} />
+      </Scrollable>
     </div>
   );
 };

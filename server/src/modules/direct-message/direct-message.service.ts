@@ -101,7 +101,9 @@ ORDER BY
       console.log(userId);
 
       const companionId = //@ts-ignore
-        `${userId}` === `${chat.recipientId}` ? chat.senderId : chat.recipientId;
+        `${userId}` === `${chat.recipientId}` //@ts-ignore
+          ? chat.senderId //@ts-ignore
+          : chat.recipientId;
       console.log(companionId);
       //@ts-ignore
       console.log(`sender:${chat.senderId} recipient:${chat.recipientId}`);
@@ -111,10 +113,22 @@ ORDER BY
           id: companionId,
           content: chat.content,
           name: chat.name,
+          avatar: chat.avatar,
         },
         lastMessage: { content: chat.content },
         unreadMessages: parseInt(chat.unreadmessages),
       };
     });
+  }
+
+  async setAllMessagesRead(senderId: User['id'], recipientId: User['id']) {
+    await this.directMessagesRepository.update(
+      {
+        sender: { id: senderId },
+        recipient: { id: recipientId },
+        isRead: false,
+      },
+      { isRead: true },
+    );
   }
 }

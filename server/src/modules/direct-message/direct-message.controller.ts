@@ -1,4 +1,12 @@
-import { Controller, Get, NotFoundException, Param, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Put,
+  Req,
+} from '@nestjs/common';
 import { Auth } from '@src/decorators';
 import { AuthProtectedRequest } from '@src/globalTypes';
 import { DirectMessageService } from './direct-message.service';
@@ -26,5 +34,27 @@ export class DirectMessageController {
     const user = req.user;
 
     return this.directMessagesService.getChats(user.id);
+  }
+
+  @Put('/read/:id')
+  @Auth()
+  async setIsReadToAllMessages(
+    @Req() req: AuthProtectedRequest,
+    @Param('id', {
+      transform: (id) => {
+        const parsedId = parseInt(id);
+
+        return isFinite(parsedId) ? parsedId : null;
+      },
+    })
+    senderId: number | null,
+  ) {
+    const user = req.user;
+
+    if (!senderId) {
+      throw new BadRequestException('Invalid sender user id');
+    }
+
+    return this.directMessagesService.setAllMessagesRead(senderId, user.id);
   }
 }
