@@ -30,7 +30,8 @@
     "react-hook-form": "^7.52.2",
     "react-icons": "^5.1.0",
     "react-image-crop": "^11.0.7",
-    "sass": "^1.75.0"
+    "sass": "^1.75.0",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@types/http-status-codes": "^1.2.0",

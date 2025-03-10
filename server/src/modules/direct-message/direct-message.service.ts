@@ -59,9 +59,11 @@ export class DirectMessageService {
     return messages;
   }
 
-  async getChats(userId: User['id']) {
+  async getChats(userId: User['id'], paginationData: GetChatsPaginationData) {
     const queriesChats: (User & DirectMessage & { unreadmessages: string })[] =
-      await this.usersRepository.query(getChatsQuerySQL(userId));
+      await this.usersRepository.query(
+        getChatsQuerySQL(userId, paginationData),
+      );
 
     return queriesChats.map((chat) => {
       //@ts-ignore
@@ -98,35 +100,65 @@ export class DirectMessageService {
   }
 }
 
-function getChatsQuerySQL(userId: User['id']) {
+function getChatsQuerySQL(
+  userId: number,
+  paginationData?: GetChatsPaginationData,
+) {
+  const searchCondition = paginationData.filters.query
+    ? `AND (senderUser.name ILIKE '%${paginationData.filters.query}%' OR recipientUser.name ILIKE '%${paginationData.filters.query}%')`
+    : '';
+
   return `
+    WITH latest_messages AS (
+      -- Find the latest message between the user and each chat participant
+      SELECT DISTINCT ON (LEAST(dm."senderId", dm."recipientId"), GREATEST(dm."senderId", dm."recipientId"))
+        dm.* 
+      FROM "direct_message" dm
+      WHERE dm."senderId" = ${userId} OR dm."recipientId" = ${userId}
+      ORDER BY 
+        LEAST(dm."senderId", dm."recipientId"), 
+        GREATEST(dm."senderId", dm."recipientId"),
+        dm."createdAt" DESC
+    ),
+    unread_counts AS (
+      -- Count unread messages where current user is the recipient
+      SELECT 
+        dm."senderId",
+        dm."recipientId",
+        COUNT(*) AS unreadMessages
+      FROM "direct_message" dm
+      WHERE dm."recipientId" = ${userId} AND dm."isRead" = FALSE
+      GROUP BY dm."senderId", dm."recipientId"
+    )
+
     SELECT 
       u.*, 
-      latestMessage.*, 
-      COALESCE(unreadMessages.count, 0) AS unreadMessages -- Count of unread messages
+      lm.*, 
+      COALESCE(uc.unreadMessages, 0) AS unreadMessages
     FROM "user" u
-    LEFT JOIN LATERAL (
-      SELECT *
-      FROM "direct_message" dm
-      WHERE 
-        (dm."senderId" = u.id AND dm."recipientId" = ${userId})
-        OR (dm."senderId" = ${userId} AND dm."recipientId" = u.id)
-      ORDER BY dm."createdAt" DESC
-      LIMIT 1
-    ) latestMessage ON TRUE
-    LEFT JOIN LATERAL (
-      SELECT COUNT(*) AS count
-      FROM "direct_message" dm
-      WHERE 
-        dm."recipientId" = ${userId}  -- Messages sent to user ${userId}
-        AND dm."senderId" = u.id  -- From the specific user
-        AND dm."isRead" = FALSE  -- Unread messages only
-    ) unreadMessages ON TRUE
+    JOIN latest_messages lm 
+      ON u.id = lm."senderId" OR u.id = lm."recipientId"
+    LEFT JOIN unread_counts uc 
+      ON (uc."senderId" = u.id AND uc."recipientId" = ${userId})
+
+    -- Join users to check names (sender and recipient)
+    JOIN "user" senderUser ON lm."senderId" = senderUser.id
+    JOIN "user" recipientUser ON lm."recipientId" = recipientUser.id
+
     WHERE u.id <> ${userId}
+    ${searchCondition}  -- Apply name filter dynamically
+
     ORDER BY 
       CASE 
-        WHEN latestMessage."isRead" = FALSE AND latestMessage."senderId" <> ${userId} THEN 0 -- Prioritize unread messages
+        WHEN lm."isRead" = FALSE AND lm."senderId" <> ${userId} THEN 0 -- Unread first
         ELSE 1 
-      END;
+      END, 
+      lm."createdAt" DESC;
   `;
 }
+
+type GetChatsPaginationData = {
+  filters?: Partial<{
+    query: string;
+  }>;
+};

@@ -33,7 +33,13 @@ export class DirectMessageController {
   async getChats(@Req() req: AuthProtectedRequest) {
     const user = req.user;
 
-    return this.directMessagesService.getChats(user.id);
+    console.log(req.query.search);
+
+    return this.directMessagesService.getChats(user.id, {
+      filters: {
+        query: req.query.search as string | undefined,
+      },
+    });
   }
 
   @Put('/read/:id')

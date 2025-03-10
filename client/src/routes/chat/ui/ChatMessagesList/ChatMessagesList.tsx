@@ -34,9 +34,7 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, co
               {!index ||
               new Date(messages[index - 1].createdAt).getDate() !==
                 new Date(message.createdAt).getDate() ? (
-                <div style={{ textAlign: 'center', width: '100%', padding: '20px' }}>
-                  {new Date(message.createdAt).getDate()}
-                </div>
+                <div className={styles.dateBadge}>{new Date(message.createdAt).getDate()}</div>
               ) : null}
               <div
                 className={classNames(styles.item, {
