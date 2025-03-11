@@ -37,7 +37,6 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
         <TextField size='small' onChange={fonSearchChange} label='' placeholder='Search' />
       </div>
       <Scrollable className={styles.listScrollable}>
-        {' '}
         <List chats={chats} />
       </Scrollable>
     </div>

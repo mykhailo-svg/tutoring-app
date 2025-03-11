@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DirectMessage, User } from '@src/entities';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
+import { GetDirectMessagesPayload } from './type';
+import { GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA } from './constants';
 // import { UserService } from '../user/user.service';
 
 type CreateDirectMessagePayload = {
@@ -44,12 +46,15 @@ export class DirectMessageService {
   async getPaginatedMessages({
     senderId,
     recipientId,
-  }: {
-    senderId: number;
-    recipientId: number;
-  }) {
+    pagination: {
+      pageSize = GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA.pageSize,
+      page = GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA.page,
+    },
+  }: GetDirectMessagesPayload) {
     const messages = await this.directMessagesRepository.find({
       loadRelationIds: true,
+      skip: page * pageSize,
+      take: pageSize,
       where: [
         { sender: { id: senderId }, recipient: { id: recipientId } },
         { sender: { id: recipientId }, recipient: { id: senderId } },

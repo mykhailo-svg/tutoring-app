@@ -22,9 +22,21 @@ export class DirectMessageController {
 
     const recipientId = parseInt(id);
 
+    const formatQueryParam = (
+      param: AuthProtectedRequest['query']['value'],
+    ) => {
+      return isFinite(parseInt(param as string))
+        ? parseInt(param as string)
+        : undefined;
+    };
+
     return this.directMessagesService.getPaginatedMessages({
       senderId: user.id,
       recipientId,
+      pagination: {
+        pageSize: formatQueryParam(req.query.pageSize),
+        page: formatQueryParam(req.query.pageSize),
+      },
     });
   }
 
