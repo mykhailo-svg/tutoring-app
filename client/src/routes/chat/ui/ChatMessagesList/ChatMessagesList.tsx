@@ -26,8 +26,13 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, co
 
   return (
     <Card shadow='none' className={styles.root}>
-      <Scrollable ref={scrollableRef} className={styles.inner}>
-        <div className={styles.anchor}></div>
+      <Scrollable
+        onScrolledToTop={() => {
+          console.log('scrolled to top');
+        }}
+        ref={scrollableRef}
+        className={styles.inner}
+      >
         <div className={styles.list}>
           {messages.map((message, index) => (
             <Fragment key={message.id}>
