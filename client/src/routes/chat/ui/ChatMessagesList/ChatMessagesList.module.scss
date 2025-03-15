@@ -5,6 +5,7 @@
   flex-direction: column;
   height: 100px;
   padding: 0px 10px;
+  position: relative;
 }
 
 .inner {
@@ -76,4 +77,23 @@
     border-radius: 12px;
     background: var(--orange-color);
   }
+}
+
+.stickyDateBadge {
+  span {
+    z-index: 10;
+    background: var(--orange-color);
+    padding: 5px 15px;
+    border-radius: 0px 0px 12px 12px;
+    color: var(--white-color);
+    font-weight: 600;
+  }
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
 }
