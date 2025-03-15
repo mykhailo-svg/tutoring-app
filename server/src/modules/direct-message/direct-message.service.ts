@@ -52,12 +52,15 @@ export class DirectMessageService {
     },
   }: GetDirectMessagesPayload) {
     const messages = (
-      (await this.directMessagesRepository.query(
+      await this.directMessagesRepository.query(
         `SELECT * FROM direct_message
-       ORDER BY id DESC
-       LIMIT ${pageSize} OFFSET ${page * pageSize};`,
-      )) as DirectMessage[]
-    ).sort((a, b) => a.id - b.id);
+       WHERE ("senderId" = ${senderId} AND "recipientId" = ${recipientId})
+          OR ("senderId" = ${recipientId} AND "recipientId" = ${senderId})
+       ORDER BY "createdAt" DESC
+       LIMIT ${pageSize} OFFSET ${pageSize * page};`,
+      )
+    ) //@ts-ignore
+      .sort((a, b) => a.id - b.id);
 
     return messages;
   }
