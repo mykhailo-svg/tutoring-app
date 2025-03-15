@@ -51,18 +51,13 @@ export class DirectMessageService {
       page = GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA.page,
     },
   }: GetDirectMessagesPayload) {
-    console.log(page);
-
-    const messages = await this.directMessagesRepository.find({
-      loadRelationIds: true,
-      skip: page * pageSize,
-      take: pageSize,
-      order: { createdAt: 'ASC' },
-      where: [
-        { sender: { id: senderId }, recipient: { id: recipientId } },
-        { sender: { id: recipientId }, recipient: { id: senderId } },
-      ],
-    });
+    const messages = (
+      (await this.directMessagesRepository.query(
+        `SELECT * FROM direct_message
+       ORDER BY id DESC
+       LIMIT ${pageSize} OFFSET ${page * pageSize};`,
+      )) as DirectMessage[]
+    ).sort((a, b) => a.id - b.id);
 
     return messages;
   }

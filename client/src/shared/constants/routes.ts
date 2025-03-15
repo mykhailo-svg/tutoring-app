@@ -5,4 +5,7 @@ export const APP_ROUTES = {
   },
   home: '/',
   profile: '/profile',
+  messenger: {
+    root: '/messenger',
+  },
 };

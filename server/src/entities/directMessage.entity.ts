@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -28,5 +29,6 @@ export class DirectMessage {
   isRead: boolean;
 
   @CreateDateColumn()
+  @Index()
   createdAt: Date;
 }
