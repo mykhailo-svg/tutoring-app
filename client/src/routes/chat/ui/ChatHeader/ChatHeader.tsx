@@ -24,8 +24,6 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online, companionI
     const userDisconnectedEventId = subscribeEvent(
       REALTIME_UPDATES_EVENTS.USER_DISCONNECTED,
       (payload) => {
-        console.log(payload);
-
         if (payload?.payload?.userId === companionId) {
           setIsOnline(false);
         }

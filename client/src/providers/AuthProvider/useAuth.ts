@@ -13,10 +13,6 @@ type LogoutRequestPayload = { refreshToken: string | undefined | null };
 export const useAuth = () => {
   const auth = useContext(AuthContext);
 
-  const router = useRouter();
-
-  console.log(auth);
-
   const logout = useCallback(() => {
     const refreshToken = cookies.get(COOKIES_NAME.REFRESH_TOKEN);
 

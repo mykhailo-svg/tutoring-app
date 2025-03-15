@@ -65,4 +65,15 @@
   text-align: center;
   width: 100%;
   padding: 20px;
+
+  display: flex;
+  justify-content: center;
+
+  span {
+    padding: 5px 15px;
+    color: var(--white-color);
+    font-weight: 600;
+    border-radius: 12px;
+    background: var(--orange-color);
+  }
 }

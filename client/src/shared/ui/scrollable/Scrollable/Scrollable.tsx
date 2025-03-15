@@ -1,20 +1,16 @@
-import {
-  DOMAttributes,
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  type ReactNode,
-} from 'react';
+import { MutableRefObject, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import styles from './Scrollable.module.scss';
 import classNames from 'classnames';
 import { mergeRefs } from 'react-merge-refs';
 
+export type ScrollableOnScrolledToTop = {
+  action: () => void;
+};
+
 type ScrollableProps = {
   children?: ReactNode;
   className?: string;
-  onScrolledToTop?: () => void;
+  onScrolledToTop?: ScrollableOnScrolledToTop;
   ref?: MutableRefObject<HTMLDivElement | null>;
 };
 
@@ -29,7 +25,7 @@ export const Scrollable: React.FC<ScrollableProps> = ({
   const innerRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    if (!innerRef.current) {
+    if (!innerRef.current || !onScrolledToTop) {
       return;
     }
 
@@ -38,19 +34,16 @@ export const Scrollable: React.FC<ScrollableProps> = ({
         return;
       }
 
-      if (typeof onScrolledToTop === 'function') {
-        const scrollHeight = innerRef.current.scrollHeight - innerRef.current.clientHeight;
+      const scrollHeight = innerRef.current.scrollHeight - innerRef.current.clientHeight;
+      const scrollY =
+        getComputedStyle(innerRef.current).flexDirection === 'column-reverse'
+          ? Math.abs(innerRef.current.scrollTop)
+          : innerRef.current.scrollTop;
 
-        const scrollY =
-          getComputedStyle(innerRef.current).flexDirection === 'column-reverse'
-            ? Math.abs(innerRef.current.scrollTop)
-            : innerRef.current.scrollTop;
+      const scrolledToTop = scrollY >= scrollHeight;
 
-        const scrolledToTop = scrollY >= scrollHeight;
-
-        if (scrolledToTop) {
-          onScrolledToTop();
-        }
+      if (scrolledToTop) {
+        onScrolledToTop.action();
       }
     };
 

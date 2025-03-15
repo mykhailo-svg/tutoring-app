@@ -35,7 +35,7 @@ export class DirectMessageController {
       recipientId,
       pagination: {
         pageSize: formatQueryParam(req.query.pageSize),
-        page: formatQueryParam(req.query.pageSize),
+        page: formatQueryParam(req.query.page),
       },
     });
   }
@@ -44,8 +44,6 @@ export class DirectMessageController {
   @Auth()
   async getChats(@Req() req: AuthProtectedRequest) {
     const user = req.user;
-
-    console.log(req.query.search);
 
     return this.directMessagesService.getChats(user.id, {
       filters: {

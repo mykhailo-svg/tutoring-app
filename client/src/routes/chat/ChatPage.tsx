@@ -37,8 +37,6 @@ export const ChatPage: React.FC<ChatPageProps> = async ({ params }) => {
   );
   const data = await messages.json();
 
-  console.log(data);
-
   return (
     <Card className={styles.root}>
       <ChatHeader

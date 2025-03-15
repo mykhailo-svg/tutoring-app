@@ -55,8 +55,6 @@ export class UserController {
 
     const isOnline = await this.gatewayService.getIsUserOnline(userId);
 
-    console.log(isOnline);
-
     return { ...this.userService.removeSensitiveData(existingUser), isOnline };
   }
 

@@ -38,11 +38,8 @@ export class MyGateway implements OnModuleInit {
 
       // Handle message
       client.on('message', (message: string) => {
-        console.log(message.toString());
-
         const parsedMessage: { payload?: { message: string; to: number } } =
           JSON.parse(message.toString());
-        console.log('message');
 
         this.directMessagesService.createDirectMessage({
           message: {

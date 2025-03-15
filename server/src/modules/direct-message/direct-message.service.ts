@@ -51,10 +51,13 @@ export class DirectMessageService {
       page = GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA.page,
     },
   }: GetDirectMessagesPayload) {
+    console.log(page);
+
     const messages = await this.directMessagesRepository.find({
       loadRelationIds: true,
       skip: page * pageSize,
       take: pageSize,
+      order: { createdAt: 'ASC' },
       where: [
         { sender: { id: senderId }, recipient: { id: recipientId } },
         { sender: { id: recipientId }, recipient: { id: senderId } },
@@ -71,10 +74,6 @@ export class DirectMessageService {
       );
 
     return queriesChats.map((chat) => {
-      //@ts-ignore
-
-      console.log(userId);
-
       const companionId = //@ts-ignore
         `${userId}` === `${chat.recipientId}` //@ts-ignore
           ? chat.senderId //@ts-ignore

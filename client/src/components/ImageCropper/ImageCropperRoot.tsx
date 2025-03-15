@@ -36,7 +36,6 @@ export const ImageCropperRoot = forwardRef<ImageCropperApi, ImageCropperRootProp
         <Cropper
           onMediaLoaded={(size) => {
             const minValue = min(Object.values(size));
-            console.log(size);
 
             if (minValue && minValue < cropSize.height) {
               setCropSize({ width: minValue, height: minValue });

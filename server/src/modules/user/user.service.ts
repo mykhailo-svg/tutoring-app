@@ -77,8 +77,6 @@ export class UserService {
       },
     };
 
-    console.log(data);
-
     for (const dataKey in data) {
       fieldsHandlers[dataKey]();
     }

@@ -46,9 +46,6 @@ export const usePaginatedDirectChats = () => {
     queryKey: ['queryingData', queryingData],
     queryFn: fetchChats,
   });
-  console.log('chats');
-
-  console.log(data);
 
   return {
     isError,
