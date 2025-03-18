@@ -4,7 +4,17 @@ import type { DirectMessage, User } from '@/global_types';
 import { useAuth } from '@/providers/AuthProvider';
 import classNames from 'classnames';
 import { Scrollable, ScrollableOnScrolledToTop } from '@/shared/ui/scrollable/Scrollable';
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  Dispatch,
+  Fragment,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { APIEndpoints, axiosClient } from '@/api';
 import { translateMonth } from '@/shared/helpers/translateMonth';
 
@@ -14,12 +24,15 @@ type ChatMessagesListProps = {
   fetchNextMessages: () => void;
 };
 
+type VisibleDateBadges = Record<string, true>;
+
 export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
   messages,
   companion,
   fetchNextMessages,
 }) => {
   const [stickyDate, setStickyDate] = useState('');
+  const [visibleDateBadges, setVisibleDateBadges] = useState<VisibleDateBadges>({});
 
   const scrollableRef = useRef<HTMLDivElement>(null);
 
@@ -40,20 +53,21 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
 
   return (
     <Card shadow='none' className={styles.root}>
-      {stickyDate && (
-        <div className={styles.stickyDateBadge}>
-          <span>{getUserFriendlyDate(stickyDate)}</span>
-        </div>
-      )}
+      <div
+        className={classNames(styles.stickyDateBadge, {
+          [styles.stickyBadgeActive]: stickyDate && !visibleDateBadges[stickyDate],
+        })}
+      >
+        <span>{getUserFriendlyDate(stickyDate)}</span>
+      </div>
+
       <Scrollable onScrolledToTop={onScrolledToTop} ref={scrollableRef} className={styles.inner}>
         <div className={styles.list}>
           {messages.map((message, index) => (
             <Fragment key={message.id}>
               {shouldDisplayDateBadge(messages[index - 1], message, index) && (
                 <>
-                  <div className={styles.dateBadge}>
-                    <span>{getUserFriendlyDate(message.createdAt)}</span>
-                  </div>
+                  <DateBadge setVisibleDateBadges={setVisibleDateBadges} date={message.createdAt} />
                   <DateAnchor setDate={setStickyDate} date={message.createdAt} />
                 </>
               )}
@@ -116,6 +130,8 @@ function convertToLocalTime(utcTimestamp: string): string {
   }`;
 }
 
+
+
 function DateAnchor({ date, setDate }: { date: string; setDate: (date: string) => void }) {
   const divRef = useRef(null);
 
@@ -124,7 +140,7 @@ function DateAnchor({ date, setDate }: { date: string; setDate: (date: string) =
       ([entry]) => {
         setDate(date);
       },
-      { threshold: 0.1 } // Adjust threshold as needed
+      { threshold: 0 } // Adjust threshold as needed
     );
 
     if (divRef.current) {
@@ -139,4 +155,44 @@ function DateAnchor({ date, setDate }: { date: string; setDate: (date: string) =
   }, [date, setDate]);
 
   return <div ref={divRef}></div>;
+}
+
+type DateBadgeProps = {
+  date: string;
+  setVisibleDateBadges: Dispatch<SetStateAction<VisibleDateBadges>>;
+};
+
+function DateBadge({ date, setVisibleDateBadges }: DateBadgeProps) {
+  const divRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setVisibleDateBadges((prevState) => {
+        const nextState = { ...prevState };
+
+        if (entry.isIntersecting) {
+          nextState[date] = true;
+        } else {
+          delete nextState[date];
+        }
+        return nextState;
+      });
+    });
+
+    if (divRef.current) {
+      observer.observe(divRef.current);
+    }
+
+    return () => {
+      if (divRef.current) {
+        observer.unobserve(divRef.current);
+      }
+    };
+  }, [date, setVisibleDateBadges]);
+
+  return (
+    <div ref={divRef} className={styles.dateBadge}>
+      <span>{getUserFriendlyDate(date)}</span>
+    </div>
+  );
 }

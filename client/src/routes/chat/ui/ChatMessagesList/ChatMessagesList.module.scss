@@ -6,6 +6,7 @@
   height: 100px;
   padding: 0px 10px;
   position: relative;
+  overflow: hidden;
 }
 
 .inner {
@@ -90,10 +91,17 @@
   }
 
   position: absolute;
-  top: 0;
+  top: -200px;
   left: 0;
   display: flex;
   justify-content: center;
 
+  transition: all ease 0.4s;
+  transition-delay: 0.5;
+
   width: 100%;
+}
+
+.stickyBadgeActive {
+  top: 0;
 }
