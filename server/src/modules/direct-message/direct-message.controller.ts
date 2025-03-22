@@ -54,6 +54,22 @@ export class DirectMessageController {
       },
     });
   }
+  @Get('/chat/:id')
+  @Auth()
+  async getChatWithUser(
+    @Req() req: AuthProtectedRequest,
+    @Param('id') id: string,
+  ) {
+    const user = req.user;
+
+    const recipientId = isFinite(parseInt(id)) ? parseInt(id) : null;
+
+    if (!recipientId) {
+      return null;
+    }
+
+    return this.directMessagesService.getChatWithUser(user.id, recipientId);
+  }
 
   @Put('/read/:id')
   @Auth()

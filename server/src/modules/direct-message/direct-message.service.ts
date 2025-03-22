@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DirectMessage, User } from '@src/entities';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
-import { GetDirectMessagesPayload } from './type';
+import { DirectMessagesChat, GetDirectMessagesPayload } from './type';
 import { GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA } from './constants';
 // import { UserService } from '../user/user.service';
 
@@ -91,6 +91,39 @@ export class DirectMessageService {
         unreadMessages: parseInt(chat.unreadmessages),
       };
     });
+  }
+
+  async getChatWithUser(
+    userId: User['id'],
+    companionId: User['id'],
+  ): Promise<null | DirectMessagesChat> {
+    const [user, companion] = await Promise.all([
+      (() => this.userService.getById({ id: userId }))(),
+      (() => this.userService.getById({ id: companionId }))(),
+    ]);
+
+    if (!user || !companion) {
+      return null;
+    }
+
+    const latestMessage = await this.directMessagesRepository.findOne({
+      where: { recipient: { id: userId }, sender: { id: companionId } },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (!latestMessage) {
+      return null;
+    }
+
+    const unreadMessages = await this.directMessagesRepository.count({
+      where: { recipient: { id: userId }, sender: { id: companionId } },
+    });
+
+    return {
+      unreadMessages,
+      user: companion,
+      lastMessage: latestMessage,
+    };
   }
 
   async setAllMessagesRead(senderId: User['id'], recipientId: User['id']) {
