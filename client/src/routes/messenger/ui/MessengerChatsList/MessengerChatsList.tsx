@@ -11,6 +11,8 @@ import { usePaginatedDirectChats } from '../../hooks';
 import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
 import { nanoid } from 'nanoid';
 import { DirectMessagesChat, User } from '@/global_types';
+import Image from 'next/image';
+import EmptyStateIllustration from '../../../../shared/assets/chatsEmptyStateIcon.svg';
 
 type MessengerChatsListProps = {
   initialChats: GetDirectMessengerChatsResponse | undefined;
@@ -97,12 +99,23 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
 
   return (
     <div className={styles.root}>
-      <div className={styles.search}>
-        <TextField size='small' onChange={fonSearchChange} label='' placeholder='Search' />
-      </div>
-      <Scrollable className={styles.listScrollable}>
-        <List chats={chats} />
-      </Scrollable>
+      {chats.length > 0 ? (
+        <>
+          <div className={styles.search}>
+            <TextField size='small' onChange={fonSearchChange} label='' placeholder='Search' />
+          </div>
+          <Scrollable className={styles.listScrollable}>
+            <List chats={chats} />
+          </Scrollable>
+        </>
+      ) : (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyImageContainer}>
+            <Image alt='emptyState' src={EmptyStateIllustration} />
+          </div>
+          <p className={styles.emptyTitle}>No active chats found</p>
+        </div>
+      )}
     </div>
   );
 };
