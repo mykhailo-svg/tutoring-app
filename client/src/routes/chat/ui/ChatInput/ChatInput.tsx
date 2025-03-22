@@ -11,19 +11,36 @@ import { Button } from '@/shared/ui/buttons';
 import { TextField } from '@/shared/ui/inputs';
 import { isNull } from 'lodash';
 import { nanoid } from 'nanoid';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import styles from './ChatInput.module.scss';
 import { IoSend as SendIcon } from 'react-icons/io5';
+import { useDirectMessagesChat } from '../../providers';
 
 type ChatInputProps = {
   companion: User;
   setMessages: Dispatch<SetStateAction<DirectMessage[]>>;
+
+  setMessagesGotFromWebsockets: Dispatch<SetStateAction<number>>;
 };
 
-export const ChatInput: React.FC<ChatInputProps> = ({ companion, setMessages }) => {
+export const ChatInput: React.FC<ChatInputProps> = ({
+  companion,
+  setMessages,
+  setMessagesGotFromWebsockets,
+}) => {
   const { action, subscribeEvent } = useRealtimeUpdates();
 
   const [message, setMessage] = useState('');
+
+  const {} = useDirectMessagesChat();
 
   const { data: authData } = useAuth();
 
@@ -54,6 +71,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({ companion, setMessages }) 
         console.log(payload.payload.message);
 
         if (authData && !isNull(authData.user)) {
+          setMessagesGotFromWebsockets((prevValue) => prevValue + 1);
+
           setMessages((prevState) => [
             ...prevState,
             {
@@ -81,6 +100,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ companion, setMessages }) 
           e.preventDefault();
           if (canSendMessage) {
             handleSendMessage();
+            setMessagesGotFromWebsockets((prevValue) => prevValue + 1);
             setMessage('');
           }
         }}

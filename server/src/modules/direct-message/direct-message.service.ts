@@ -49,15 +49,18 @@ export class DirectMessageService {
     pagination: {
       pageSize = GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA.pageSize,
       page = GET_DIRECT_MESSAGES_PAGINATION_DEFAULT_DATA.page,
+      skip,
     },
   }: GetDirectMessagesPayload) {
+    console.log(skip);
+
     const messages = (
       await this.directMessagesRepository.query(
         `SELECT * FROM direct_message
        WHERE ("senderId" = ${senderId} AND "recipientId" = ${recipientId})
           OR ("senderId" = ${recipientId} AND "recipientId" = ${senderId})
        ORDER BY "createdAt" DESC
-       LIMIT ${pageSize} OFFSET ${pageSize * page};`,
+       LIMIT ${pageSize} OFFSET ${skip + pageSize * page};`,
       )
     ) //@ts-ignore
       .sort((a, b) => a.id - b.id);

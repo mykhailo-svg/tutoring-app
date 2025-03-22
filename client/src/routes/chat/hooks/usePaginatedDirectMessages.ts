@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { getPaginatedDirectMessages, GetPaginatedDirectMessagesPayload } from '../api/actions';
 import { User } from '@/global_types';
@@ -11,6 +11,10 @@ const DEFAULT_QUERYING_DATA_STATE: GetPaginatedDirectMessagesPayload = {
 };
 
 export const usePaginatedDirectMessages = (companionId: User['id']) => {
+  const messagesGotFromWebsocketsRef = useRef(0);
+
+  const [messagesGotFromWebsockets, setMessagesGotFromWebsockets] = useState(0);
+
   const isFirstFetchRef = useRef(true);
 
   const [queryingData, setQueryingData] = useState<GetPaginatedDirectMessagesPayload>(
@@ -18,8 +22,8 @@ export const usePaginatedDirectMessages = (companionId: User['id']) => {
   );
 
   useEffect(() => {
-    console.log(queryingData);
-  }, [queryingData]);
+    messagesGotFromWebsocketsRef.current = messagesGotFromWebsockets;
+  }, [messagesGotFromWebsockets]);
 
   const changeQueryingData = useCallback(
     (
@@ -32,7 +36,11 @@ export const usePaginatedDirectMessages = (companionId: User['id']) => {
 
   const fetchChats = useCallback(() => {
     if (!isFirstFetchRef.current) {
-      return getPaginatedDirectMessages(companionId, queryingData);
+      const skip = messagesGotFromWebsocketsRef?.current;
+
+      messagesGotFromWebsocketsRef.current = 0;
+
+      return getPaginatedDirectMessages(companionId, queryingData, skip);
     }
 
     isFirstFetchRef.current = false;
@@ -52,5 +60,7 @@ export const usePaginatedDirectMessages = (companionId: User['id']) => {
     isLoading: isPending,
     queryingData,
     changeQueryingData,
+    messagesGotFromWebsockets,
+    setMessagesGotFromWebsockets,
   };
 };

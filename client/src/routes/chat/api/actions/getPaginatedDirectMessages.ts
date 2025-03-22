@@ -3,15 +3,25 @@ import type { User } from '@/global_types';
 
 export const getPaginatedDirectMessages = async (
   companionId: User['id'],
-  { paginationData }: GetPaginatedDirectMessagesPayload
+  { paginationData }: GetPaginatedDirectMessagesPayload,
+  messagesGotFromWebsockets: number = 0
 ) => {
-  const chatsRequestUrl = new URL(getApiEndpointUrl(APIEndpoints.directMessages.get(companionId)));
+  const messagesRequestUrl = new URL(
+    getApiEndpointUrl(APIEndpoints.directMessages.get(companionId))
+  );
 
   for (const paginationDataKey in paginationData) {
-    chatsRequestUrl.searchParams.set(paginationDataKey, (paginationData as any)[paginationDataKey]);
+    messagesRequestUrl.searchParams.set(
+      paginationDataKey,
+      (paginationData as any)[paginationDataKey]
+    );
   }
 
-  const directMessagesResponse = await axiosClient.get(chatsRequestUrl.href);
+  console.log(messagesGotFromWebsockets);
+
+  messagesRequestUrl.searchParams.set('skip', `${messagesGotFromWebsockets}`);
+
+  const directMessagesResponse = await axiosClient.get(messagesRequestUrl.href);
 
   return directMessagesResponse.data;
 };

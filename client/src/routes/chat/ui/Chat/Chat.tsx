@@ -4,8 +4,9 @@ import styles from './Chat.module.scss';
 import { ChatMessagesList } from '../ChatMessagesList';
 import { ChatInput } from '../ChatInput';
 import type { DirectMessage, User } from '@/global_types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePaginatedDirectMessages } from '../../hooks';
+import { useDirectMessagesChat } from '../../providers';
 
 type ChatProps = {
   companion: User;
@@ -15,7 +16,11 @@ type ChatProps = {
 export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
   const [messages, setMessages] = useState<DirectMessage[]>(initialMessages ?? []);
 
-  const { data: fetchedMessages, changeQueryingData } = usePaginatedDirectMessages(companion.id);
+  const {
+    data: fetchedMessages,
+    changeQueryingData,
+    setMessagesGotFromWebsockets,
+  } = usePaginatedDirectMessages(companion.id);
 
   useEffect(() => {
     if (fetchedMessages) {
@@ -41,7 +46,11 @@ export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
         companion={companion}
         messages={messages}
       />
-      <ChatInput setMessages={setMessages} companion={companion} />
+      <ChatInput
+        setMessagesGotFromWebsockets={setMessagesGotFromWebsockets}
+        setMessages={setMessages}
+        companion={companion}
+      />
     </div>
   );
 };
