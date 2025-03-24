@@ -52,9 +52,9 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
   //   }
   // }, [messages.length]);
 
-  useEffect(() => {
-    realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
-  }, [realtimeAction, messages]);
+  // useEffect(() => {
+  //   realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
+  // }, [realtimeAction, messages]);
 
   const onScrolledToTop = useMemo<ScrollableOnScrolledToTop>(
     () => ({ action: fetchNextMessages }),

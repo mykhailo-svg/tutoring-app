@@ -21,6 +21,8 @@ type RealtimeUpdatesProviderProps = {
 export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = ({ children }) => {
   const [websocketInstance, setWebsocketInstance] = useState<null | WebSocket>(null);
 
+  const [websocketInitialized, setWebsocketInitialized] = useState(false);
+
   const eventSubscriptionsRef = useRef<
     Partial<
       Record<
@@ -37,6 +39,7 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
 
     websocket.onopen = () => {
       console.log('Ws connected...');
+      setWebsocketInitialized(true);
     };
 
     websocket.onmessage = (event) => {
@@ -66,7 +69,7 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     return () => {
       websocket.close();
     };
-  }, [setWebsocketInstance]);
+  }, [setWebsocketInstance, setWebsocketInitialized]);
 
   const subscribeEvent: RealtimeUpdatesEventSubscriber = useCallback((event, handler, id) => {
     const handlerId = id ?? nanoid();
@@ -93,13 +96,13 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
 
   const contextData = useMemo<Parameters<typeof RealtimeUpdatesContext.Provider>[0]['value']>(
     () => ({
-      websocketInitialized: Boolean(websocketInstance),
+      websocketInitialized,
       websocket: websocketInstance,
       subscribeEvent,
       unsubscribeEvent,
       realtimeAction,
     }),
-    [websocketInstance, subscribeEvent, unsubscribeEvent, realtimeAction]
+    [websocketInstance, websocketInitialized, subscribeEvent, unsubscribeEvent, realtimeAction]
   );
 
   return (
