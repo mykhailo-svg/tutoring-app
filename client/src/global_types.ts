@@ -28,6 +28,7 @@ export type DirectMessage = {
   recipient: number;
   content: string;
   createdAt: string;
+  isRead: boolean;
 };
 
 export type DirectMessagesChat = {
