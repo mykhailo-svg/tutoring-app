@@ -12,12 +12,14 @@ type RealtimeUpdatesContextType = {
   websocket: null | WebSocket;
   subscribeEvent: RealtimeUpdatesEventSubscriber;
   unsubscribeEvent: RealtimeUpdatesEventSubscriptionRemover;
-  action: RealtimeUpdatesAction;
+  realtimeAction: RealtimeUpdatesAction;
+  websocketInitialized: boolean;
 };
 
 export const RealtimeUpdatesContext = createContext<RealtimeUpdatesContextType>({
   websocket: null,
+  websocketInitialized: false,
   subscribeEvent: noop,
   unsubscribeEvent: noop,
-  action: noop,
+  realtimeAction: noop,
 });

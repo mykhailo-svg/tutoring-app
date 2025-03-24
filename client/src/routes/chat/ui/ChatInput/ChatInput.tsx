@@ -10,19 +10,9 @@ import {
 import { Button } from '@/shared/ui/buttons';
 import { TextField } from '@/shared/ui/inputs';
 import { isNull } from 'lodash';
-import { nanoid } from 'nanoid';
-import {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './ChatInput.module.scss';
 import { IoSend as SendIcon } from 'react-icons/io5';
-import { useDirectMessagesChat } from '../../providers';
 
 type ChatInputProps = {
   companion: User;
@@ -36,16 +26,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   setMessages,
   setMessagesGotFromWebsockets,
 }) => {
-  const { action, subscribeEvent } = useRealtimeUpdates();
+  const { realtimeAction, subscribeEvent } = useRealtimeUpdates();
 
   const [message, setMessage] = useState('');
-
-  const {} = useDirectMessagesChat();
 
   const { data: authData } = useAuth();
 
   const handleSendMessage = useCallback(() => {
-    action(REALTIME_UPDATES_ACTIONS.SEND_MESSAGE, { message, to: companion.id });
+    realtimeAction(REALTIME_UPDATES_ACTIONS.SEND_MESSAGE, { message, to: companion.id });
 
     if (!authData.user) {
       return;
@@ -60,9 +48,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         sender: authData.user.id,
         content: message,
         createdAt: new Date().toISOString(),
+        isRead: false,
       },
     ]);
-  }, [action, message, companion.id, setMessages, authData.user]);
+  }, [realtimeAction, message, companion.id, setMessages, authData.user]);
 
   useEffect(() => {
     subscribeEvent(
@@ -82,6 +71,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               recipient: authData.user.id,
               content: payload.payload.message,
               createdAt: new Date().toISOString(),
+              isRead: false,
             },
           ]);
         }

@@ -20,6 +20,7 @@ import { translateMonth } from '@/shared/helpers/translateMonth';
 import Image from 'next/image';
 import EmptyStateIllustration from '../../../../shared/assets/chatsEmptyStateIcon.svg';
 import { MessageStatusIcon } from './MessageStatusIcon';
+import { REALTIME_UPDATES_ACTIONS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
 
 type ChatMessagesListProps = {
   messages: DirectMessage[];
@@ -38,6 +39,8 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
     data: { user },
   } = useAuth();
 
+  const { realtimeAction } = useRealtimeUpdates();
+
   const [stickyDate, setStickyDate] = useState('');
   const [visibleDateBadges, setVisibleDateBadges] = useState<VisibleDateBadges>({});
 
@@ -50,8 +53,8 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
   // }, [messages.length]);
 
   useEffect(() => {
-    axiosClient.put(APIEndpoints.directMessages.setIsRead(companion.id));
-  }, [companion.id]);
+    realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
+  }, [realtimeAction, messages]);
 
   const onScrolledToTop = useMemo<ScrollableOnScrolledToTop>(
     () => ({ action: fetchNextMessages }),

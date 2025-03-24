@@ -82,7 +82,7 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     []
   );
 
-  const action: RealtimeUpdatesAction = useCallback(
+  const realtimeAction: RealtimeUpdatesAction = useCallback(
     (actionType, payload) => {
       if (websocketInstance) {
         websocketInstance.send(JSON.stringify({ action: actionType, payload }));
@@ -92,8 +92,14 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
   );
 
   const contextData = useMemo<Parameters<typeof RealtimeUpdatesContext.Provider>[0]['value']>(
-    () => ({ websocket: websocketInstance, subscribeEvent, unsubscribeEvent, action }),
-    [websocketInstance, subscribeEvent, unsubscribeEvent, action]
+    () => ({
+      websocketInitialized: Boolean(websocketInstance),
+      websocket: websocketInstance,
+      subscribeEvent,
+      unsubscribeEvent,
+      realtimeAction,
+    }),
+    [websocketInstance, subscribeEvent, unsubscribeEvent, realtimeAction]
   );
 
   return (
