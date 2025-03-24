@@ -1,3 +1,4 @@
+@use '../../../../styles/mixins' as *;
 .root {
   flex: 1 1 auto;
   background-color: var(--grey-color-light);
@@ -104,4 +105,40 @@
 
 .stickyBadgeActive {
   top: 0;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  color: var(--primary-color);
+  font-weight: 600;
+  height: 100%;
+}
+
+.emptyImageContainer {
+  aspect-ratio: 1 / 1;
+
+  img {
+    max-width: 100%;
+    width: 100px;
+    height: 100%;
+  }
+}
+
+.emptyTitle {
+  font-size: 26px;
+  line-height: 1.2em;
+  text-align: center;
+}
+
+@include responsiveStyles(tablet, false) {
+  .emptyTitle {
+    font-size: 20px;
+  }
+
+  
+ 
 }

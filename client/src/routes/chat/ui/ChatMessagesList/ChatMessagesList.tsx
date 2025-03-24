@@ -17,6 +17,8 @@ import {
 } from 'react';
 import { APIEndpoints, axiosClient } from '@/api';
 import { translateMonth } from '@/shared/helpers/translateMonth';
+import Image from 'next/image';
+import EmptyStateIllustration from '../../../../shared/assets/chatsEmptyStateIcon.svg';
 
 type ChatMessagesListProps = {
   messages: DirectMessage[];
@@ -61,37 +63,49 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
         <span>{getUserFriendlyDate(stickyDate)}</span>
       </div>
 
-      <Scrollable onScrolledToTop={onScrolledToTop} ref={scrollableRef} className={styles.inner}>
-        <div className={styles.list}>
-          {messages.map((message, index) => (
-            <Fragment key={message.id}>
-              {shouldDisplayDateBadge(messages[index - 1], message, index) && (
-                <>
-                  <DateBadge setVisibleDateBadges={setVisibleDateBadges} date={message.createdAt} />
-                  <DateAnchor setDate={setStickyDate} date={message.createdAt} />
-                </>
-              )}
-
-              <div
-                className={classNames(styles.item, {
-                  [styles.companionMessage]: message.sender === companion.id,
-                })}
-              >
-                <div className={styles.content}>{message.content}</div>
-                <div className={styles.info}>
-                  <span className={styles.time}>{convertToLocalTime(message.createdAt)}</span>
-                </div>
-              </div>
-
-              {index < messages.length - 1 &&
-                formatDateForCompare(messages[index + 1].createdAt) !==
-                  formatDateForCompare(message.createdAt) && (
-                  <DateAnchor setDate={setStickyDate} date={message.createdAt} />
+      {messages.length ? (
+        <Scrollable onScrolledToTop={onScrolledToTop} ref={scrollableRef} className={styles.inner}>
+          <div className={styles.list}>
+            {messages.map((message, index) => (
+              <Fragment key={message.id}>
+                {shouldDisplayDateBadge(messages[index - 1], message, index) && (
+                  <>
+                    <DateBadge
+                      setVisibleDateBadges={setVisibleDateBadges}
+                      date={message.createdAt}
+                    />
+                    <DateAnchor setDate={setStickyDate} date={message.createdAt} />
+                  </>
                 )}
-            </Fragment>
-          ))}
+
+                <div
+                  className={classNames(styles.item, {
+                    [styles.companionMessage]: message.sender === companion.id,
+                  })}
+                >
+                  <div className={styles.content}>{message.content}</div>
+                  <div className={styles.info}>
+                    <span className={styles.time}>{convertToLocalTime(message.createdAt)}</span>
+                  </div>
+                </div>
+
+                {index < messages.length - 1 &&
+                  formatDateForCompare(messages[index + 1].createdAt) !==
+                    formatDateForCompare(message.createdAt) && (
+                    <DateAnchor setDate={setStickyDate} date={message.createdAt} />
+                  )}
+              </Fragment>
+            ))}
+          </div>
+        </Scrollable>
+      ) : (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyImageContainer}>
+            <Image alt='emptyState' src={EmptyStateIllustration} />
+          </div>
+          <p className={styles.emptyTitle}>No messages yet</p>
         </div>
-      </Scrollable>
+      )}
     </Card>
   );
 };
@@ -129,8 +143,6 @@ function convertToLocalTime(utcTimestamp: string): string {
     minutes.length > 1 ? minutes : '0' + minutes
   }`;
 }
-
-
 
 function DateAnchor({ date, setDate }: { date: string; setDate: (date: string) => void }) {
   const divRef = useRef(null);
