@@ -48,49 +48,53 @@ export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
     }));
   }, [changeQueryingData]);
 
-  const { subscribeEvent, realtimeAction } = useRealtimeUpdates();
+  const { subscribeEvent, realtimeAction, unsubscribeEvent } = useRealtimeUpdates();
 
   useEffect(() => {
-    subscribeEvent(
-      REALTIME_UPDATES_EVENTS.READ_MESSAGES,
-      (data) => {
-        if (data.payload.initiator === companion.id) {
-          setMessages((prevMessages) =>
-            prevMessages.map((message) => ({ ...message, isRead: true }))
-          );
-        }
-      },
-      null
-    );
+    const onMessagesRead = (data: any) => {
+      if (data.payload.initiator === companion.id) {
+        setMessages((prevMessages) =>
+          prevMessages.map((message) => ({ ...message, isRead: true }))
+        );
+      }
+    };
+
+    subscribeEvent(REALTIME_UPDATES_EVENTS.READ_MESSAGES, onMessagesRead);
+
+    return () => {
+      unsubscribeEvent(REALTIME_UPDATES_EVENTS.READ_MESSAGES, onMessagesRead as any);
+    };
   }, [companion.id]);
 
   useEffect(() => {
-    subscribeEvent(
-      REALTIME_UPDATES_EVENTS.MESSAGE,
-      (payload) => {
-        console.log(payload.payload.message);
+    const onMessageReceived = (payload: any) => {
+      console.log(payload.payload.message);
 
-        if (authData && !isNull(authData.user)) {
-          setMessagesGotFromWebsockets((prevValue) => prevValue + 1);
+      if (authData && !isNull(authData.user)) {
+        setMessagesGotFromWebsockets((prevValue) => prevValue + 1);
 
-          realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
+        realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
 
-          setMessages((prevState) => [
-            ...prevState,
-            {
-              id: prevState.length + 1,
-              sender: companion.id,
-              //@ts-ignore
-              recipient: authData.user.id,
-              content: payload.payload.message,
-              createdAt: new Date().toISOString(),
-              isRead: false,
-            },
-          ]);
-        }
-      },
-      null
-    );
+        setMessages((prevState) => [
+          ...prevState,
+          {
+            id: prevState.length + 1,
+            sender: companion.id,
+            //@ts-ignore
+            recipient: authData.user.id,
+            content: payload.payload.message,
+            createdAt: new Date().toISOString(),
+            isRead: false,
+          },
+        ]);
+      }
+    };
+
+    subscribeEvent(REALTIME_UPDATES_EVENTS.MESSAGE, onMessageReceived);
+
+    return () => {
+      unsubscribeEvent(REALTIME_UPDATES_EVENTS.MESSAGE, onMessageReceived as any);
+    };
   }, [companion.name, authData.user]);
 
   return (

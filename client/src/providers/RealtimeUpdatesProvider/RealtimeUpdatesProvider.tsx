@@ -11,8 +11,6 @@ import {
   RealtimeUpdatesEventSubscriber,
   RealtimeUpdatesEventSubscriptionRemover,
 } from './types';
-import { nanoid } from 'nanoid';
-import { set } from 'lodash';
 
 type RealtimeUpdatesProviderProps = {
   children: ReactNode;
@@ -71,15 +69,18 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     };
   }, [setWebsocketInstance, setWebsocketInitialized]);
 
-  const subscribeEvent: RealtimeUpdatesEventSubscriber = useCallback((event, handler, id) => {
-    const handlerId = id ?? nanoid();
-    set(eventSubscriptionsRef.current, `${event}.${handlerId}`, handler);
+  const subscribeEvent: RealtimeUpdatesEventSubscriber = useCallback((event, handler) => {
+    if (!eventSubscriptionsRef.current[event]) {
+      eventSubscriptionsRef.current[event] = {};
+    }
+
+    eventSubscriptionsRef.current[event][handler as any] = handler;
   }, []);
 
   const unsubscribeEvent: RealtimeUpdatesEventSubscriptionRemover = useCallback(
-    (event, eventId) => {
-      if (eventSubscriptionsRef.current[event] && eventSubscriptionsRef.current[event][eventId]) {
-        delete eventSubscriptionsRef.current[event][eventId];
+    (event, handler) => {
+      if (eventSubscriptionsRef.current[event]) {
+        delete eventSubscriptionsRef.current[event][handler as any];
       }
     },
     []

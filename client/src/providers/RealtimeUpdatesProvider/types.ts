@@ -24,13 +24,12 @@ export type RealtimeUpdatesEventHandler<E extends REALTIME_UPDATES_EVENTS = any>
 
 export type RealtimeUpdatesEventSubscriber = <E extends keyof RealtimeEventPayloads>(
   event: E,
-  handler: RealtimeUpdatesEventHandler<E>,
-  id: null | string
+  handler: RealtimeUpdatesEventHandler<E>
 ) => { id: string } | void;
 
 export type RealtimeUpdatesEventSubscriptionRemover = (
   event: REALTIME_UPDATES_EVENTS,
-  id: string
+  handler: () => void
 ) => void;
 
 export const REALTIME_UPDATES_ACTIONS = {

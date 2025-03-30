@@ -1,7 +1,7 @@
 'use client';
 
-import { APIEndpoints, axiosClient, getApiEndpointUrl } from '@/api';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { APIEndpoints, axiosClient } from '@/api';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './MessengerChatsList.module.scss';
 import { MessengerChatItem } from '../MessengerChatItem';
 import type { GetDirectMessengerChatsResponse } from '../../types';
@@ -9,7 +9,6 @@ import { TextField } from '@/shared/ui/inputs';
 import { Scrollable } from '@/shared/ui/scrollable/Scrollable';
 import { usePaginatedDirectChats } from '../../hooks';
 import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
-import { nanoid } from 'nanoid';
 import Image from 'next/image';
 import EmptyStateIllustration from '../../../../shared/assets/chatsEmptyStateIcon.svg';
 
@@ -18,10 +17,6 @@ type MessengerChatsListProps = {
 };
 
 export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialChats = [] }) => {
-  const realtimeSubscriptionEventsIdsRef = useRef({
-    messageReceived: nanoid(),
-  });
-
   const { data: fetchedChats, changeQueryingData } = usePaginatedDirectChats();
 
   const [chats, setChats] = useState<GetDirectMessengerChatsResponse>(initialChats);
@@ -29,59 +24,52 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
   const { subscribeEvent, unsubscribeEvent } = useRealtimeUpdates();
 
   useEffect(() => {
-    const messageReceivedSubscription = subscribeEvent(
-      REALTIME_UPDATES_EVENTS.MESSAGE,
-      ({ payload }) => {
-        let chatIndexToUpdate: null | number = null;
+    const onMessageReceived = ({ payload }: any) => {
+      console.log('message received');
 
-        for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {
-          const chat = chats[chatIndex];
+      let chatIndexToUpdate: null | number = null;
 
-          const initiatorChat = chat.user.id === payload.initiator;
+      for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {
+        const chat = chats[chatIndex];
 
-          if (initiatorChat) {
-            chatIndexToUpdate = chatIndex;
+        const initiatorChat = chat.user.id === payload.initiator;
 
-            break;
+        if (initiatorChat) {
+          chatIndexToUpdate = chatIndex;
+
+          break;
+        }
+      }
+
+      if (typeof chatIndexToUpdate === 'number') {
+        setChats((prevChats) => {
+          const nexChats: typeof prevChats = JSON.parse(JSON.stringify(prevChats));
+
+          nexChats[chatIndexToUpdate].unreadMessages =
+            (prevChats[chatIndexToUpdate].unreadMessages ?? 0) + 1;
+          nexChats[chatIndexToUpdate].lastMessage = { content: payload.message };
+
+          return nexChats;
+        });
+      } else {
+        const addChat = async () => {
+          const newChat = await axiosClient.get(
+            APIEndpoints.directMessages.getChatWithUser(payload.initiator)
+          );
+
+          if (newChat.data) {
+            setChats((prevChats) => [newChat.data, ...prevChats]);
           }
-        }
+        };
 
-        if (typeof chatIndexToUpdate === 'number') {
-          setChats((prevChats) => {
-            const nexChats: typeof prevChats = JSON.parse(JSON.stringify(prevChats));
+        addChat();
+      }
+    };
 
-            nexChats[chatIndexToUpdate].unreadMessages =
-              (prevChats[chatIndexToUpdate].unreadMessages ?? 0) + 1;
-            nexChats[chatIndexToUpdate].lastMessage = { content: payload.message };
-
-            return nexChats;
-          });
-        } else {
-          const addChat = async () => {
-            const newChat = await axiosClient.get(
-              APIEndpoints.directMessages.getChatWithUser(payload.initiator)
-            );
-
-            if (newChat.data) {
-              setChats((prevChats) => [newChat.data, ...prevChats]);
-            }
-          };
-
-          addChat();
-        }
-      },
-      realtimeSubscriptionEventsIdsRef.current.messageReceived
-    );
-
-    if (messageReceivedSubscription?.id) {
-      realtimeSubscriptionEventsIdsRef.current.messageReceived = messageReceivedSubscription.id;
-    }
+    subscribeEvent(REALTIME_UPDATES_EVENTS.MESSAGE, onMessageReceived);
 
     return () => {
-      unsubscribeEvent(
-        REALTIME_UPDATES_EVENTS.MESSAGE,
-        realtimeSubscriptionEventsIdsRef.current.messageReceived
-      );
+      unsubscribeEvent(REALTIME_UPDATES_EVENTS.MESSAGE, onMessageReceived as any);
     };
   }, [chats]);
 

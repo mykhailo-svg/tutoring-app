@@ -1,9 +1,8 @@
 'use client';
 
-import { Card } from '@/shared/ui/cards';
 import styles from './ChatHeader.module.scss';
 import { UserAvatar } from '@/components/UserAvatar';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
 import { User } from '@/global_types';
 
@@ -15,53 +14,26 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online, companionI
   const { subscribeEvent, unsubscribeEvent } = useRealtimeUpdates();
   const [isOnline, setIsOnline] = useState(online ?? false);
 
-  const realTimeSubscriptionsIdsRef = useRef<SubscriptionsIds>({
-    userConnected: null,
-    userDisconnected: null,
-  });
-
   useEffect(() => {
-    const userDisconnectedEventId = subscribeEvent(
-      REALTIME_UPDATES_EVENTS.USER_DISCONNECTED,
-      (payload) => {
-        if (payload?.payload?.userId === companionId) {
-          setIsOnline(false);
-        }
-      },
-      realTimeSubscriptionsIdsRef.current.userDisconnected
-    );
+    const onUserDisconnected = (payload: any) => {
+      if (payload?.payload?.userId === companionId) {
+        setIsOnline(false);
+      }
+    };
 
-    const userConnectedEventId = subscribeEvent(
-      REALTIME_UPDATES_EVENTS.USER_CONNECTED,
-      (payload) => {
-        if (payload?.payload?.userId === companionId) {
-          setIsOnline(true);
-        }
-      },
-      realTimeSubscriptionsIdsRef.current.userConnected
-    );
+    const onUserConnected = (payload: any) => {
+      if (payload?.payload?.userId === companionId) {
+        setIsOnline(true);
+      }
+    };
 
-    if (userDisconnectedEventId?.id) {
-      realTimeSubscriptionsIdsRef.current.userDisconnected = userDisconnectedEventId.id;
-    }
-
-    if (userConnectedEventId?.id) {
-      realTimeSubscriptionsIdsRef.current.userConnected = userConnectedEventId?.id;
-    }
+    subscribeEvent(REALTIME_UPDATES_EVENTS.USER_DISCONNECTED, onUserDisconnected);
+    subscribeEvent(REALTIME_UPDATES_EVENTS.USER_CONNECTED, onUserConnected);
 
     return () => {
-      if (realTimeSubscriptionsIdsRef.current.userConnected) {
-        unsubscribeEvent(
-          REALTIME_UPDATES_EVENTS.USER_CONNECTED,
-          realTimeSubscriptionsIdsRef.current.userConnected
-        );
-      }
-      if (realTimeSubscriptionsIdsRef.current.userDisconnected) {
-        unsubscribeEvent(
-          REALTIME_UPDATES_EVENTS.USER_DISCONNECTED,
-          realTimeSubscriptionsIdsRef.current.userDisconnected
-        );
-      }
+      unsubscribeEvent(REALTIME_UPDATES_EVENTS.USER_CONNECTED, onUserConnected as any);
+
+      unsubscribeEvent(REALTIME_UPDATES_EVENTS.USER_DISCONNECTED, onUserDisconnected as any);
     };
   }, [subscribeEvent, unsubscribeEvent, setIsOnline, companionId]);
 
