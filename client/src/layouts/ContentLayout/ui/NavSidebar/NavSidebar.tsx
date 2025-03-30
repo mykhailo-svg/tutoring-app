@@ -25,6 +25,8 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({ mobileMenuActive, closeM
     [mobileMenuActive]
   );
 
+  console.log(pathname);
+
   return (
     <aside className={rootClassName}>
       <div className={styles.menu}>
@@ -41,7 +43,11 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({ mobileMenuActive, closeM
         {links.map((link) => (
           <Link
             onClick={closeMenu}
-            className={classNames(styles.link, { [styles.linkActive]: link.href === pathname })}
+            className={classNames(styles.link, {
+              [styles.linkActive]:
+                (pathname === '/' && link.href === pathname) ||
+                (pathname !== '/' && link.href !== '/' && pathname.startsWith(link.href)),
+            })}
             key={link.id}
             href={link.href}
           >
