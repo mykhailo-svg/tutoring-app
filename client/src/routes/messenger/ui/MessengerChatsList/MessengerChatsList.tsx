@@ -37,46 +37,54 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
     const messageReceivedSubscription = subscribeEvent(
       REALTIME_UPDATES_EVENTS.MESSAGE,
       ({ payload }) => {
-        console.log('message');
+        setChats((prevChats) => {
+          const nexChats = JSON.parse(JSON.stringify(prevChats));
 
-        const chatExists = false;
+          nexChats[0].unreadMessages = prevChats[0].unreadMessages + 1;
 
-        for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {
-          const chat = chats[chatIndex];
-          if (chat.user.id === payload.initiator) {
-            setChats((prevChats) => {
-              if (prevChats[chatIndex]) {
-                const nextChatsState = [...prevChats];
+          return nexChats;
+        });
 
-                prevChats[chatIndex].unreadMessages =
-                  (prevChats[chatIndex].unreadMessages ?? 0) + 1;
-                prevChats[chatIndex].lastMessage = { content: payload.message };
+        // console.log('message');
 
-                return nextChatsState;
-              }
+        // const chatExists = false;
 
-              return prevChats;
-            });
+        // for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {
+        //   const chat = chats[chatIndex];
+        //   if (chat.user.id === payload.initiator) {
+        //     setChats((prevChats) => {
+        //       if (prevChats[chatIndex]) {
+        //         const nextChatsState = [...prevChats];
 
-            break;
-          }
-        }
+        //         prevChats[chatIndex].unreadMessages =
+        //           (prevChats[chatIndex].unreadMessages ?? 0) + 1;
+        //         prevChats[chatIndex].lastMessage = { content: payload.message };
 
-        if (chatExists) {
-          return;
-        }
+        //         return nextChatsState;
+        //       }
 
-        const addChat = async () => {
-          const newChat = await axiosClient.get(
-            APIEndpoints.directMessages.getChatWithUser(payload.initiator)
-          );
+        //       return prevChats;
+        //     });
 
-          if (newChat.data) {
-            setChats((prevChats) => [newChat.data, ...prevChats]);
-          }
-        };
+        //     break;
+        //   }
+        // }
 
-        addChat();
+        // if (chatExists) {
+        //   return;
+        // }
+
+        // const addChat = async () => {
+        //   const newChat = await axiosClient.get(
+        //     APIEndpoints.directMessages.getChatWithUser(payload.initiator)
+        //   );
+
+        //   if (newChat.data) {
+        //     setChats((prevChats) => [newChat.data, ...prevChats]);
+        //   }
+        // };
+
+        // addChat();
       },
       realtimeSubscriptionEventsIdsRef.current.messageReceived
     );
