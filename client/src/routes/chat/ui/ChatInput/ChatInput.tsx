@@ -26,7 +26,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   setMessages,
   setMessagesGotFromWebsockets,
 }) => {
-  const { realtimeAction, subscribeEvent } = useRealtimeUpdates();
+  const { realtimeAction } = useRealtimeUpdates();
 
   const [message, setMessage] = useState('');
 
@@ -52,33 +52,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       },
     ]);
   }, [realtimeAction, message, companion.id, setMessages, authData.user]);
-
-  useEffect(() => {
-    subscribeEvent(
-      REALTIME_UPDATES_EVENTS.MESSAGE,
-      (payload) => {
-        console.log(payload.payload.message);
-
-        if (authData && !isNull(authData.user)) {
-          setMessagesGotFromWebsockets((prevValue) => prevValue + 1);
-
-          setMessages((prevState) => [
-            ...prevState,
-            {
-              id: prevState.length + 1,
-              sender: companion.id,
-              //@ts-ignore
-              recipient: authData.user.id,
-              content: payload.payload.message,
-              createdAt: new Date().toISOString(),
-              isRead: false,
-            },
-          ]);
-        }
-      },
-      null
-    );
-  }, [companion.name, authData.user]);
 
   const canSendMessage = useMemo(() => message.trim().length > 0, [message]);
 

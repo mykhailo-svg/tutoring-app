@@ -7,7 +7,13 @@ import type { DirectMessage, User } from '@/global_types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePaginatedDirectMessages } from '../../hooks';
 import { useDirectMessagesChat } from '../../providers';
-import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
+import {
+  REALTIME_UPDATES_ACTIONS,
+  REALTIME_UPDATES_EVENTS,
+  useRealtimeUpdates,
+} from '@/providers/RealtimeUpdatesProvider';
+import { useAuth } from '@/providers/AuthProvider';
+import isNull from 'lodash/isNull';
 
 type ChatProps = {
   companion: User;
@@ -15,6 +21,8 @@ type ChatProps = {
 };
 
 export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
+  const { data: authData } = useAuth();
+
   const [messages, setMessages] = useState<DirectMessage[]>(initialMessages ?? []);
 
   const {
@@ -40,7 +48,7 @@ export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
     }));
   }, [changeQueryingData]);
 
-  const { subscribeEvent } = useRealtimeUpdates();
+  const { subscribeEvent, realtimeAction } = useRealtimeUpdates();
 
   useEffect(() => {
     subscribeEvent(
@@ -55,6 +63,35 @@ export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
       null
     );
   }, [companion.id]);
+
+  useEffect(() => {
+    subscribeEvent(
+      REALTIME_UPDATES_EVENTS.MESSAGE,
+      (payload) => {
+        console.log(payload.payload.message);
+
+        if (authData && !isNull(authData.user)) {
+          setMessagesGotFromWebsockets((prevValue) => prevValue + 1);
+
+          realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
+
+          setMessages((prevState) => [
+            ...prevState,
+            {
+              id: prevState.length + 1,
+              sender: companion.id,
+              //@ts-ignore
+              recipient: authData.user.id,
+              content: payload.payload.message,
+              createdAt: new Date().toISOString(),
+              isRead: false,
+            },
+          ]);
+        }
+      },
+      null
+    );
+  }, [companion.name, authData.user]);
 
   return (
     <div className={styles.root}>

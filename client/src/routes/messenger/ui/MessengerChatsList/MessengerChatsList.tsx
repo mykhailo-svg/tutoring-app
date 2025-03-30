@@ -37,6 +37,8 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
     const messageReceivedSubscription = subscribeEvent(
       REALTIME_UPDATES_EVENTS.MESSAGE,
       ({ payload }) => {
+        console.log('message');
+
         const chatExists = false;
 
         for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {

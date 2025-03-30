@@ -60,7 +60,7 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
     if (websocketInitialized && messages.filter((message) => !message.isRead).length) {
       realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
     }
-  }, [realtimeAction, messages, websocketInitialized]);
+  }, [realtimeAction, websocketInitialized]);
 
   const onScrolledToTop = useMemo<ScrollableOnScrolledToTop>(
     () => ({ action: fetchNextMessages }),
