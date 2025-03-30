@@ -13,8 +13,12 @@
   }
 }
 
+.lastMessage {
+  word-break: break-all;
+}
+
 .preview {
-  flex: 30% 0;
+  flex: 1 1 auto;
   display: flex;
   gap: 15px;
 }

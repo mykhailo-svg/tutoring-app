@@ -7,6 +7,7 @@ import type { DirectMessage, User } from '@/global_types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePaginatedDirectMessages } from '../../hooks';
 import { useDirectMessagesChat } from '../../providers';
+import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
 
 type ChatProps = {
   companion: User;
@@ -38,6 +39,22 @@ export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
       },
     }));
   }, [changeQueryingData]);
+
+  const { subscribeEvent } = useRealtimeUpdates();
+
+  useEffect(() => {
+    subscribeEvent(
+      REALTIME_UPDATES_EVENTS.READ_MESSAGES,
+      (data) => {
+        if (data.payload.initiator === companion.id) {
+          setMessages((prevMessages) =>
+            prevMessages.map((message) => ({ ...message, isRead: true }))
+          );
+        }
+      },
+      null
+    );
+  }, [companion.id]);
 
   return (
     <div className={styles.root}>

@@ -3,7 +3,10 @@ import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, WebSocket } from 'ws';
 import { verifyJwtToken } from '../auth';
 import { GatewayService } from './gateway.service';
-import { GATEWAY_MESSAGE_TYPE } from './constants';
+import {
+  GATEWAY_INCOMING_MESSAGE_TYPE,
+  GATEWAY_MESSAGE_TYPE,
+} from './constants';
 import { UserService } from '../user/user.service';
 import { DirectMessageService } from '../direct-message/direct-message.service';
 
@@ -38,26 +41,55 @@ export class MyGateway implements OnModuleInit {
 
       // Handle message
       client.on('message', (message: string) => {
-        const parsedMessage: { payload?: { message: string; to: number } } =
-          JSON.parse(message.toString());
+        console.log(message.toString());
+        console.log('message');
 
-        this.directMessagesService.createDirectMessage({
-          message: {
-            recipientId: parsedMessage.payload.to,
-            senderId: payload.id,
-            content: parsedMessage.payload.message,
-          },
-        });
-        if (this.clients[parsedMessage?.payload?.to]) {
-          this.clients[parsedMessage.payload.to].send(
-            JSON.stringify({
-              type: GATEWAY_MESSAGE_TYPE.MESSAGE,
-              payload: {
-                initiator: payload.id,
-                message: parsedMessage.payload.message,
-              },
-            }),
+        const actionType = JSON.parse(message.toString() as any)
+          .action as keyof typeof GATEWAY_INCOMING_MESSAGE_TYPE;
+
+        console.log(actionType);
+
+        if (actionType === GATEWAY_INCOMING_MESSAGE_TYPE.READ_MESSAGES) {
+          const parsedMessage: { payload?: { companionId: number } } =
+            JSON.parse(message.toString());
+
+          this.directMessagesService.setAllMessagesRead(
+            payload.id,
+            parsedMessage.payload.companionId,
           );
+
+          if (this.clients[parsedMessage?.payload?.companionId]) {
+            this.clients[parsedMessage?.payload?.companionId].send(
+              JSON.stringify({
+                type: GATEWAY_MESSAGE_TYPE.READ_MESSAGES,
+                payload: {
+                  initiator: payload.id,
+                },
+              }),
+            );
+          }
+        } else if (actionType === GATEWAY_INCOMING_MESSAGE_TYPE.SEND_MESSAGE) {
+          const parsedMessage: { payload?: { message: string; to: number } } =
+            JSON.parse(message.toString());
+          this.directMessagesService.createDirectMessage({
+            message: {
+              recipientId: parsedMessage.payload.to,
+              senderId: payload.id,
+              content: parsedMessage.payload.message,
+            },
+          });
+
+          if (this.clients[parsedMessage?.payload?.to]) {
+            this.clients[parsedMessage.payload.to].send(
+              JSON.stringify({
+                type: GATEWAY_MESSAGE_TYPE.MESSAGE,
+                payload: {
+                  initiator: payload.id,
+                  message: parsedMessage.payload.message,
+                },
+              }),
+            );
+          }
         }
       });
 

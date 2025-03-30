@@ -4,6 +4,7 @@ export const REALTIME_UPDATES_EVENTS = {
   USER_CONNECTED: 'USER_CONNECTED',
   USER_DISCONNECTED: 'USER_DISCONNECTED',
   MESSAGE: 'MESSAGE',
+  READ_MESSAGES: 'READ_MESSAGES',
 } as const;
 
 type REALTIME_UPDATES_EVENTS =
@@ -13,6 +14,7 @@ type RealtimeEventPayloads = {
   [REALTIME_UPDATES_EVENTS.USER_CONNECTED]: { userId: User['id'] };
   [REALTIME_UPDATES_EVENTS.USER_DISCONNECTED]: { userId: User['id'] };
   [REALTIME_UPDATES_EVENTS.MESSAGE]: { initiator: User['id']; message: string };
+  [REALTIME_UPDATES_EVENTS.READ_MESSAGES]: { initiator: User['id'] };
 };
 
 export type RealtimeUpdatesEventHandler<E extends REALTIME_UPDATES_EVENTS = any> = (payload: {

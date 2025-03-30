@@ -11,7 +11,11 @@ export const MessengerChatItem: React.FC<MessengerChatItemProps> = ({ chat }) =>
   return (
     <Link className={styles.root} href={`/messenger/${chat.user.id}`}>
       <div className={styles.preview}>
-        <UserAvatar backgroundColor='var(--primary-color)' iconColor='var(--white-color)' imageSrc={chat.user.avatar?.display_url} />
+        <UserAvatar
+          backgroundColor='var(--primary-color)'
+          iconColor='var(--white-color)'
+          imageSrc={chat.user.avatar?.display_url}
+        />
         <div>
           <h1 style={{ marginBottom: '10px' }}>{chat.user.name}</h1>
           <p>{chat.lastMessage.content}</p>
