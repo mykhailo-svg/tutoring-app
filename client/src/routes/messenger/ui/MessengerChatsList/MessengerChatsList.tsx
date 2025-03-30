@@ -10,7 +10,6 @@ import { Scrollable } from '@/shared/ui/scrollable/Scrollable';
 import { usePaginatedDirectChats } from '../../hooks';
 import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
 import { nanoid } from 'nanoid';
-import { DirectMessagesChat, User } from '@/global_types';
 import Image from 'next/image';
 import EmptyStateIllustration from '../../../../shared/assets/chatsEmptyStateIcon.svg';
 
@@ -27,64 +26,49 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
 
   const [chats, setChats] = useState<GetDirectMessengerChatsResponse>(initialChats);
 
-  const { subscribeEvent } = useRealtimeUpdates();
-
-  useEffect(() => {
-    console.log('hi');
-  }, []);
+  const { subscribeEvent, unsubscribeEvent } = useRealtimeUpdates();
 
   useEffect(() => {
     const messageReceivedSubscription = subscribeEvent(
       REALTIME_UPDATES_EVENTS.MESSAGE,
       ({ payload }) => {
-        setChats((prevChats) => {
-          const nexChats = JSON.parse(JSON.stringify(prevChats));
+        let chatIndexToUpdate: null | number = null;
 
-          nexChats[0].unreadMessages = prevChats[0].unreadMessages + 1;
+        for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {
+          const chat = chats[chatIndex];
 
-          return nexChats;
-        });
+          const initiatorChat = chat.user.id === payload.initiator;
 
-        // console.log('message');
+          if (initiatorChat) {
+            chatIndexToUpdate = chatIndex;
 
-        // const chatExists = false;
+            break;
+          }
+        }
 
-        // for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {
-        //   const chat = chats[chatIndex];
-        //   if (chat.user.id === payload.initiator) {
-        //     setChats((prevChats) => {
-        //       if (prevChats[chatIndex]) {
-        //         const nextChatsState = [...prevChats];
+        if (typeof chatIndexToUpdate === 'number') {
+          setChats((prevChats) => {
+            const nexChats: typeof prevChats = JSON.parse(JSON.stringify(prevChats));
 
-        //         prevChats[chatIndex].unreadMessages =
-        //           (prevChats[chatIndex].unreadMessages ?? 0) + 1;
-        //         prevChats[chatIndex].lastMessage = { content: payload.message };
+            nexChats[chatIndexToUpdate].unreadMessages =
+              (prevChats[chatIndexToUpdate].unreadMessages ?? 0) + 1;
+            nexChats[chatIndexToUpdate].lastMessage = { content: payload.message };
 
-        //         return nextChatsState;
-        //       }
+            return nexChats;
+          });
+        } else {
+          const addChat = async () => {
+            const newChat = await axiosClient.get(
+              APIEndpoints.directMessages.getChatWithUser(payload.initiator)
+            );
 
-        //       return prevChats;
-        //     });
+            if (newChat.data) {
+              setChats((prevChats) => [newChat.data, ...prevChats]);
+            }
+          };
 
-        //     break;
-        //   }
-        // }
-
-        // if (chatExists) {
-        //   return;
-        // }
-
-        // const addChat = async () => {
-        //   const newChat = await axiosClient.get(
-        //     APIEndpoints.directMessages.getChatWithUser(payload.initiator)
-        //   );
-
-        //   if (newChat.data) {
-        //     setChats((prevChats) => [newChat.data, ...prevChats]);
-        //   }
-        // };
-
-        // addChat();
+          addChat();
+        }
       },
       realtimeSubscriptionEventsIdsRef.current.messageReceived
     );
@@ -92,7 +76,14 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
     if (messageReceivedSubscription?.id) {
       realtimeSubscriptionEventsIdsRef.current.messageReceived = messageReceivedSubscription.id;
     }
-  }, []);
+
+    return () => {
+      unsubscribeEvent(
+        REALTIME_UPDATES_EVENTS.MESSAGE,
+        realtimeSubscriptionEventsIdsRef.current.messageReceived
+      );
+    };
+  }, [chats]);
 
   useEffect(() => {
     if (fetchedChats) {
@@ -138,8 +129,119 @@ function List({ chats }: ListProps) {
   return (
     <div className={styles.list}>
       {chats.map((chat) => (
-        <MessengerChatItem chat={chat} key={chat.id} />
+        <MessengerChatItem chat={chat} key={chat.user.id} />
       ))}
     </div>
   );
 }
+
+[
+  {
+    unreadMessages: 1,
+    user: {
+      id: 45,
+      name: 'Companion 2',
+      email: 'admin@pgadmin.com',
+      password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
+      isEmailVerified: false,
+      role: 'STUDENT',
+      avatar: null,
+      interests: null,
+      spokenLanguagesData: null,
+    },
+    lastMessage: {
+      id: 257,
+      content: 'dsfsdf',
+      isRead: false,
+      createdAt: '2025-03-30T11:30:16.052Z',
+    },
+  },
+];
+
+// const a = [
+//   {
+//     unreadMessages: 4,
+//     user: {
+//       id: 45,
+//       name: 'Companion 2',
+//       email: 'admin@pgadmin.com',
+//       password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
+//       isEmailVerified: false,
+//       role: 'STUDENT',
+//       avatar: null,
+//       interests: null,
+//       spokenLanguagesData: null,
+//     },
+//     lastMessage: {
+//       id: 260,
+//       content: 'sdf',
+//       isRead: false,
+//       createdAt: '2025-03-30T11:32:12.477Z',
+//     },
+//   },
+//   {
+//     unreadMessages: 3,
+//     user: {
+//       id: 45,
+//       name: 'Companion 2',
+//       email: 'admin@pgadmin.com',
+//       password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
+//       isEmailVerified: false,
+//       role: 'STUDENT',
+//       avatar: null,
+//       interests: null,
+//       spokenLanguagesData: null,
+//     },
+//     lastMessage: {
+//       id: 259,
+//       content: 'sdfsdf',
+//       isRead: false,
+//       createdAt: '2025-03-30T11:32:11.244Z',
+//     },
+//   },
+//   {
+//     unreadMessages: 2,
+//     user: {
+//       id: 45,
+//       name: 'Companion 2',
+//       email: 'admin@pgadmin.com',
+//       password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
+//       isEmailVerified: false,
+//       role: 'STUDENT',
+//       avatar: null,
+//       interests: null,
+//       spokenLanguagesData: null,
+//     },
+//     lastMessage: {
+//       id: 258,
+//       content: 'asdads',
+//       isRead: false,
+//       createdAt: '2025-03-30T11:30:59.558Z',
+//     },
+//   },
+//   {
+//     user: {
+//       id: 45,
+//       content: 'dsfsdf',
+//       name: 'Companion 2',
+//       avatar: null,
+//     },
+//     lastMessage: {
+//       content: 'dsfsdf',
+//     },
+//     unreadMessages: 1,
+//   },
+// ][
+//   {
+//     user: {
+//       id: 45,
+//       content: 'sdf',
+//       name: 'Companion 2',
+//       avatar: null,
+//     },
+//     lastMessage: {
+//       content: 'sdf',
+//     },
+//     unreadMessages: 4,
+//   }
+// ];
