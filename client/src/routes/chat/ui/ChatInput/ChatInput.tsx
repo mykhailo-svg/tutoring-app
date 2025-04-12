@@ -75,6 +75,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           onChange={setMessage}
         />
         <Button
+          className={styles.send}
           disabled={!canSendMessage}
           as='button'
           size='medium'

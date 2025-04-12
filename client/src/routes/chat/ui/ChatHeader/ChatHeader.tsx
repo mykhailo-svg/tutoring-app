@@ -5,6 +5,9 @@ import { UserAvatar } from '@/components/UserAvatar';
 import { useEffect, useState } from 'react';
 import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
 import { User } from '@/global_types';
+import { Button } from '@/shared/ui/buttons';
+import { IoArrowBackSharp as BackIcon } from 'react-icons/io5';
+import { APP_ROUTES } from '@/shared/constants/routes';
 
 type ChatHeaderProps = { name: string; online?: boolean; companionId?: User['id'] };
 
@@ -39,6 +42,15 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online, companionI
 
   return (
     <div className={styles.root}>
+      <Button
+        icon={<BackIcon />}
+        className={styles.back}
+        size='medium'
+        as='a'
+        variant='minor'
+        href={APP_ROUTES.messenger.root}
+      />
+
       <div className={styles.preview}>
         <div className={styles.avatar}>
           <UserAvatar

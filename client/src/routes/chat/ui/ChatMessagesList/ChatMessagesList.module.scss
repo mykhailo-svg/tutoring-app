@@ -159,7 +159,6 @@
 
   .item {
     gap: 10px;
-    width: 70%;
   }
 
   .info {
@@ -167,11 +166,8 @@
   }
 }
 @include responsiveStyles(phone, false) {
- 
   .item {
     gap: 10px;
-    min-width: 90%;
+    max-width: 90% !important;
   }
-
-  
 }
