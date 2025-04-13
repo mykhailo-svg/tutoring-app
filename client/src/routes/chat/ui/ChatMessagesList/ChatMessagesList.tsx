@@ -50,17 +50,11 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
 
   const scrollableRef = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   if (scrollableRef.current) {
-  //     scrollableRef.current.scrollTo({ top: scrollableRef.current.scrollHeight });
-  //   }
-  // }, [messages.length]);
-
   useEffect(() => {
     if (websocketInitialized && messages.filter((message) => !message.isRead).length) {
       realtimeAction(REALTIME_UPDATES_ACTIONS.READ_MESSAGES, { companionId: companion.id });
     }
-  }, [realtimeAction, websocketInitialized]);
+  }, [realtimeAction, websocketInitialized, messages]);
 
   const onScrolledToTop = useMemo<ScrollableOnScrolledToTop>(
     () => ({ action: fetchNextMessages }),
@@ -133,7 +127,7 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({
 function formatDateForCompare(string: string) {
   const date = new Date(string);
 
-  return `${date.getMinutes()}`;
+  return `${date.getDate()}`;
 }
 
 function shouldDisplayDateBadge(
@@ -150,7 +144,7 @@ function shouldDisplayDateBadge(
 function getUserFriendlyDate(stringifiedDate: string) {
   const date = new Date(stringifiedDate);
 
-  return `${date.getMinutes()} ${translateMonth(date.getMonth())}`;
+  return `${date.getDate()} ${translateMonth(date.getMonth())}`;
 }
 
 function convertToLocalTime(utcTimestamp: string): string {

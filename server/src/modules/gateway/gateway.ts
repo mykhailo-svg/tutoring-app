@@ -40,7 +40,7 @@ export class MyGateway implements OnModuleInit {
       }
 
       // Handle message
-      client.on('message', (message: string) => {
+      client.on('message', async (message: string) => {
         console.log(message.toString());
         console.log('message');
 
@@ -71,7 +71,8 @@ export class MyGateway implements OnModuleInit {
         } else if (actionType === GATEWAY_INCOMING_MESSAGE_TYPE.SEND_MESSAGE) {
           const parsedMessage: { payload?: { message: string; to: number } } =
             JSON.parse(message.toString());
-          this.directMessagesService.createDirectMessage({
+
+          await this.directMessagesService.createDirectMessage({
             message: {
               recipientId: parsedMessage.payload.to,
               senderId: payload.id,
