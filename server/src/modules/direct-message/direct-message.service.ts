@@ -156,7 +156,9 @@ function getChatsQuerySQL(
       ORDER BY 
         LEAST(dm."senderId", dm."recipientId"), 
         GREATEST(dm."senderId", dm."recipientId"),
-        dm."createdAt" DESC
+        dm."createdAt" DESC 
+      LIMIT ${paginationData.pageSize}  
+      OFFSET ${paginationData.pageSize * paginationData.page}  
     ),
     unread_counts AS (
       -- Count unread messages where current user is the recipient
@@ -199,4 +201,6 @@ type GetChatsPaginationData = {
   filters?: Partial<{
     query: string;
   }>;
+  page: number;
+  pageSize: number;
 };

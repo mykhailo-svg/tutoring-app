@@ -52,6 +52,8 @@ export class DirectMessageController {
       filters: {
         query: req.query.search as string | undefined,
       },
+      page: getNumberQueryParam(req.query.page as string) ?? 0,
+      pageSize: getNumberQueryParam(req.query.pageSize as string) ?? 9,
     });
   }
   @Get('/chat/:id')
@@ -92,4 +94,8 @@ export class DirectMessageController {
 
     return this.directMessagesService.setAllMessagesRead(senderId, user.id);
   }
+}
+
+function getNumberQueryParam(param: string | undefined) {
+  return isFinite(parseInt(param)) ? parseInt(param) : null;
 }

@@ -10,10 +10,14 @@ export type DirectChatsQueryingData = {
   filters: Partial<{
     search: string;
   }>;
+  page: number;
+  pageSize: number;
 };
 
 const DEFAULT_QUERYING_DATA_STATE: DirectChatsQueryingData = {
   filters: {},
+  page: 0,
+  pageSize: 9,
 };
 
 export const usePaginatedDirectChats = () => {
@@ -37,6 +41,8 @@ export const usePaginatedDirectChats = () => {
     }
 
     isFirstFetchRef.current = false;
+
+    return [];
   }, [queryingData]);
 
   const { isError, error, isPending, data } = useQuery<
@@ -47,11 +53,20 @@ export const usePaginatedDirectChats = () => {
     queryFn: fetchChats,
   });
 
+  const fetchNext = useCallback(() => {
+    if (isPending) {
+      return;
+    }
+
+    changeQueryingData((prevData) => ({ page: prevData.page + 1 }));
+  }, [changeQueryingData, isPending]);
+
   return {
     isError,
     data,
     isLoading: isPending,
     queryingData,
+    fetchNext,
     changeQueryingData,
   };
 };

@@ -5,7 +5,6 @@ import { useState, useEffect, useCallback } from 'react';
 import styles from './MessengerChatsList.module.scss';
 import { MessengerChatItem } from '../MessengerChatItem';
 import type { GetDirectMessengerChatsResponse } from '../../types';
-import { TextField } from '@/shared/ui/inputs';
 import { Scrollable } from '@/shared/ui/scrollable/Scrollable';
 import { usePaginatedDirectChats } from '../../hooks';
 import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
@@ -17,7 +16,7 @@ type MessengerChatsListProps = {
 };
 
 export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialChats = [] }) => {
-  const { data: fetchedChats, changeQueryingData } = usePaginatedDirectChats();
+  const { data: fetchedChats, fetchNext } = usePaginatedDirectChats();
 
   const [chats, setChats] = useState<GetDirectMessengerChatsResponse>(initialChats);
 
@@ -74,29 +73,30 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
   }, [chats]);
 
   useEffect(() => {
-    if (fetchedChats) {
-      setChats(fetchedChats);
+    if (fetchedChats?.length) {
+      setChats((prevChats) => {
+        const currentChatsIds = prevChats.map((chat) => chat.user.id);
+        return [
+          ...prevChats,
+          ...fetchedChats.filter((chat) => currentChatsIds.indexOf(chat.user.id) === -1),
+        ];
+      });
     }
   }, [fetchedChats, setChats]);
 
-  const fonSearchChange = useCallback(
-    (search: string) => {
-      changeQueryingData((prevData) => ({ filters: { ...prevData.filters, search } }));
-    },
-    [changeQueryingData]
-  );
+  const handleScrollToBottom = useCallback(() => {
+    fetchNext();
+  }, [fetchNext]);
 
   return (
     <div className={styles.root}>
       {chats.length > 0 ? (
-        <>
-          <div className={styles.search}>
-            <TextField size='small' onChange={fonSearchChange} label='' placeholder='Search' />
-          </div>
-          <Scrollable className={styles.listScrollable}>
-            <List chats={chats} />
-          </Scrollable>
-        </>
+        <Scrollable
+          onScrolledToTop={{ action: handleScrollToBottom }}
+          className={styles.listScrollable}
+        >
+          <List chats={chats} />
+        </Scrollable>
       ) : (
         <div className={styles.emptyState}>
           <div className={styles.emptyImageContainer}>
@@ -122,114 +122,3 @@ function List({ chats }: ListProps) {
     </div>
   );
 }
-
-[
-  {
-    unreadMessages: 1,
-    user: {
-      id: 45,
-      name: 'Companion 2',
-      email: 'admin@pgadmin.com',
-      password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
-      isEmailVerified: false,
-      role: 'STUDENT',
-      avatar: null,
-      interests: null,
-      spokenLanguagesData: null,
-    },
-    lastMessage: {
-      id: 257,
-      content: 'dsfsdf',
-      isRead: false,
-      createdAt: '2025-03-30T11:30:16.052Z',
-    },
-  },
-];
-
-// const a = [
-//   {
-//     unreadMessages: 4,
-//     user: {
-//       id: 45,
-//       name: 'Companion 2',
-//       email: 'admin@pgadmin.com',
-//       password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
-//       isEmailVerified: false,
-//       role: 'STUDENT',
-//       avatar: null,
-//       interests: null,
-//       spokenLanguagesData: null,
-//     },
-//     lastMessage: {
-//       id: 260,
-//       content: 'sdf',
-//       isRead: false,
-//       createdAt: '2025-03-30T11:32:12.477Z',
-//     },
-//   },
-//   {
-//     unreadMessages: 3,
-//     user: {
-//       id: 45,
-//       name: 'Companion 2',
-//       email: 'admin@pgadmin.com',
-//       password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
-//       isEmailVerified: false,
-//       role: 'STUDENT',
-//       avatar: null,
-//       interests: null,
-//       spokenLanguagesData: null,
-//     },
-//     lastMessage: {
-//       id: 259,
-//       content: 'sdfsdf',
-//       isRead: false,
-//       createdAt: '2025-03-30T11:32:11.244Z',
-//     },
-//   },
-//   {
-//     unreadMessages: 2,
-//     user: {
-//       id: 45,
-//       name: 'Companion 2',
-//       email: 'admin@pgadmin.com',
-//       password: '$2b$10$aD7p8GF6wnHNhOGGMvIUbey8J82b1opA1EX9i3Wek4uutRah9nuGq',
-//       isEmailVerified: false,
-//       role: 'STUDENT',
-//       avatar: null,
-//       interests: null,
-//       spokenLanguagesData: null,
-//     },
-//     lastMessage: {
-//       id: 258,
-//       content: 'asdads',
-//       isRead: false,
-//       createdAt: '2025-03-30T11:30:59.558Z',
-//     },
-//   },
-//   {
-//     user: {
-//       id: 45,
-//       content: 'dsfsdf',
-//       name: 'Companion 2',
-//       avatar: null,
-//     },
-//     lastMessage: {
-//       content: 'dsfsdf',
-//     },
-//     unreadMessages: 1,
-//   },
-// ][
-//   {
-//     user: {
-//       id: 45,
-//       content: 'sdf',
-//       name: 'Companion 2',
-//       avatar: null,
-//     },
-//     lastMessage: {
-//       content: 'sdf',
-//     },
-//     unreadMessages: 4,
-//   }
-// ];
