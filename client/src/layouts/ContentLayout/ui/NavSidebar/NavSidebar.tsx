@@ -25,8 +25,6 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({ mobileMenuActive, closeM
     [mobileMenuActive]
   );
 
-  console.log(pathname);
-
   return (
     <aside className={rootClassName}>
       <div className={styles.menu}>

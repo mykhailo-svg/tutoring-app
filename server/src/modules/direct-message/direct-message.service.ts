@@ -52,8 +52,6 @@ export class DirectMessageService {
       skip,
     },
   }: GetDirectMessagesPayload) {
-    console.log(skip);
-
     const messages = (
       await this.directMessagesRepository.query(
         `SELECT * FROM direct_message

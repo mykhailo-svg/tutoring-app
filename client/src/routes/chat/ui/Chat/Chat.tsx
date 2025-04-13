@@ -33,8 +33,6 @@ export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
 
   useEffect(() => {
     if (fetchedMessages) {
-      console.log(fetchedMessages);
-
       setMessages((prevMessages) => [...fetchedMessages, ...prevMessages]);
     }
   }, [fetchedMessages]);
@@ -68,8 +66,6 @@ export const Chat: React.FC<ChatProps> = ({ companion, initialMessages }) => {
 
   useEffect(() => {
     const onMessageReceived = (payload: any) => {
-      console.log(payload.payload.message);
-
       if (authData && !isNull(authData.user)) {
         setMessagesGotFromWebsockets((prevValue) => prevValue + 1);
 

@@ -20,7 +20,5 @@ export const getPaginatedUserChats = async ({
     chatsRequestUrl.href
   );
 
-  console.log(chatsResponse.data);
-
   return chatsResponse.data;
 };

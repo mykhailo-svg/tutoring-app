@@ -36,13 +36,10 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     );
 
     websocket.onopen = () => {
-      console.log('Ws connected...');
       setWebsocketInitialized(true);
     };
 
     websocket.onmessage = (event) => {
-      console.log('Received message:', event.data);
-
       const type = JSON.parse(event.data).type;
 
       const targetHandlers: RealtimeUpdatesEventHandler[] = Object.values(
@@ -59,7 +56,7 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     };
 
     websocket.onclose = () => {
-      console.log('WebSocket disconnected');
+      setWebsocketInitialized(false);
     };
 
     setWebsocketInstance(websocket);

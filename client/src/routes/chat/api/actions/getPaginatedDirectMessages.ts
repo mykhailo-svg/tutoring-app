@@ -17,8 +17,6 @@ export const getPaginatedDirectMessages = async (
     );
   }
 
-  console.log(messagesGotFromWebsockets);
-
   messagesRequestUrl.searchParams.set('skip', `${messagesGotFromWebsockets}`);
 
   const directMessagesResponse = await axiosClient.get(messagesRequestUrl.href);

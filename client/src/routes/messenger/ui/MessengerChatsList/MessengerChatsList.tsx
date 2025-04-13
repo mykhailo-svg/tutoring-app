@@ -24,8 +24,6 @@ export const MessengerChatsList: React.FC<MessengerChatsListProps> = ({ initialC
 
   useEffect(() => {
     const onMessageReceived = ({ payload }: any) => {
-      console.log('message received');
-
       let chatIndexToUpdate: null | number = null;
 
       for (let chatIndex = 0; chatIndex < chats.length; chatIndex++) {
