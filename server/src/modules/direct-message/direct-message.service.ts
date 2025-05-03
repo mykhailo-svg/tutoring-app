@@ -60,22 +60,25 @@ export class DirectMessageService {
        ORDER BY "createdAt" DESC
        LIMIT ${pageSize} OFFSET ${skip + pageSize * page};`,
       )
-    ) //@ts-ignore
-      .sort((a, b) => a.id - b.id);
+    ).sort((a, b) => a.id - b.id);
 
     return messages;
   }
 
   async getChats(userId: User['id'], paginationData: GetChatsPaginationData) {
-    const queriesChats: (User & DirectMessage & { unreadmessages: string })[] =
-      await this.usersRepository.query(
-        getChatsQuerySQL(userId, paginationData),
-      );
+    const queriesChats: (User &
+      DirectMessage & {
+        unreadmessages: string;
+        recipientId: User['id'];
+        senderId: User['id'];
+      })[] = await this.usersRepository.query(
+      getChatsQuerySQL(userId, paginationData),
+    );
 
     return queriesChats.map((chat) => {
-      const companionId = //@ts-ignore
-        `${userId}` === `${chat.recipientId}` //@ts-ignore
-          ? chat.senderId //@ts-ignore
+      const companionId =
+        `${userId}` === `${chat.recipientId}`
+          ? chat.senderId
           : chat.recipientId;
 
       return {
