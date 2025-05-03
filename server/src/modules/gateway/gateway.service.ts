@@ -1,9 +1,7 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { User } from '@src/entities';
 import { Cache } from 'cache-manager';
-import { DirectMessageService } from '../direct-message/direct-message.service';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class GatewayService {
