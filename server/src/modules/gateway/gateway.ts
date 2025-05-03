@@ -7,7 +7,6 @@ import {
   GATEWAY_INCOMING_MESSAGE_TYPE,
   GATEWAY_MESSAGE_TYPE,
 } from './constants';
-import { UserService } from '../user/user.service';
 import { DirectMessageService } from '../direct-message/direct-message.service';
 
 @WebSocketGateway({
