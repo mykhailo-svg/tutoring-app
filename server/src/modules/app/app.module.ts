@@ -11,6 +11,7 @@ import { join } from 'path';
 import { GatewayModule } from '../gateway/gateway.module';
 import { redisStore } from 'cache-manager-redis-store';
 import { CacheModule, CacheModuleAsyncOptions } from '@nestjs/cache-manager';
+import { DirectMessageModule } from '../direct-message/direct-message.module';
 
 export const RedisOptions: CacheModuleAsyncOptions = {
   isGlobal: true,
@@ -54,10 +55,10 @@ export const RedisOptions: CacheModuleAsyncOptions = {
       synchronize: true,
     }),
     AuthModule,
-
     UserModule,
     TokenModule,
     GatewayModule,
+    DirectMessageModule,
   ],
   exports: [AppService],
   controllers: [AppController],

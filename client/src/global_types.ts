@@ -20,6 +20,24 @@ export type User = {
   isOnline?: boolean;
 };
 
+// DIRECT_MESSAGE
+
+export type DirectMessage = {
+  id: number;
+  sender: number;
+  recipient: number;
+  content: string;
+  createdAt: string;
+  isRead: boolean;
+};
+
+export type DirectMessagesChat = {
+  id: number;
+  user: User;
+  lastMessage: { content: string };
+  unreadMessages?: number;
+};
+
 // AUTH
 export enum TokenType {
   RESET_PASSWORD = 'resetPassword',

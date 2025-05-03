@@ -28,7 +28,6 @@ export const ProfileEditAvatarImage: React.FC<ProfileEditAvatarImageProps> = ({
   active,
 }) => {
   const { data, setAuthState } = useAuth();
-  console.log(data);
 
   const editAvatarModalToggler = useToggle();
 

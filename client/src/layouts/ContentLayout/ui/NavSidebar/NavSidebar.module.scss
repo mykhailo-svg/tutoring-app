@@ -3,6 +3,7 @@
 .root {
   background: var(--primary-color);
   width: 320px;
+  min-width: 320px;
   padding: 50px 0px 0px 45px;
 }
 
@@ -43,6 +44,7 @@
   .root {
     padding: 15px;
     width: 90px;
+    min-width: 90px;
   }
 
   .logo {

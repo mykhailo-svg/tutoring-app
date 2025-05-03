@@ -13,6 +13,12 @@ export const APIEndpoints = {
     updateUserGeneralData: '/user',
     getById: (id: User['id']) => `/user/${id}`,
   },
+  directMessages: {
+    get: (companionId: number) => `/direct-message/${companionId}`,
+    setIsRead: (companionId: number) => `/direct-message/read/${companionId}`,
+    getChats: '/direct-message',
+    getChatWithUser: (companionId: number) => `/direct-message/chat/${companionId}`,
+  },
 };
 
 export const getApiEndpointUrl = (endpoint: string) => {

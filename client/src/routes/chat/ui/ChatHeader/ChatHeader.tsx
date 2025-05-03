@@ -1,11 +1,13 @@
 'use client';
 
-import { Card } from '@/shared/ui/cards';
 import styles from './ChatHeader.module.scss';
 import { UserAvatar } from '@/components/UserAvatar';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { REALTIME_UPDATES_EVENTS, useRealtimeUpdates } from '@/providers/RealtimeUpdatesProvider';
 import { User } from '@/global_types';
+import { Button } from '@/shared/ui/buttons';
+import { IoArrowBackSharp as BackIcon } from 'react-icons/io5';
+import { APP_ROUTES } from '@/shared/constants/routes';
 
 type ChatHeaderProps = { name: string; online?: boolean; companionId?: User['id'] };
 
@@ -15,60 +17,40 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ name, online, companionI
   const { subscribeEvent, unsubscribeEvent } = useRealtimeUpdates();
   const [isOnline, setIsOnline] = useState(online ?? false);
 
-  const realTimeSubscriptionsIdsRef = useRef<SubscriptionsIds>({
-    userConnected: null,
-    userDisconnected: null,
-  });
-
   useEffect(() => {
-    const userDisconnectedEventId = subscribeEvent(
-      REALTIME_UPDATES_EVENTS.USER_DISCONNECTED,
-      (payload) => {
-        console.log(payload);
+    const onUserDisconnected = (payload: any) => {
+      if (payload?.payload?.userId === companionId) {
+        setIsOnline(false);
+      }
+    };
 
-        if (payload?.payload?.userId === companionId) {
-          setIsOnline(false);
-        }
-      },
-      realTimeSubscriptionsIdsRef.current.userDisconnected
-    );
+    const onUserConnected = (payload: any) => {
+      if (payload?.payload?.userId === companionId) {
+        setIsOnline(true);
+      }
+    };
 
-    const userConnectedEventId = subscribeEvent(
-      REALTIME_UPDATES_EVENTS.USER_CONNECTED,
-      (payload) => {
-        if (payload?.payload?.userId === companionId) {
-          setIsOnline(true);
-        }
-      },
-      realTimeSubscriptionsIdsRef.current.userConnected
-    );
-
-    if (userDisconnectedEventId?.id) {
-      realTimeSubscriptionsIdsRef.current.userDisconnected = userDisconnectedEventId.id;
-    }
-
-    if (userConnectedEventId?.id) {
-      realTimeSubscriptionsIdsRef.current.userConnected = userConnectedEventId?.id;
-    }
+    subscribeEvent(REALTIME_UPDATES_EVENTS.USER_DISCONNECTED, onUserDisconnected);
+    subscribeEvent(REALTIME_UPDATES_EVENTS.USER_CONNECTED, onUserConnected);
 
     return () => {
-      if (realTimeSubscriptionsIdsRef.current.userConnected) {
-        unsubscribeEvent(
-          REALTIME_UPDATES_EVENTS.USER_CONNECTED,
-          realTimeSubscriptionsIdsRef.current.userConnected
-        );
-      }
-      if (realTimeSubscriptionsIdsRef.current.userDisconnected) {
-        unsubscribeEvent(
-          REALTIME_UPDATES_EVENTS.USER_DISCONNECTED,
-          realTimeSubscriptionsIdsRef.current.userDisconnected
-        );
-      }
+      unsubscribeEvent(REALTIME_UPDATES_EVENTS.USER_CONNECTED, onUserConnected as any);
+
+      unsubscribeEvent(REALTIME_UPDATES_EVENTS.USER_DISCONNECTED, onUserDisconnected as any);
     };
   }, [subscribeEvent, unsubscribeEvent, setIsOnline, companionId]);
 
   return (
     <div className={styles.root}>
+      <Button
+        icon={<BackIcon />}
+        className={styles.back}
+        size='medium'
+        as='a'
+        variant='minor'
+        href={APP_ROUTES.messenger.root}
+      />
+
       <div className={styles.preview}>
         <div className={styles.avatar}>
           <UserAvatar

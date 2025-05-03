@@ -1,0 +1,35 @@
+.root {
+  padding: 20px;
+
+  border-bottom: var(--divider-line-border);
+
+  display: flex;
+  align-items: center;
+
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: var(--grey-color-light);
+  }
+}
+
+.lastMessage {
+  word-break: break-all;
+}
+
+.preview {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 15px;
+}
+
+.unreadMessagesCount {
+  color: var(--white-color);
+  background: var(--orange-color);
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+}

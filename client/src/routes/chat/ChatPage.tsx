@@ -4,6 +4,9 @@ import styles from './ChatPage.module.scss';
 import { Chat, ChatHeader } from './ui';
 import { getUserById } from '@/api/actions/user';
 import { Card } from '@/shared/ui/cards';
+import { getApiEndpointUrl, APIEndpoints } from '@/api';
+import { createAuthHeaders } from '@/shared/helpers';
+import { DirectMessagesChatContextProvider } from './providers';
 
 type ChatPageProps = { params: Promise<{ userId: string }> };
 
@@ -26,16 +29,27 @@ export const ChatPage: React.FC<ChatPageProps> = async ({ params }) => {
     return redirect('/messenger');
   }
 
+  const messages = await fetch(
+    getApiEndpointUrl(APIEndpoints.directMessages.get(companionUser.id)),
+    {
+      headers: await createAuthHeaders(),
+      cache: 'no-cache',
+    }
+  );
+  const data = await messages.json();
+
   return (
     <Card className={styles.root}>
-      <ChatHeader
-        online={companionUser.isOnline}
-        name={companionUser.name}
-        companionId={companionUser.id}
-      />
-      <div className={styles.chatContainer}>
-        <Chat companion={companionUser} />
-      </div>
+      <DirectMessagesChatContextProvider>
+        <ChatHeader
+          online={companionUser.isOnline}
+          name={companionUser.name}
+          companionId={companionUser.id}
+        />
+        <div className={styles.chatContainer}>
+          <Chat initialMessages={data} companion={companionUser} />
+        </div>
+      </DirectMessagesChatContextProvider>
     </Card>
   );
 };

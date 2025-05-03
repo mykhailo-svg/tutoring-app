@@ -5,6 +5,8 @@
 
   padding-top: 20px;
 
+  padding-inline: 20px;
+
   align-items: center;
   gap: 20px;
 
@@ -47,10 +49,12 @@
   .burger {
     display: block;
   }
+  
 }
 @include responsiveStyles(phone, false) {
   .root {
     padding-top: 10px;
+    padding-inline: 10px;
   }
   .title {
     display: none;

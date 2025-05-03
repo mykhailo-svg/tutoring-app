@@ -11,8 +11,6 @@ import {
   RealtimeUpdatesEventSubscriber,
   RealtimeUpdatesEventSubscriptionRemover,
 } from './types';
-import { nanoid } from 'nanoid';
-import { set } from 'lodash';
 
 type RealtimeUpdatesProviderProps = {
   children: ReactNode;
@@ -20,6 +18,8 @@ type RealtimeUpdatesProviderProps = {
 
 export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = ({ children }) => {
   const [websocketInstance, setWebsocketInstance] = useState<null | WebSocket>(null);
+
+  const [websocketInitialized, setWebsocketInitialized] = useState(false);
 
   const eventSubscriptionsRef = useRef<
     Partial<
@@ -36,12 +36,10 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     );
 
     websocket.onopen = () => {
-      console.log('Ws connected...');
+      setWebsocketInitialized(true);
     };
 
     websocket.onmessage = (event) => {
-      console.log('Received message:', event.data);
-
       const type = JSON.parse(event.data).type;
 
       const targetHandlers: RealtimeUpdatesEventHandler[] = Object.values(
@@ -58,7 +56,7 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     };
 
     websocket.onclose = () => {
-      console.log('WebSocket disconnected');
+      setWebsocketInitialized(false);
     };
 
     setWebsocketInstance(websocket);
@@ -66,23 +64,26 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
     return () => {
       websocket.close();
     };
-  }, [setWebsocketInstance]);
+  }, [setWebsocketInstance, setWebsocketInitialized]);
 
-  const subscribeEvent: RealtimeUpdatesEventSubscriber = useCallback((event, handler, id) => {
-    const handlerId = id ?? nanoid();
-    set(eventSubscriptionsRef.current, `${event}.${handlerId}`, handler);
+  const subscribeEvent: RealtimeUpdatesEventSubscriber = useCallback((event, handler) => {
+    if (!eventSubscriptionsRef.current[event]) {
+      eventSubscriptionsRef.current[event] = {};
+    }
+
+    eventSubscriptionsRef.current[event][handler as any] = handler;
   }, []);
 
   const unsubscribeEvent: RealtimeUpdatesEventSubscriptionRemover = useCallback(
-    (event, eventId) => {
-      if (eventSubscriptionsRef.current[event] && eventSubscriptionsRef.current[event][eventId]) {
-        delete eventSubscriptionsRef.current[event][eventId];
+    (event, handler) => {
+      if (eventSubscriptionsRef.current[event]) {
+        delete eventSubscriptionsRef.current[event][handler as any];
       }
     },
     []
   );
 
-  const action: RealtimeUpdatesAction = useCallback(
+  const realtimeAction: RealtimeUpdatesAction = useCallback(
     (actionType, payload) => {
       if (websocketInstance) {
         websocketInstance.send(JSON.stringify({ action: actionType, payload }));
@@ -92,8 +93,14 @@ export const RealtimeUpdatesProvider: React.FC<RealtimeUpdatesProviderProps> = (
   );
 
   const contextData = useMemo<Parameters<typeof RealtimeUpdatesContext.Provider>[0]['value']>(
-    () => ({ websocket: websocketInstance, subscribeEvent, unsubscribeEvent, action }),
-    [websocketInstance, subscribeEvent, unsubscribeEvent, action]
+    () => ({
+      websocketInitialized,
+      websocket: websocketInstance,
+      subscribeEvent,
+      unsubscribeEvent,
+      realtimeAction,
+    }),
+    [websocketInstance, websocketInitialized, subscribeEvent, unsubscribeEvent, realtimeAction]
   );
 
   return (

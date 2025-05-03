@@ -1,6 +1,13 @@
 .root {
   background: var(--white-color);
   border-radius: 8px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.back{
+  border-radius: 100%;
 }
 
 .avatar {
